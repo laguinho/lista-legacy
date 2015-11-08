@@ -1,0 +1,75 @@
+$background-color: #eaeaea;
+
+body { margin: 0; padding-top: 56px; background-color: $background-color; }
+body, input, button, textarea, select { font: 16px roboto, arial, helvetica, sans-serif; color: #666; }
+
+p, h1, h2, h3, h4, h5, h6, ul, ol, li, form, table, td, input, button, textarea, select, fieldset, iframe { margin: 0; outline: 0; padding: 0; font-weight: inherit; line-height: inherit; }
+button, fieldset, img { border: 0; } img { display: block; } li { list-style-type: none; } a { color: inherit; text-decoration: none; } button { cursor: pointer; outline: 0; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: rgba(0,0,0,0); }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// container ///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// cria containers com largura apropriada ao número de colunas, até 8 colunas.
+// quando há apenas 1 coluna, ela ocupa 100% da largura.
+$column-width: 300px + 16px;
+$large-column-width: 450px + 16px;
+$columns: 2;
+
+.container { margin: 0 auto; padding: 0 8px; position: relative; }
+.view-container { max-width: ($large-column-width * 2) + $column-width + 16px; }
+.modal-container { max-width: 480px; }
+
+@while $columns <= 8 {
+	@media (min-width: $column-width * $columns) { .home-container { width: $column-width * $columns; } }
+	$columns: $columns + 1;
+}
+
+@media (min-width: $column-width * 4) {
+	body { padding-top: 64px; }
+}
+
+/*
+
+TAREFA VIEW
+colunas
+1: stream
+2: meta superior + 1 coluna larga
+3: meta superior + 2 colunas largas
+4: meta lateral fixo + 2 colunas largas
+
+
+*/
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// imports /////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@import "turmas";
+@import "helpers";
+
+@import "app";
+@import "scoreboard";
+@import "stream";
+@import "tarefa";
+@import "new-post";
+@import "login";
+
+@import "material-elements";
+@import "animate";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// referência z-index //////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+
+99	#appbar
+100	#tarefa, #login, #new-post
+
+110	#backdrop
+111 #toast
+112	#sidenav, #bottom-sheet, #login
+
+120 #loading
+
+*/

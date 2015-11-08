@@ -1,0 +1,74 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// material elements ///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// appbar
+.appbar { position: fixed; top: 0; left: 0; right: 0; height: 56px; background-color: #455a64; color: #fff; box-shadow: rgba(0,0,0,.137255) 0 2px 2px 0, rgba(0,0,0,.2) 0 3px 1px -2px, rgba(0,0,0,.117647) 0 1px 5px 0; z-index: 1; -webkit-user-select: none; }
+.appbar .container { height: 100%; padding: 0 16px 0 54px; }
+.appbar h1 { font-size: 20px; line-height: 56px; }
+.appbar .back { display: block; position: absolute; top: 0; left: 0; width: 56px; height: 56px; text-align: center; }
+.appbar .back i { font-size: 28px; line-height: 56px; }
+
+@media (min-width: $column-width * 4) {
+	.appbar { height: 64px; }
+	.appbar h1 { font-size: 24px; line-height: 64px; }
+
+	.appbar .back { width: 64px; height: 64px; }
+	.appbar .back i { line-height: 64px; }
+}
+
+
+// cards
+.card { margin-bottom: 8px; border-radius: 2px; background-color: #fff; box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12); position: relative; }
+
+@media (min-width: 632px) {
+	.card { margin-bottom: 16px; }
+	.card + .card { }
+}
+
+
+// fab
+.fab { display: block; width: 56px; height: 56px; border-radius: 50%; background-color: #ef6c00; color: #fff; text-align: center; box-shadow: 0 1px 1.5px 0 rgba(0,0,0,.12), 0 1px 1px 0 rgba(0,0,0,.24); }
+.fab i { line-height: 56px; }
+.toast-active .fab-bottom { transform: translateY(-48px); }
+
+
+// bottom sheet
+#bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; padding: 8px 0; background-color: #fff; font-size: 16px; line-height: 1.5; color: rgba(0,0,0,.87);
+	overflow: auto; z-index: 112; display: none;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+	will-change: transform; transform: translateY(250px); transform-style: preserve-3d;
+	transition-property: transform, opacity; transition-timing-function: cubic-bezier(.4,0,.2,1); transition-duration: .2s;
+	-webkit-overflow-scrolling: touch; }
+
+#bottom-sheet h1 { min-height: 56px; padding: 16px 16px 0 16px; font-size: inherit; color: rgba(0,0,0,.54); }
+#bottom-sheet .divider { margin-top: 7px; border-top: 1px solid #eee; padding-top: 8px; }
+#bottom-sheet a { display: block; padding: 12px 16px 12px 72px; position: relative; }
+#bottom-sheet a:hover { background-color: rgba(0,0,0,.1); }
+#bottom-sheet a i { display: block; position: absolute; top: 12px; left: 16px; width: 24px; height: 24px; color: #777; line-height: 24px; text-align: center; }
+
+@media (min-width: $column-width * 3) {
+//	#bottom-sheet { top: 50%; bottom: auto; left: 50%; right: auto; width: 400px; height: 264px; margin: -132px 0 0 -200px; }
+	#bottom-sheet { left: auto; width: 400px; }
+}
+
+
+// toast
+#toast { position: fixed; bottom: 0; left: 0; right: 0; border-radius: 1px 1px 0 0; background-color: #323232; padding: 15px 24px; font-size: 14px; color: #fff;
+	z-index: 111; cursor: default; display: none;
+	will-change: transform; transform: translateY(250px); transform-style: preserve-3d;
+	transition-property: transform, opacity; transition-timing-function: cubic-bezier(.4,0,.2,1); transition-duration: .2s;
+	-webkit-overflow-scrolling: touch; }
+
+#toast .action { float: right; font-weight: 500; color: #fa0; text-transform: uppercase; cursor: pointer; }
+
+#toast.stream-only { z-index: 98; }
+
+@media (min-width: $column-width * 3) {
+	#toast { bottom: 16px; left: 50%; max-width: 400px; margin-left: -200px; border-radius: 3px; box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12); }
+}
+
+
+// text fields
+.text-field { border: 0; border-bottom: 2px solid #eee; }
+.text-field:focus { border-color: #455a64; }

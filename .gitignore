@@ -1,0 +1,5 @@
+node_modules
+public
+.gulp-scss-cache
+.sass-cache
+.ftppass

@@ -1,0 +1,13 @@
+{
+	"short_name": "Lista",
+	"name": "Lista de Tarefas",
+	"icons": [
+		{
+			"src": "//assets.laguinho.org/lista/xc/img/app-icon.png",
+			"sizes": "360x360",
+			"type": "image/png"
+		}
+	],
+	"start_url": "/",
+	"display": "standalone"
+}

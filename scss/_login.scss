@@ -1,0 +1,14 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// login ///////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#login { z-index: 112; display: none; }
+#login header { }
+
+#login .form-group { margin: 44px 0 16px; }
+#login .form-group input { border: solid #ddd; border-width: 1px 1px 0 1px; padding: 8px; font-size: 18px; }
+#login .form-group input:first-child { border-radius: 3px 3px 0 0; }
+#login .form-group input:last-child { border-bottom-width: 1px; border-radius: 0 0 3px 3px; }
+#login input, #login button { display: block; width: 100%; max-width: 300px; margin: 0 auto; font-size: 16px; }
+#login .btn { border-radius: 2px; padding: 0 8px; background-color: #607d8b; font-weight: 500; font-size: 14px; color: #fff; line-height: 36px; text-transform: uppercase;
+	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12); }
