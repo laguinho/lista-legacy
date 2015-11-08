@@ -1,0 +1,12 @@
+{
+  "fileExtensions": [".js"],
+
+  "esnext": true,
+
+  "validateQuoteMarks": "\"",
+  "requireDotNotation": false,
+
+  "requireSemicolons": true,
+  "requireParenthesesAroundIIFE": true,
+  "maximumLineLength": 120
+}
