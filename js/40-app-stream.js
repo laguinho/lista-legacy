@@ -102,10 +102,7 @@ const Stream = (function() {
 				});
 
 				Stream.layout();
-				// ordena por data quando a lista está aberta,
-				// por tarefa quando já acabou
-			//	Stream.sort("date");
-				Stream.sort("tarefa");
+				Stream.sort("date");
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if(!!autoload) {

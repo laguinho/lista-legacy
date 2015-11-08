@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="utf-8">
-<title>EC2 CAMPEÃ</title>
+<title>Lista de Tarefas</title>
 
 <meta name="viewport" content="user-scalable = no, width = device-width, initial-scale = 1, minimal-ui">
 <meta name="mobile-web-app-capable" content="yes">
@@ -47,7 +47,7 @@
 
 <main>
 	<div class="container home-container">
-		<div class="scoreboard scoreboard-stream">
+		<div class="scoreboard">
 			<ul>
 				<template id="scoreboard-team">
 					<li class="fill" data-fill-attr="class" data-fill-field="turma">
@@ -142,9 +142,6 @@
 	<div class="body">
 		<div class="container view-container">
 			<div class="meta"></div>
-			<div class="scoreboard scoreboard-tarefa">
-				<ul></ul>
-			</div>
 			<div class="posts">
 				<ul></ul>
 				<div class="end"></div>

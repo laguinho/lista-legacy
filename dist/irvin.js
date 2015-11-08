@@ -556,10 +556,7 @@ var Stream = (function () {
 				});
 
 				Stream.layout();
-				// ordena por data quando a lista está aberta,
-				// por tarefa quando já acabou
-				//	Stream.sort("date");
-				Stream.sort("tarefa");
+				Stream.sort("date");
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if (!!autoload) {
@@ -1290,9 +1287,7 @@ $.fn.dropzone = function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // auto update /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// comentando pois a lista já acabou
-// const update_interval = setInterval(checkUpdates, 30000);
+var update_interval = setInterval(checkUpdates, 30000);
 var page_title = $("head title").html();
 var last_updated = undefined;
 var updated = { "tarefas": 0, "posts": 0 };
