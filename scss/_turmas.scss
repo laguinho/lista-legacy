@@ -1,22 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// turmas //////////////////////////////////////////////////////////////////////////////////////////
+// Turmas //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Gera classes para aplicação da cor de cada turma em plano de fundo, texto e borda
 
-$ec1-color: #0097cc; // azul
-$ec2-color: #6bba81; // verde
-$ec3-color: #b165a5; // roxo
+$turmas:
+(ec1, #4abbc7),
+(ec2, #d0629f),
+(ec3, #beb158);
 
-// ec1
-.ec1 .turma-background, .user-ec1 .user-background { background-color: $ec1-color !important; }
-.ec1 .turma-text, .user-ec1 .user-text { color: $ec1-color !important; }
-.ec1 .turma-border, .user-ec1 .user-border, .user-ec1 .user-border-focus:focus { border-color: $ec1-color !important; }
-
-// ec2
-.ec2 .turma-background, .user-ec2 .user-background { background-color: $ec2-color !important; }
-.ec2 .turma-text, .user-ec2 .user-text { color: $ec2-color !important; }
-.ec2 .turma-border, .user-ec2 .user-border, .user-ec2 .user-border-focus:focus { border-color: $ec2-color !important; }
-
-// ec3
-.ec3 .turma-background, .user-ec3 .user-background { background-color: $ec3-color !important; }
-.ec3 .turma-text, .user-ec3 .user-text { color: $ec3-color !important; }
-.ec3 .turma-border, .user-ec3 .user-border, .user-ec3 .user-border-focus:focus { border-color: $ec3-color !important; }
+@each $turma, $color in $turmas {
+	.#{$turma} .turma-background, .user-#{$turma} .user-background { background-color: #{$color} !important; }
+	.#{$turma} .turma-text, .user-#{$turma} .user-text { color: #{$color} !important; }
+	.#{$turma} .turma-border, .user-#{$turma} .user-border, .user-#{$turma} .user-border-focus:focus { border-color: #{$color} !important; }
+}

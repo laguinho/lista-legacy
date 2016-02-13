@@ -96,50 +96,50 @@ colunas
 
 .ec1 .turma-background,
 .user-ec1 .user-background {
-  background-color: #0097cc !important;
+  background-color: #4abbc7 !important;
 }
 
 .ec1 .turma-text,
 .user-ec1 .user-text {
-  color: #0097cc !important;
+  color: #4abbc7 !important;
 }
 
 .ec1 .turma-border,
 .user-ec1 .user-border,
 .user-ec1 .user-border-focus:focus {
-  border-color: #0097cc !important;
+  border-color: #4abbc7 !important;
 }
 
 .ec2 .turma-background,
 .user-ec2 .user-background {
-  background-color: #6bba81 !important;
+  background-color: #d0629f !important;
 }
 
 .ec2 .turma-text,
 .user-ec2 .user-text {
-  color: #6bba81 !important;
+  color: #d0629f !important;
 }
 
 .ec2 .turma-border,
 .user-ec2 .user-border,
 .user-ec2 .user-border-focus:focus {
-  border-color: #6bba81 !important;
+  border-color: #d0629f !important;
 }
 
 .ec3 .turma-background,
 .user-ec3 .user-background {
-  background-color: #b165a5 !important;
+  background-color: #beb158 !important;
 }
 
 .ec3 .turma-text,
 .user-ec3 .user-text {
-  color: #b165a5 !important;
+  color: #beb158 !important;
 }
 
 .ec3 .turma-border,
 .user-ec3 .user-border,
 .user-ec3 .user-border-focus:focus {
-  border-color: #b165a5 !important;
+  border-color: #beb158 !important;
 }
 
 .clear {

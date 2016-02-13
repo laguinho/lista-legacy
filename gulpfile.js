@@ -37,7 +37,7 @@
 
 	// css
 	CONFIG.css = { };
-	CONFIG.css.source = ["./scss/irvin.scss"];
+	CONFIG.css.source = ["./scss/reserva.scss"];
 	CONFIG.css.watch = ["./scss/**.scss", "./scss/**.sass"];
 
 	var sass = require("gulp-scss");
@@ -108,7 +108,7 @@
 			.pipe(plumber())
 			.pipe(sourcemaps.init())
 
-			.pipe(concat("irvin.js"))
+			.pipe(concat("reserva.js"))
 			.pipe(babel())
 
 			// source file
@@ -131,7 +131,7 @@
 		gulp.src(CONFIG.js.source)
 			.pipe(plumber())
 
-			.pipe(concat("irvin.js"))
+			.pipe(concat("reserva.js"))
 			.pipe(babel())
 
 			// minified file
@@ -162,12 +162,12 @@
 
 	function stageHTML() {
 		var manifest = {
-			"irvin.min.css": "irvin.min.css",
-			"irvin.min.js": "irvin.min.js"
+			"reserva.min.css": "reserva.min.css",
+			"reserva.min.js": "reserva.min.js"
 		};
 		var handlebarOptions = {
 			helpers: {
-						assetPath: function (path, context) {
+						assetPath: function(path, context) {
 								return ["/assets", context.data.root[path]].join("/");
 						}
 				}
