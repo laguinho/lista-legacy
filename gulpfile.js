@@ -23,8 +23,8 @@
 	CONFIG.path.repo = "./";
 	CONFIG.path.dist = "./dist";
 	CONFIG.path.staging = "./public";
-	CONFIG.path.assets = "/home/laguinho/assets.laguinho.org/lista/xc/";
-	CONFIG.path.production = "/home/laguinho/laguinho.org/";
+	CONFIG.path.assets = "/home/laguinho/assets.laguinho.org/lista/xci/";
+	CONFIG.path.production = "/home/laguinho/xci.laguinho.org/";
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	// tasks ///////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +190,7 @@
 		var handlebarOptions = {
 			helpers: {
 				assetPath: function (path, context) {
-					return ["//assets.laguinho.org/lista/xc", context.data.root[path]].join("/");
+					return ["//assets.laguinho.org/lista/xci", context.data.root[path]].join("/");
 				}
 			}
 		};
