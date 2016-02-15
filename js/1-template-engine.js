@@ -5,8 +5,8 @@ let $templates = { };
 
 $(function() {
 	$("template").each(function() {
-		var name = $(this).attr("id"),
-			html = $(this).html();
+		let name = $(this).attr("id");
+		let html = $(this).html();
 
 		$templates[name] = $(html);
 	});
@@ -20,9 +20,9 @@ function __render(template, data) {
 		let field = $blank.data("fill-field");
 		let attr = $blank.data("fill-attr");
 
-		if(attr == "class") {
+		if (attr == "class") {
 			$blank.addClass(data[field]);
-		} else if(attr) {
+		} else if (attr) {
 			$blank.attr(attr, data[field]);
 		} else {
 			$blank.html(data[field]);
@@ -34,7 +34,9 @@ function __render(template, data) {
 			.removeAttr("data-fill-attr");
 	};
 
-	$render.fillBlanks();
+	if ($render.hasClass("fill")) {
+		$render.fillBlanks();
+	}
 
 	$(".fill", $render).each(function() {
 		$(this).fillBlanks();

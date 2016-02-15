@@ -112,8 +112,8 @@ var $templates = {};
 
 $(function () {
 	$("template").each(function () {
-		var name = $(this).attr("id"),
-		    html = $(this).html();
+		var name = $(this).attr("id");
+		var html = $(this).html();
 
 		$templates[name] = $(html);
 	});
@@ -138,7 +138,9 @@ function __render(template, data) {
 		$blank.removeClass("fill").removeAttr("data-fill-field").removeAttr("data-fill-attr");
 	};
 
-	$render.fillBlanks();
+	if ($render.hasClass("fill")) {
+		$render.fillBlanks();
+	}
 
 	$(".fill", $render).each(function () {
 		$(this).fillBlanks();
