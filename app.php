@@ -50,11 +50,11 @@
 		<div class="scoreboard">
 			<ul>
 				<template id="scoreboard-team">
-					<li class="fill" data-fill-attr="class" data-fill-field="turma">
-						<div class="bar turma-background fill" data-fill-attr="style" data-fill-field="barra">
+					<li class="fill" data-fill="class: turma">
+						<div class="bar turma-background fill" data-fill="style: altura-da-barra">
 							<div class="turma-text">
-								<strong class="fill" data-fill-field="turma-formatada"></strong>
-								<span class="points fill" data-fill-field="pontos"></span>
+								<strong class="fill" data-fill="turma-formatada"></strong>
+								<span class="points fill" data-fill="pontuacao-formatada"></span>
 							</div>
 						</div>
 					</li>

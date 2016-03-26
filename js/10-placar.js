@@ -1,37 +1,40 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// scoreboard //////////////////////////////////////////////////////////////////////////////////////
+// placar //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function Scoreboard(TEAMS) {
-  // calc total point sum
-  const totalPoints = TEAMS.reduce((total, team) => total + team["pontos"], 0);
+function placar(turmas) {
+	// soma a pontuação de cada turma para obter o total de pontos
+	const total_de_pontos = turmas.reduce((total, turma) => total + turma["pontos"], 0);
 
-  // clean the scoreboard
-  $scoreboard.empty();
+	// limpa o placar
+	$placar.empty();
 
-  // draw teams on scoreboard
-  $.each(TEAMS, function(index, team) {
+	// adiciona cada turma no placar
+	$.each(turmas, function(index, turma) {
 
-    // calc % of this team's points relative to the total
-    const percentage = (totalPoints > 0? team["pontos"] / totalPoints : 0);
-    team["barra"] = "height: " + (percentage * 100).toFixed(3) + "%";
-    team["turma-formatada"] = team["turma"].toUpperCase();
-    team["pontos"] = team["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+		// calcula % da turma em relação ao total de pontos
+		const percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / total_de_pontos : 0);
+		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+		turma["turma-formatada"] = turma["turma"].toUpperCase();
+		turma["pontos"] = turma["pontos"];
+		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-    let $team = __render("scoreboard-team", team)
-      .appendTo($scoreboard);
-  });
+		let $turma = __render("scoreboard-team", turma);
+		$placar.append($turma);
+	});
 
-  if(totalPoints === 0) {
-    $scoreboard.parent().addClass("zeroed");
-  } else {
-    $scoreboard.parent().removeClass("zeroed");
-  }
+	if(total_de_pontos === 0) {
+		$placar.parent().addClass("zeroed");
+	} else {
+		$placar.parent().removeClass("zeroed");
+	}
 }
 
+const Scoreboard = placar;
+
 // jQuery
-let $scoreboard;
+let $placar;
 
 $(function() {
-  $scoreboard = $(".scoreboard ul");
+	$placar = $(".scoreboard ul");
 });
