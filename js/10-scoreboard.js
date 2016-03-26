@@ -16,6 +16,7 @@ function Scoreboard(TEAMS) {
     const percentage = (totalPoints > 0? team["pontos"] / totalPoints : 0);
     team["barra"] = "height: " + (percentage * 100).toFixed(3) + "%";
     team["turma-formatada"] = team["turma"].toUpperCase();
+    team["pontos"] = team["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
     let $team = __render("scoreboard-team", team)
       .appendTo($scoreboard);
