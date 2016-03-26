@@ -4,9 +4,9 @@
 // Gera classes para aplicação da cor de cada turma em plano de fundo, texto e borda
 
 $turmas:
-(ec1, #4abbc7),
-(ec2, #d0629f),
-(ec3, #beb158);
+(ec1, #0097cc),
+(ec2, #6bba81),
+(ec3, #b165a5);
 
 @each $turma, $color in $turmas {
 	.#{$turma} .turma-background, .user-#{$turma} .user-background { background-color: #{$color} !important; }
