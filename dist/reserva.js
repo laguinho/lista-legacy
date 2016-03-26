@@ -112,30 +112,99 @@ var $templates = {};
 
 $(function () {
 	$("template").each(function () {
-		var name = $(this).attr("id");
-		var html = $(this).html();
+		var $this = $(this);
+		var name = $this.attr("id");
+		var html = $this.html();
 
 		$templates[name] = $(html);
+		$this.remove();
 	});
 });
 
 function __render(template, data) {
+	if (!$templates[template]) {
+		return false;
+	}
 	var $render = $templates[template].clone();
+
+	$render.data(data);
 
 	$.fn.fillBlanks = function () {
 		var $blank = $(this);
+		var fill = $blank.data("fill");
+		var object = $blank.data("fill-object");
 		var field = $blank.data("fill-field");
 		var attr = $blank.data("fill-attr");
+		var content = undefined;
 
-		if (attr == "class") {
-			$blank.addClass(data[field]);
-		} else if (attr) {
-			$blank.attr(attr, data[field]);
+		// nova sintaxe
+		if (fill) {
+			var rules = fill.split(",");
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = rules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var rule = _step.value;
+
+					var pair = rule.split(":");
+					var dest = pair[1] ? pair[0].trim() : "html";
+					var source = pair[1] ? pair[1].trim() : pair[0];
+
+					if (dest === "class") {
+						$blank.addClass(data[source]);
+					} else if (dest === "html") {
+						$blank.html(data[source]);
+					} else if (dest === "value") {
+						$blank.val(data[source]);
+					} else {
+						$blank.attr(dest, data[source]);
+					}
+
+					// console.log("[" + dest + ": " + source + "]", data, data[source]);
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator["return"]) {
+						_iterator["return"]();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
 		} else {
-			$blank.html(data[field]);
-		}
+				// deprecated
+				if (!object) {
+					content = data[field];
+				} else if (object && data[object]) {
+					content = data[object][field];
+				}
 
-		$blank.removeClass("fill").removeAttr("data-fill-field").removeAttr("data-fill-attr");
+				if (content) {
+					if (attr === "class") {
+						$blank.addClass(content);
+					} else if (attr) {
+						$blank.attr(attr, content);
+					} else {
+						$blank.html(content);
+					}
+				} else {
+					var if_null = $blank.data("fill-null");
+					if (if_null === "hide") {
+						$blank.hide();
+					} else if (if_null === "remove") {
+						$blank.remove();
+					}
+				}
+			}
+
+		$blank.removeClass("fill").removeAttr("data-fill").removeAttr("data-fill-object").removeAttr("data-fill-field").removeAttr("data-fill-attr").removeAttr("data-fill-null");
 	};
 
 	if ($render.hasClass("fill")) {
