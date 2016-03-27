@@ -15,8 +15,8 @@ const tarefa = (function() {
 			post["turma-formatada"] = post["turma"].toUpperCase();
 
 			// avaliação
-			if(post["avaliacao"]) {
-				if(post["avaliacao"]["status"] == 200) {
+			if (post["avaliacao"]) {
+				if (post["avaliacao"]["status"] == 200) {
 					post["status-class"] = post["turma"];
 					post["status-icon"] = "<i class=\"material-icons\">&#xE87D;</i>"; // coração
 					post["status"] = post["avaliacao"]["pontos"] + " ponto" + (post["avaliacao"]["pontos"] > 1? "s": "");
@@ -36,7 +36,7 @@ const tarefa = (function() {
 			}
 
 			// legenda
-			if(post["legenda"] && post["legenda"].substring(0,3) != "<p>") {
+			if (post["legenda"] && post["legenda"].substring(0,3) != "<p>") {
 				post["legenda"] = "<p>" + post["legenda"].replace(/(?:\r\n\r\n|\r\r|\n\n)/g, "</p><p>") + "</p>";
 			}
 
@@ -45,10 +45,10 @@ const tarefa = (function() {
 			let $media = $(".media", $post_card);
 
 			// adiciona mídias
-			if(post["midia"].length) {
+			if (post["midia"]) {
 				$.each(post["midia"], function(index, media) {
 					// imagem
-					if(post["tipo"] == "imagem") {
+					if (post["tipo"] == "imagem") {
 						media["default"] = media["caminho"] + media["arquivos"][1];
 						media["padding-aspecto"] = "padding-top: " + (media["aspecto"] * 100).toFixed(2) + "%";
 						media["link-original"] = media["caminho"] + media["arquivos"][2];
@@ -57,16 +57,16 @@ const tarefa = (function() {
 					} else
 
 					// embed
-					if(post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine") {
-						if(post["tipo"] == "youtube") {
+					if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine") {
+						if (post["tipo"] == "youtube") {
 							media["embed"] = "https://www.youtube.com/embed/" + media["youtube-id"] + "?rel=0&amp;showinfo=0";
 						} else
 
-						if(post["tipo"] == "vimeo") {
+						if (post["tipo"] == "vimeo") {
 							media["embed"] = "https://player.vimeo.com/video/" + media["vimeo-id"] + "?title=0&byline=0&portrait=0";
 						} else
 
-						if(post["tipo"] == "vine") {
+						if (post["tipo"] == "vine") {
 							media["embed"] = "https://vine.co/v/" + media["vine-id"] + "/embed/simple";
 						}
 
@@ -78,12 +78,12 @@ const tarefa = (function() {
 			}
 
 			// tira legenda se não tiver
-			if(!post["legenda"]) {
+			if (!post["legenda"]) {
 				$(".caption", $post_card).remove();
 			}
 
 			// tira mensagem de avaliação se não tiver
-			if(!post["avaliacao"] || !post["mensagem"]) {
+			if (!post["avaliacao"] || !post["mensagem"]) {
 				$(".result .message", $post_card).remove();
 			}
 
@@ -110,7 +110,7 @@ const tarefa = (function() {
 
 			// view manager
 			view_manager.replace("tarefa");
-			if(pushState) {
+			if (pushState) {
 				history.pushState({ "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"], "/tarefas/" + DATA["numero"]);
 			}
 		},
@@ -137,7 +137,7 @@ const tarefa = (function() {
 			// posts
 			let $posts = $tarefa_view.find(".posts ul");
 
-			if(DATA["posts"].length) {
+			if (DATA["posts"].length) {
 				$posts.isotope({
 					"itemSelector": ".card",
 					"transitionDuration": 0,
@@ -154,7 +154,7 @@ const tarefa = (function() {
 
 			$tarefa.html($tarefa_view);
 
-			if(DATA["posts"].length) {
+			if (DATA["posts"].length) {
 				$posts.isotope("layout");
 			}
 
@@ -186,7 +186,7 @@ const tarefa = (function() {
 			});
 
 			view_manager.replace("home");
-			if(pushState) { history.pushState({ "view": "home" }, "Lista de Tarefas", "/tarefas"); }
+			if (pushState) { history.pushState({ "view": "home" }, "Lista de Tarefas", "/tarefas"); }
 		}
 	};
 })();
@@ -204,7 +204,7 @@ $(function() {
 	}).on("click", ".js-new-post-trigger", function() {
 		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
 	}).on("click", ".card.tarefa a", function(event) {
-		if(event.which === 1) {
+		if (event.which === 1) {
 			event.preventDefault();
 		}
 	});

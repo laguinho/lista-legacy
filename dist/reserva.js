@@ -554,7 +554,7 @@ var Stream = (function () {
 				$stream.empty();
 
 				// monta placar
-				Scoreboard(data["meta"]["placar"]);
+				Scoreboard(data["placar"]);
 
 				// insere os cards de tarefas
 				$.each(data["tarefas"], function (index, tarefa) {
@@ -591,7 +591,7 @@ var Stream = (function () {
 						for (var i = 0; i < total_posts; i++) {
 							var _post = tarefa["posts"][i];
 
-							if ((_post["midia"].length || _post["tipo"] == "texto") && shown_media_count < max_media_to_show) {
+							if ((_post["midia"] || _post["tipo"] == "texto") && shown_media_count < max_media_to_show) {
 								shown_media_count++;
 
 								var tile_type = undefined;
@@ -606,7 +606,7 @@ var Stream = (function () {
 									if (_post["tipo"] == "youtube" || _post["tipo"] == "vimeo" || _post["tipo"] == "vine" || _post["tipo"] == "gif") {
 										media["preview"] = "background-image: url('" + _post["midia"][0]["thumbnail"] + "');";
 										media["modifier"] = "video";
-									} else {
+									} else if (_post["midia"] && _post["midia"][0]) {
 										media["preview"] = "background-image: url('" + _post["midia"][0]["caminho"] + _post["midia"][0]["arquivos"][0] + "');";
 									}
 								} else
@@ -767,7 +767,7 @@ var tarefa = (function () {
 			var $media = $(".media", $post_card);
 
 			// adiciona mídias
-			if (post["midia"].length) {
+			if (post["midia"]) {
 				$.each(post["midia"], function (index, media) {
 					// imagem
 					if (post["tipo"] == "imagem") {
@@ -1155,7 +1155,7 @@ $(function () {
 	}).on("submit", "form", function (event) {
 		event.preventDefault();
 
-		$.getJSON("//api.laguinho.org/lista/xc/auth?callback=?", $("form", $login).serialize()).done(function (response) {
+		$.getJSON("//api.laguinho.org/lista/" + edicao + "/auth?callback=?", $("form", $login).serialize()).done(function (response) {
 			if (response["meta"]["status"] === 200) {
 				user = response["user"];
 				user["signed-in"] = true;

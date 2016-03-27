@@ -34,7 +34,7 @@ $(function() {
 	}).on("submit", "form", function(event) {
 		event.preventDefault();
 
-		$.getJSON("//api.laguinho.org/lista/xc/auth?callback=?", $("form", $login).serialize()).done(function(response) {
+		$.getJSON("//api.laguinho.org/lista/" + edicao + "/auth?callback=?", $("form", $login).serialize()).done(function(response) {
 			if(response["meta"]["status"] === 200) {
 				user = response["user"];
 				user["signed-in"] = true;
