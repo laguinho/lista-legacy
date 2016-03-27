@@ -141,7 +141,12 @@
 	</header>
 	<div class="body">
 		<div class="container view-container">
-			<div class="meta"></div>
+			<div class="painel">
+				<div class="meta"></div>
+				<div class="placar scoreboard">
+					<ul></ul>
+				</div>
+			</div>
 			<div class="posts">
 				<ul></ul>
 				<div class="end"></div>

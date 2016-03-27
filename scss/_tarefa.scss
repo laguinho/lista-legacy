@@ -20,8 +20,16 @@ colunas
 
 */
 
-#tarefa .painel { }
-#tarefa .painel .card { margin-left: auto; margin-right: auto; }
+#tarefa .painel {
+	.card {
+		margin: 0 auto;
+		z-index: 1;
+	}
+
+	.placar {
+		margin: 0 16px;
+	}
+}
 
 #tarefa .posts { margin: 0 auto; }
 
