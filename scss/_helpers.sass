@@ -2,15 +2,35 @@
 // helpers /////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.clear { clear: both; }
-.no-scroll { overflow: hidden; }
+%clear
+	display: block
+	clear: both
+	content: ""
 
-.in { display: block !important; }
-.fade { opacity: 0; will-change: opacity; transition: opacity cubic-bezier(.4,0,.2,1) .32s; }
-.fade-in { opacity: 1; }
-.slide.in { transform: translateY(0) !important; opacity: 1 !important; }
+.clear
+	clear: both
 
-::selection { background-color: rgba(255,170,0,.32); }
+.no-scroll
+	overflow: hidden
+
+.in
+	display: block !important
+
+.fade
+	opacity: 0
+	will-change: opacity
+	transition: opacity cubic-bezier(.4,0,.2,1) .32s
+
+.fade-in
+	opacity: 1
+
+.slide.in
+	transform: translateY(0) !important
+	opacity: 1 !important
+
+::selection
+	background-color: rgba(255,170,0,.32)
 
 // o elemento não-padrão <template> é usado apenas pelo template engine em javascript
-template { display: none; }
+template
+	display: none

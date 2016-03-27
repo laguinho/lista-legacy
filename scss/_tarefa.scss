@@ -20,8 +20,8 @@ colunas
 
 */
 
-#tarefa .meta { }
-#tarefa .meta .card { margin-left: auto; margin-right: auto; }
+#tarefa .painel { }
+#tarefa .painel .card { margin-left: auto; margin-right: auto; }
 
 #tarefa .posts { margin: 0 auto; }
 
@@ -62,7 +62,7 @@ colunas
 	#tarefa .appbar { background-color: transparent; color: #263238; box-shadow: 0 0 0; }
 	#tarefa .appbar .numero { display: none; }
 
-	#tarefa .meta .card { width: 300px; }
+	#tarefa .painel .card { width: 300px; }
 	#tarefa .card-l { width: 616px; }
 
 	#tarefa .new-post { position: fixed; bottom: 24px; right: 24px; }
@@ -78,7 +78,7 @@ colunas
 @media (min-width: $column-width * 4) {
 	#tarefa.app-view > .body { padding-top: 64px; }
 
-	#tarefa .meta { position: fixed; }
+	#tarefa .painel { position: fixed; }
 	#tarefa .posts { margin-left: 324px; }
 }
 
