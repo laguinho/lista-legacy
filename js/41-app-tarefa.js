@@ -3,8 +3,14 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const tarefa = (function() {
-	function renderPosts(DATA, $posts) {
-		$.each(DATA, function(index, post) {
+	let placar_da_tarefa = [ ];
+	function renderPosts(posts, $posts) {
+		placar_da_tarefa["total"] = 0;
+		for (let turma in Lista.Regulamento["turmas"]) {
+			placar_da_tarefa[Lista.Regulamento["turmas"][turma]] = 0;
+		}
+
+		$.each(posts, function(index, post) {
 			post["data-de-postagem-formatada"] = moment(post["data-de-postagem"]).calendar();
 			post["turma-formatada"] = post["turma"].toUpperCase();
 
@@ -20,6 +26,10 @@ const tarefa = (function() {
 					post["status"] = "Reprovado";
 				}
 				post["mensagem"] = post["avaliacao"]["mensagem"];
+
+				// soma pontos no placar
+				placar_da_tarefa["total"] += post["avaliacao"]["pontos"];
+				placar_da_tarefa[post["turma"]] += post["avaliacao"]["pontos"];
 			} else {
 				post["status-icon"] = "<i class=\"material-icons\">&#xE8B5;</i>"; // relógio
 				post["status"] = "Aguardando avaliação";
@@ -107,17 +117,17 @@ const tarefa = (function() {
 		render: function(DATA) {
 			let $tarefa_view = __render("view-tarefa", DATA);
 
-			// meta
-			let $meta = $tarefa_view.find(".meta");
+			// card da tarefa
+			let $meta = $(".painel .meta", $tarefa_view);
 
-			if(DATA["imagem"]) {
+			if (DATA["imagem"]) {
 				tarefa["imagem-url"] = DATA["imagem"]["url"];
 				tarefa["imagem-aspecto"] = "padding-top: " + (DATA["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 			}
 
 			let $meta_card = __render("card-tarefa", DATA);
 
-			if(!DATA["imagem"]) {
+			if (!DATA["imagem"]) {
 				$(".media", $meta_card).remove();
 			}
 			$(".grid", $meta_card).remove();
@@ -147,6 +157,24 @@ const tarefa = (function() {
 			if(DATA["posts"].length) {
 				$posts.isotope("layout");
 			}
+
+			// placar da tarefa
+			let $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
+
+			$.each(Lista.Regulamento["turmas"], function(index, turma) {
+				let pontuacao_da_turma = [ ];
+
+				// calcula % da turma em relação ao total de pontos
+				const percentual_da_turma = (placar_da_tarefa["total"] > 0? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0);
+				pontuacao_da_turma["turma"] = turma;
+				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
+				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma];
+				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+				let $turma = __render("scoreboard-team", pontuacao_da_turma);
+				$placar_da_tarefa.append($turma);
+			});
 		},
 		close: function(pushState) {
 			tarefa_active = null;

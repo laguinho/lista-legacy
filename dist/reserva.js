@@ -1,6 +1,10 @@
-// laguinho.org/tarefas
 "use strict";
 
+var edicao = "xc";
+var Lista = [];
+Lista.Regulamento = [];
+
+// laguinho.org/tarefas
 var tarefas = {};
 $(function () {});
 
@@ -112,33 +116,104 @@ var $templates = {};
 
 $(function () {
 	$("template").each(function () {
-		var name = $(this).attr("id"),
-		    html = $(this).html();
+		var $this = $(this);
+		var name = $this.attr("id");
+		var html = $this.html();
 
 		$templates[name] = $(html);
+		$this.remove();
 	});
 });
 
 function __render(template, data) {
+	if (!$templates[template]) {
+		return false;
+	}
 	var $render = $templates[template].clone();
+
+	$render.data(data);
 
 	$.fn.fillBlanks = function () {
 		var $blank = $(this);
+		var fill = $blank.data("fill");
+		var object = $blank.data("fill-object");
 		var field = $blank.data("fill-field");
 		var attr = $blank.data("fill-attr");
+		var content = undefined;
 
-		if (attr == "class") {
-			$blank.addClass(data[field]);
-		} else if (attr) {
-			$blank.attr(attr, data[field]);
+		// nova sintaxe
+		if (fill) {
+			var rules = fill.split(",");
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
+
+			try {
+				for (var _iterator = rules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var rule = _step.value;
+
+					var pair = rule.split(":");
+					var dest = pair[1] ? pair[0].trim() : "html";
+					var source = pair[1] ? pair[1].trim() : pair[0];
+
+					if (dest === "class") {
+						$blank.addClass(data[source]);
+					} else if (dest === "html") {
+						$blank.html(data[source]);
+					} else if (dest === "value") {
+						$blank.val(data[source]);
+					} else {
+						$blank.attr(dest, data[source]);
+					}
+
+					// console.log("[" + dest + ": " + source + "]", data, data[source]);
+				}
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator["return"]) {
+						_iterator["return"]();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
 		} else {
-			$blank.html(data[field]);
-		}
+				// deprecated
+				if (!object) {
+					content = data[field];
+				} else if (object && data[object]) {
+					content = data[object][field];
+				}
 
-		$blank.removeClass("fill").removeAttr("data-fill-field").removeAttr("data-fill-attr");
+				if (content) {
+					if (attr === "class") {
+						$blank.addClass(content);
+					} else if (attr) {
+						$blank.attr(attr, content);
+					} else {
+						$blank.html(content);
+					}
+				} else {
+					var if_null = $blank.data("fill-null");
+					if (if_null === "hide") {
+						$blank.hide();
+					} else if (if_null === "remove") {
+						$blank.remove();
+					}
+				}
+			}
+
+		$blank.removeClass("fill").removeAttr("data-fill").removeAttr("data-fill-object").removeAttr("data-fill-field").removeAttr("data-fill-attr").removeAttr("data-fill-null");
 	};
 
-	$render.fillBlanks();
+	if ($render.hasClass("fill")) {
+		$render.fillBlanks();
+	}
 
 	$(".fill", $render).each(function () {
 		$(this).fillBlanks();
@@ -148,41 +223,48 @@ function __render(template, data) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// scoreboard //////////////////////////////////////////////////////////////////////////////////////
+// placar //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function Scoreboard(TEAMS) {
-	// calc total point sum
-	var totalPoints = TEAMS.reduce(function (total, team) {
-		return total + team["pontos"];
+function placar(turmas) {
+	// soma a pontuação de cada turma para obter o total de pontos
+	var total_de_pontos = turmas.reduce(function (total, turma) {
+		return total + turma["pontos"];
 	}, 0);
+	Lista.Regulamento["turmas"] = [];
 
-	// clean the scoreboard
-	$scoreboard.empty();
+	// limpa o placar
+	$placar.empty();
 
-	// draw teams on scoreboard
-	$.each(TEAMS, function (index, team) {
+	// adiciona cada turma no placar
+	$.each(turmas, function (index, turma) {
+		Lista.Regulamento["turmas"].push(turma["turma"]);
 
-		// calc % of this team's points relative to the total
-		var percentage = totalPoints > 0 ? team["pontos"] / totalPoints : 0;
-		team["barra"] = "height: " + (percentage * 100).toFixed(3) + "%";
-		team["turma-formatada"] = team["turma"].toUpperCase();
+		// calcula % da turma em relação ao total de pontos
+		var percentual_da_turma = total_de_pontos > 0 ? turma["pontos"] / total_de_pontos : 0;
+		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+		turma["turma-formatada"] = turma["turma"].toUpperCase();
+		turma["pontos"] = turma["pontos"];
+		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-		var $team = __render("scoreboard-team", team).appendTo($scoreboard);
+		var $turma = __render("scoreboard-team", turma);
+		$placar.append($turma);
 	});
 
-	if (totalPoints === 0) {
-		$scoreboard.parent().addClass("zeroed");
+	if (total_de_pontos === 0) {
+		$placar.parent().addClass("zeroed");
 	} else {
-		$scoreboard.parent().removeClass("zeroed");
+		$placar.parent().removeClass("zeroed");
 	}
 }
 
+var Scoreboard = placar;
+
 // jQuery
-var $scoreboard = undefined;
+var $placar = undefined;
 
 $(function () {
-	$scoreboard = $(".scoreboard ul");
+	$placar = $(".scoreboard ul");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -455,7 +537,7 @@ $(function () {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// stream //////////////////////////////////////////////////////////////////////////////////////////
+// lista ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // * Stream.load()
 // * Stream.layout()
@@ -468,7 +550,7 @@ var Stream = (function () {
 			$stream.loading.addClass("fade-in in");
 
 			// carrega os dados da API
-			$.getJSON("//api.laguinho.org/lista/xc/tudo?callback=?").done(function (data) {
+			$.getJSON("//api.laguinho.org/lista/" + edicao + "/tudo?callback=?").done(function (data) {
 				$stream.empty();
 
 				// monta placar
@@ -643,8 +725,14 @@ $(function () {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var tarefa = (function () {
-	function renderPosts(DATA, $posts) {
-		$.each(DATA, function (index, post) {
+	var placar_da_tarefa = [];
+	function renderPosts(posts, $posts) {
+		placar_da_tarefa["total"] = 0;
+		for (var turma in Lista.Regulamento["turmas"]) {
+			placar_da_tarefa[Lista.Regulamento["turmas"][turma]] = 0;
+		}
+
+		$.each(posts, function (index, post) {
 			post["data-de-postagem-formatada"] = moment(post["data-de-postagem"]).calendar();
 			post["turma-formatada"] = post["turma"].toUpperCase();
 
@@ -660,6 +748,10 @@ var tarefa = (function () {
 					post["status"] = "Reprovado";
 				}
 				post["mensagem"] = post["avaliacao"]["mensagem"];
+
+				// soma pontos no placar
+				placar_da_tarefa["total"] += post["avaliacao"]["pontos"];
+				placar_da_tarefa[post["turma"]] += post["avaliacao"]["pontos"];
 			} else {
 				post["status-icon"] = "<i class=\"material-icons\">&#xE8B5;</i>"; // relógio
 				post["status"] = "Aguardando avaliação";
@@ -742,8 +834,8 @@ var tarefa = (function () {
 		render: function render(DATA) {
 			var $tarefa_view = __render("view-tarefa", DATA);
 
-			// meta
-			var $meta = $tarefa_view.find(".meta");
+			// card da tarefa
+			var $meta = $(".painel .meta", $tarefa_view);
 
 			if (DATA["imagem"]) {
 				tarefa["imagem-url"] = DATA["imagem"]["url"];
@@ -782,6 +874,24 @@ var tarefa = (function () {
 			if (DATA["posts"].length) {
 				$posts.isotope("layout");
 			}
+
+			// placar da tarefa
+			var $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
+
+			$.each(Lista.Regulamento["turmas"], function (index, turma) {
+				var pontuacao_da_turma = [];
+
+				// calcula % da turma em relação ao total de pontos
+				var percentual_da_turma = placar_da_tarefa["total"] > 0 ? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0;
+				pontuacao_da_turma["turma"] = turma;
+				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
+				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma];
+				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+				var $turma = __render("scoreboard-team", pontuacao_da_turma);
+				$placar_da_tarefa.append($turma);
+			});
 		},
 		close: function close(pushState) {
 			tarefa_active = null;

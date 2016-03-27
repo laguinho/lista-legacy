@@ -48,8 +48,9 @@ colunas
 @import "helpers";
 
 @import "app";
-@import "scoreboard";
-@import "stream";
+@import "placar";
+@import "lista";
+@import "stream"; // TODO legacy
 @import "tarefa";
 @import "new-post";
 @import "login";

@@ -1,3 +1,7 @@
+const edicao = "xc";
+let Lista = [ ];
+Lista.Regulamento = [ ];
+
 // laguinho.org/tarefas
 var tarefas = { };
 $(function() {

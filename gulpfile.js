@@ -23,21 +23,24 @@
 	CONFIG.path.repo = "./";
 	CONFIG.path.dist = "./dist";
 	CONFIG.path.staging = "./public";
-	CONFIG.path.assets = "/home/laguinho/assets.laguinho.org/lista/xc/";
-	CONFIG.path.production = "/home/laguinho/laguinho.org/";
+	CONFIG.path.assets = "/home/laguinho/assets.laguinho.org/lista/xci/";
+	CONFIG.path.production = "/home/laguinho/xci.laguinho.org/";
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	// tasks ///////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
+
 	gulp.task("default", ["stage"]);
 	gulp.task("watch", ["watch-css", "watch-js", "watch-html"]);
 	gulp.task("stage", ["stage-css", "stage-js"], stageHTML);
 	gulp.task("deploy", ["deploy-css", "deploy-js"], deployHTML);
 	gulp.task("deploy-assets", ["deploy-css", "deploy-js"]);
 
-	// css
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// css /////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	CONFIG.css = { };
-	CONFIG.css.source = ["./scss/irvin.scss"];
+	CONFIG.css.source = ["./scss/reserva.scss"];
 	CONFIG.css.watch = ["./scss/**.scss", "./scss/**.sass"];
 
 	var sass = require("gulp-scss");
@@ -94,7 +97,9 @@
 	gulp.task("watch-css", function() { gulp.watch(CONFIG.css.watch, stageCSS); });
 	gulp.task("deploy-css", deployCSS);
 
-	// js
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// js //////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	CONFIG.js = { };
 	CONFIG.js.source = ["./js/**.js"];
 	CONFIG.js.watch = CONFIG.js.source;
@@ -108,7 +113,7 @@
 			.pipe(plumber())
 			.pipe(sourcemaps.init())
 
-			.pipe(concat("irvin.js"))
+			.pipe(concat("reserva.js"))
 			.pipe(babel())
 
 			// source file
@@ -131,7 +136,7 @@
 		gulp.src(CONFIG.js.source)
 			.pipe(plumber())
 
-			.pipe(concat("irvin.js"))
+			.pipe(concat("reserva.js"))
 			.pipe(babel())
 
 			// minified file
@@ -152,7 +157,9 @@
 	gulp.task("watch-js", function() { gulp.watch(CONFIG.js.watch, stageJS); });
 	gulp.task("deploy-js", deployJS);
 
-	// html
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	// html ////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	CONFIG.html = { };
 	CONFIG.html.source = ["./index.hbs"];
 	CONFIG.html.watch = CONFIG.html.source;
@@ -162,15 +169,16 @@
 
 	function stageHTML() {
 		var manifest = {
-			"irvin.min.css": "irvin.min.css",
-			"irvin.min.js": "irvin.min.js"
+			"reserva.min.css": "reserva.min.css",
+			"reserva.min.js": "reserva.min.js"
 		};
+
 		var handlebarOptions = {
-			helpers: {
-						assetPath: function (path, context) {
-								return ["/assets", context.data.root[path]].join("/");
-						}
+			"helpers": {
+				"assetPath": function(path, context) {
+					return ["/assets", context.data.root[path]].join("/");
 				}
+			}
 		};
 
 		gulp.src(CONFIG.html.source)
@@ -188,9 +196,9 @@
 	function deployHTML() {
 		var manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
 		var handlebarOptions = {
-			helpers: {
-				assetPath: function (path, context) {
-					return ["//assets.laguinho.org/lista/xc", context.data.root[path]].join("/");
+			"helpers": {
+				"assetPath": function(path, context) {
+					return ["//assets.laguinho.org/lista/xci", context.data.root[path]].join("/");
 				}
 			}
 		};

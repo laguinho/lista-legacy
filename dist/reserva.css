@@ -142,6 +142,12 @@ colunas
   border-color: #b165a5 !important;
 }
 
+#stream::after {
+  display: block;
+  clear: both;
+  content: "";
+}
+
 .clear {
   clear: both;
 }
@@ -436,7 +442,7 @@ template {
   top: 0;
   left: 2px;
   right: 2px;
-  min-height: 10px;
+  min-height: 3px;
   background-color: #37474f;
 }
 
@@ -470,12 +476,6 @@ main .loading {
   background: #eaeaea url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQxNCAyNDE0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxzdHlsZT4jc2xpY2VzPip7ZmlsbDp0cmFuc3BhcmVudDthbmltYXRpb246Zmxhc2ggLjhzIGxpbmVhciBpbmZpbml0ZTt9QGtleWZyYW1lcyBmbGFzaHswJXtmaWxsOiNmYTA7fTc1JXtmaWxsOnRyYW5zcGFyZW50O30xMDAle2ZpbGw6dHJhbnNwYXJlbnQ7fX08L3N0eWxlPjxnIGlkPSJzbGljZXMiPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6MCIgZD0iTTEyMDcgMTIwN0w3MDcgMGgxMDAweiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjFzIiBkPSJNMTIwNyAxMjA3TDE3MDcgMGw3MDcgNzA3eiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjJzIiBkPSJNMTIwNyAxMjA3bDEyMDctNTAwdjEwMDB6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouM3MiIGQ9Ik0xMjA3IDEyMDdsMTIwNyA1MDAtNzA3IDcwN3oiLz48cGF0aCBzdHlsZT0iYW5pbWF0aW9uLWRlbGF5Oi40cyIgZD0iTTEyMDcgMTIwN2w1MDAgMTIwN0g3MDd6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouNXMiIGQ9Ik0xMjA3IDEyMDdMNzA3IDI0MTQgMCAxNzA3eiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjZzIiBkPSJNMTIwNyAxMjA3TDAgMTcwN1Y3MDd6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouN3MiIGQ9Ik0xMjA3IDEyMDdMMCA3MDcgNzA3IDB6Ii8+PC9nPjwvc3ZnPg==") no-repeat center;
   background-size: 36px;
   display: none;
-}
-
-#stream::after {
-  display: block;
-  clear: both;
-  content: "";
 }
 
 #stream .card {
@@ -603,6 +603,10 @@ main .loading {
   color: #fff;
 }
 
+#stream .card.tarefa:hover {
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.28), 0 3px 3px -2px rgba(0, 0, 0, 0.4), 0 1px 15px 0 rgba(0, 0, 0, 0.24);
+}
+
 #tarefa {
   background-color: #eceff1;
   z-index: 100;
@@ -633,9 +637,13 @@ colunas
 
 */
 
-#tarefa .meta .card {
-  margin-left: auto;
-  margin-right: auto;
+#tarefa .painel .card {
+  margin: 0 auto;
+  z-index: 1;
+}
+
+#tarefa .painel .placar {
+  margin: 0 16px;
 }
 
 #tarefa .posts {
@@ -952,6 +960,7 @@ colunas
   background-color: #fff;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   position: relative;
+  transition: box-shadow cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
 }
 
 .fab {
@@ -1184,7 +1193,7 @@ colunas
     display: none;
   }
 
-  #tarefa .meta .card {
+  #tarefa .painel .card {
     width: 300px;
   }
 
@@ -1268,7 +1277,7 @@ colunas
     padding-top: 64px;
   }
 
-  #tarefa .meta {
+  #tarefa .painel {
     position: fixed;
   }
 
