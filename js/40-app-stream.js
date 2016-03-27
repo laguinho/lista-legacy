@@ -16,14 +16,14 @@ const Stream = (function() {
 				$stream.empty();
 
 				// monta placar
-				Scoreboard(data["meta"]["placar"]);
+				Scoreboard(data["placar"]);
 
 				// insere os cards de tarefas
 				$.each(data["tarefas"], function(index, tarefa) {
 					tarefas[tarefa["numero"]] = tarefa;
 					tarefa["url"] = "/tarefas/" + tarefa["numero"];
 
-					if(tarefa["imagem"]) {
+					if (tarefa["imagem"]) {
 						tarefa["imagem-url"] = tarefa["imagem"]["url"];
 						tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 					}
@@ -34,7 +34,7 @@ const Stream = (function() {
 							"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 						});
 
-					if(!tarefa["imagem"]) {
+					if (!tarefa["imagem"]) {
 						$(".media", $card).remove();
 					}
 
@@ -53,7 +53,7 @@ const Stream = (function() {
 						for (var i = 0; i < total_posts; i++) {
 							let post = tarefa["posts"][i];
 
-							if ((post["midia"].length || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
+							if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
 								shown_media_count++;
 
 								let tile_type;
@@ -65,10 +65,10 @@ const Stream = (function() {
 
 									media["count"] = shown_media_count;
 
-									if(post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
+									if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
 										media["preview"] = "background-image: url('" + post["midia"][0]["thumbnail"] + "');";
 										media["modifier"] = "video";
-									} else {
+									} else if (post["midia"] && post["midia"][0]) {
 										media["preview"] = "background-image: url('" + post["midia"][0]["caminho"] +
 											post["midia"][0]["arquivos"][0] + "');";
 									}
@@ -105,7 +105,7 @@ const Stream = (function() {
 				Stream.sort("date");
 
 				// se tiver tarefa especificada no load da página, carrega ela
-				if(!!autoload) {
+				if (!!autoload) {
 					tarefa.open(autoload);
 					autoload = null;
 				}
@@ -162,7 +162,7 @@ $(function() {
 	});
 
 	$stream.on("click", ".card.tarefa", function(event) {
-		if(event.which === 1) {
+		if (event.which === 1) {
 			event.preventDefault();
 
 			var numero = $(this).data("tarefa");
