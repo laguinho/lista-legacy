@@ -3,3 +3,4 @@ public
 .gulp-scss-cache
 .sass-cache
 .ftppass
+*api-key*
