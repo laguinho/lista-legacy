@@ -109,3 +109,5 @@ $(function() {
 	$loading = $("#loading");
 });
 */
+
+let api_key;

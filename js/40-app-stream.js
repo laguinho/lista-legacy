@@ -5,20 +5,52 @@
 // * Stream.layout()
 // * Stream.sort()
 
-const Stream = (function() {
+const Stream = (function() { // TODO Passará a se chamar app.Lista
 	return {
 		load: function() {
 			// mostra a tela de loading e limpa o stream
 			$stream.loading.addClass("fade-in in");
 
 			// carrega os dados da API
-			$.getJSON("//api.laguinho.org/lista/" + edicao + "/tudo?callback=?").done(function(data) {
+			$.getJSON("//api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
+				// "DIRETOR"
+				// TODO O load deve ficar separado do Stream (ver issue #7)
+				Lista.Regulamento = data["meta"];
+
+				// Se tiver título especificado, insere ele
+				if (data["meta"]["titulo"]) {
+					page_title = data["meta"]["titulo"];
+					$("head title").html(page_title);
+				}
+
+				// Se tiver mensagem especificada, insere ela
+				if (data["meta"]["mensagem"]) {
+					$(".js-message").html(data["meta"]["mensagem"]);
+				}
+
+				// Se prazo de postagem estiver encerrado, insere classe no <body>
+				if (moment().isAfter(Lista.Regulamento["fim"])) {
+					$body.addClass("postagens-encerradas");
+				}
+
+				// Se a Edição estiver encerrada...
+				if (Lista.Regulamento["encerrada"] === true) {
+					// ...insere classe no <body>
+					$body.addClass("edicao-encerrada");
+
+					// ...para de atualizar automaticamente
+					clearInterval(update_interval);
+				}
+
+				// FIM DO "DIRETOR"
+
+				// Limpa o stream para começar do zero
 				$stream.empty();
 
-				// monta placar
+				// Monta placar
 				Scoreboard(data["placar"]);
 
-				// insere os cards de tarefas
+				// Insere os cards de tarefas
 				$.each(data["tarefas"], function(index, tarefa) {
 					tarefas[tarefa["numero"]] = tarefa;
 					tarefa["url"] = "/tarefas/" + tarefa["numero"];
@@ -102,7 +134,9 @@ const Stream = (function() {
 				});
 
 				Stream.layout();
-				Stream.sort("date");
+				// Se a Edição estiver encerrada, ordena por número da tarefa.
+				// Se não, ordena por ordem de atualização
+				Stream.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if (!!autoload) {
