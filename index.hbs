@@ -62,7 +62,7 @@
 			</ul>
 		</div>
 		<ul id="stream"></ul>
-		<div class="end"></div>
+		<div class="message js-message"></div>
 	</div>
 	<div class="loading in fade fade-in"></div>
 </main>

@@ -164,7 +164,11 @@ $(function() {
 	}).on("click", ".submit", function(event) {
 		event.preventDefault();
 
-		if($(this).hasClass("disabled")) {
+		if (moment().isAfter(Lista.Regulamento["fim"])) {
+			toast.open("Postagens encerradas!");
+		}
+
+		if ($(this).hasClass("disabled")) {
 			// TODO melhorar mensagem
 			toast.open("Espere o fim do upload&hellip;");
 			return;

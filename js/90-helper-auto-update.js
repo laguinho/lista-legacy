@@ -2,14 +2,14 @@
 // auto update /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const update_interval = setInterval(checkUpdates, 30000);
-const page_title = $("head title").html();
+let page_title = $("head title").html();
 let last_updated;
 let updated = { "tarefas": 0, "posts": 0 };
 
 function checkUpdates() {
 	let update_count = 0;
 
-	$.getJSON("//api.laguinho.org/lista/xc/atividade?callback=?").done(function(data) {
+	$.getJSON("//api.laguinho.org/lista/" + edicao + "/atividade?key=" + api_key + "&callback=?").done(function(data) {
 		$.each(data, function(index, value) {
 			if(moment(value["ts"]).isAfter(last_updated) && value["autor"] != user["id"]) {
 				update_count++;
@@ -21,7 +21,7 @@ function checkUpdates() {
 			}
 		});
 
-		// se tiver atualização, mostra toast
+		// Se tiver atualização, mostra toast
 		if(update_count) {
 			let message;
 			let total_updates = updated["tarefas"] + updated["posts"];

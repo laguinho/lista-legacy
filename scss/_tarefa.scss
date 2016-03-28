@@ -27,7 +27,9 @@ colunas
 	}
 
 	.placar {
-		margin: 0 16px;
+		height: 90px;
+		margin: 0 auto;
+		padding: 0 16px;
 	}
 }
 
@@ -59,6 +61,7 @@ colunas
 
 #tarefa .new-post { position: fixed; bottom: 16px; right: 16px; display: none !important; }
 .signed-in #tarefa .new-post { display: block !important; }
+.postagens-encerradas #tarefa .new-post { display: none !important; }
 
 @media (min-width: $column-width * 2) {
 	#tarefa.app-view > .body { top: 0; padding-top: 32px; }
@@ -76,6 +79,8 @@ colunas
 	#tarefa .new-post { position: fixed; bottom: 24px; right: 24px; }
 
 	#tarefa .posts { width: 632px; padding: 0 8px; }
+
+	#tarefa .painel .placar { width: 300px; }
 }
 
 @media (min-width: $column-width * 3) {
