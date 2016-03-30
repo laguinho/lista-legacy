@@ -169,7 +169,7 @@ const tarefa = (function() {
 				pontuacao_da_turma["turma"] = turma;
 				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
 				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
-				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma];
+				pontuacao_da_turma["pontos"] = (placar_da_tarefa[turma] > 0? placar_da_tarefa[turma] : 0);
 				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 				let $turma = __render("scoreboard-team", pontuacao_da_turma);

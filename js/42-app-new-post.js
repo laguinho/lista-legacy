@@ -34,7 +34,7 @@ const NewPost = (function() {
 			}
 
 			// youtube
-			if(url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)) {
+			if (url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)) {
 				// https://www.youtube.com/watch?v=4ct4eNMrJlg
 				let youtube_url = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
 				media_info["provider"] = "youtube";
@@ -47,7 +47,7 @@ const NewPost = (function() {
 			} else
 
 			// vimeo
-			if(url.match(/vimeo\.com/)) {
+			if (url.match(/vimeo\.com/)) {
 				// https://vimeo.com/64279649
 				let vimeo_url = url.match(/\/\/(www\.)?vimeo.com\/(\d+)($|\/)/);
 				media_info["provider"] = "vimeo";
@@ -63,7 +63,7 @@ const NewPost = (function() {
 			} else
 
 			// vine
-			if(url.match(/vine\.co/)) {
+			if (url.match(/vine\.co/)) {
 				// https://vine.co/v/e9IV9OPlrnJ
 				let vine_url = url.match(/\/\/(www\.)?vine\.co\/v\/([^\s&]+)($|\/)/);
 				media_info["provider"] = "vine";
@@ -99,22 +99,22 @@ const NewPost = (function() {
 
 			// ações para fazer quando abrir a tela de envio
 			// de acordo com o tipo de postagem
-			if(type === "photo") {
+			if (type === "photo") {
 				$post.dropzone();
 				$(".file-placeholder", $post).trigger("click");
 			//	$("form", $new_post_view).dropzone();
 			} else
 
-			if(type === "video" || type === "vine") {
+			if (type === "video" || type === "vine") {
 				$(".js-media-url-input", $post).focus().on("keyup", function() {
-				//	if($.inArray(event.keyCode, [16, 17, 18])) { return; }
+				//	if ($.inArray(event.keyCode, [16, 17, 18])) { return; }
 					NewPost.getThumbnail($(this).val());
 				});
 			} else
 
-			if(type === "text") {
+			if (type === "text") {
 				$(".js-text-input", $post).focus().on("keyup", function() {
-					if($(this).val().length > 0) {
+					if ($(this).val().length > 0) {
 						NewPost.authorize();
 					} else {
 						NewPost.deauthorize();
@@ -178,7 +178,7 @@ $(function() {
 
 		$(".submit", $post).addClass("disabled").html("Enviando&hellip;");
 		$.post("/-/lista/novo", data).done(function(response) {
-			if(response["response"]["status"] == 200) {
+			if (response["response"]["status"] === 200) {
 				NewPost.close();
 				tarefa.render(response["data"]);
 				toast.open(response["response"]["message"]);
@@ -186,7 +186,7 @@ $(function() {
 
 				tarefas[response["data"]["numero"]] = response["data"];
 			} else {
-				toast.open("Ocorreu um erro. Tente novamente");
+				toast.open((response["response"]["message"]? response["response"]["message"] : "Ocorreu um erro. Tente novamente"));
 			}
 		}).fail(function() {
 			toast.open("Ocorreu um erro. Tente novamente");

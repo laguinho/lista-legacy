@@ -434,7 +434,7 @@ template {
 }
 
 .scoreboard.zeroed ul li {
-  height: 16px;
+  height: 32px;
 }
 
 .scoreboard .bar {
