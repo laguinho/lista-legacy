@@ -218,7 +218,7 @@
 		<div class="container modal-container">
 			<form method="post" action="/-/lista/novo" enctype="multipart/form-data">
 				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xc">
+				<input type="hidden" name="edition" value="xci">
 				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
 				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
 				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
@@ -251,7 +251,7 @@
 		<div class="container modal-container">
 			<form method="post" action="/-/lista/novo">
 				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xc">
+				<input type="hidden" name="edition" value="xci">
 				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
 				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
 				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
@@ -287,7 +287,7 @@
 		<div class="container modal-container">
 			<form method="post" action="/-/lista/novo">
 				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xc">
+				<input type="hidden" name="edition" value="xci">
 				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
 				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
 				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
@@ -323,7 +323,7 @@
 		<div class="container modal-container">
 			<form method="post" action="/-/lista/novo">
 				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xc">
+				<input type="hidden" name="edition" value="xci">
 				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
 				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
 				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
