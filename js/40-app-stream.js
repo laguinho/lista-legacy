@@ -12,10 +12,11 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 			$stream.loading.addClass("fade-in in");
 
 			// carrega os dados da API
-			$.getJSON("//api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
+			$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
 				// "DIRETOR"
 				// TODO O load deve ficar separado do Stream (ver issue #7)
 				Lista.Regulamento = data["meta"];
+				Lista.Tarefas = data["tarefas"];
 
 				// Se tiver título especificado, insere ele
 				if (data["meta"]["titulo"]) {
@@ -48,7 +49,7 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 				$stream.empty();
 
 				// Monta placar
-				Scoreboard(data["placar"]);
+				app.Placar(data["placar"]);
 
 				// Insere os cards de tarefas
 				$.each(data["tarefas"], function(index, tarefa) {
@@ -133,9 +134,9 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 					$stream.append($card).isotope("appended", $card);
 				});
 
-				Stream.layout();
 				// Se a Edição estiver encerrada, ordena por número da tarefa.
 				// Se não, ordena por ordem de atualização
+				Stream.layout();
 				Stream.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
@@ -157,9 +158,12 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 				updated["tarefas"] = 0; updated["posts"] = 0;
 			});
 		},
+
 		layout: function() {
+			$stream.isotope("reloadItems");
 			$stream.isotope("layout");
 		},
+
 		sort: function(criteria) {
 			$stream.isotope({
 				"sortBy": criteria

@@ -2,7 +2,7 @@
 // placar //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function placar(turmas) {
+app.Placar = function(turmas) {
 	// soma a pontuação de cada turma para obter o total de pontos
 	const total_de_pontos = turmas.reduce((total, turma) => total + turma["pontos"], 0);
 
@@ -13,11 +13,14 @@ function placar(turmas) {
 	$.each(turmas, function(index, turma) {
 		// calcula % da turma em relação ao total de pontos
 		const percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / total_de_pontos : 0);
+
+		// formata os dados
 		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
 		turma["turma-formatada"] = turma["turma"].toUpperCase();
 		turma["pontos"] = turma["pontos"];
 		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
+		// renderiza e coloca na página
 		let $turma = __render("scoreboard-team", turma);
 		$placar.append($turma);
 	});
@@ -27,9 +30,9 @@ function placar(turmas) {
 	} else {
 		$placar.parent().removeClass("zeroed");
 	}
-}
+};
 
-const Scoreboard = placar;
+// const Scoreboard = app.Placar;
 
 // jQuery
 let $placar;

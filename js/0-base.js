@@ -1,6 +1,11 @@
-const edicao = "xc";
+const edicao = "xci";
+
 let Lista = [ ];
 Lista.Regulamento = [ ];
+Lista.Tarefas = [ ];
+
+let app = [ ];
+let UI = [ ], $ui = [ ];
 
 // laguinho.org/tarefas
 var tarefas = { };

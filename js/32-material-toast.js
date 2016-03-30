@@ -2,10 +2,24 @@
 // toast ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const toast = (function() {
+UI.toast = (function() {
 	return {
+		// TODO nova sintaxe, usar template e __render
+		// show: function(config) {
+		// 	if (typeof config === "object") {
+		//
+		// 	} else {
+		//
+		// 	}
+		// },
+		//
+		// dismiss: function() {
+		//
+		// },
+
+		// TODO DEPRECATED
 		open: function(message, action, callback, persistent) {
-	//	open: function(message, addClass) {
+		// open: function(message, addClass) {
 			$toast.message.html(message);
 			$toast.action.html((action? action : ""));
 			$toast.addClass("in").reflow().addClass("slide");
@@ -17,13 +31,14 @@ const toast = (function() {
 			$toast.action.on("click", callback);
 
 			clearTimeout(timeout["toast"]);
-			if(!persistent) {
+			if (!persistent) {
 				$toast.removeClass("stream-only");
 				timeout["toast"] = setTimeout(toast.close, 6500);
 			} else {
 				$toast.addClass("stream-only");
 			}
 		},
+
 		close: function() {
 			$body.removeClass("toast-active");
 			$toast.removeClass("slide").one("transitionend", function() {
@@ -34,6 +49,8 @@ const toast = (function() {
 		}
 	};
 })();
+
+const toast = UI.toast;
 
 // const snackbar = toast;
 
