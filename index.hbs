@@ -346,10 +346,10 @@
 </div>
 
 <script>var autoload = <?= (is_numeric($_GET["tarefa"])? $_GET["tarefa"] : "false") ?>;</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js" integrity="sha384-0bIyOfFEbXDmR9pWVT6PKyzSRIx8gTXuOsrfXQA51wfXn3LRXt+ih6riwq9Zv2yn" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js" integrity="sha384-mXQoED/lFIuocc//nss8aJOIrz7X7XruhR6bO+sGceiSyMELoVdZkN7F0oYwcFH+" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.24/webfontloader.js" integrity="sha384-aKlkTpcApByVvuOfbz5xPYrNRqEr+nvib7HlO6etrAPnV1ddRwFn7+jN/IkeOC2d" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js" integrity="sha384-YeUZ6bm5HaV9hAVzDbZNHOf/1Dez0BMOoh2YzcFprAJAw6UEXThti5aeLOBJ922Z" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" integrity="sha384-uEKJZcjXxYuCnOPvqTQP6vj69jWPkWzo0YISzCKa0UKHGJp7QpcphU3tW4Whc/bZ" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" integrity="sha384-YArKvVMcKCuBUlxmMEAE42BQa4x1hG0HqJPYVMdND/0qv4E+HbCK724R+NqCKBDM" crossorigin="anonymous"></script>
 <script src="https://platform.vine.co/static/scripts/embed.js"></script>
 <script src="//assets.laguinho.org/libs/file-api/2.0.11/dist/FileAPI.min.js"></script>
 <script src="//assets.laguinho.org/libs/file-api/2.0.11/plugins/FileAPI.exif.js"></script>
