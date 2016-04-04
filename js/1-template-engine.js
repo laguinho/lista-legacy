@@ -24,32 +24,59 @@ function __render(template, data) {
 		let $blank = $(this);
 		let fill = $blank.data("fill");
 		let object = $blank.data("fill-object");
-		let field = $blank.data("fill-field");
-		let attr = $blank.data("fill-attr");
+		let field = $blank.data("fill-field"); // deprecated
+		let attr = $blank.data("fill-attr"); // deprecated
 		let content;
 
 		// nova sintaxe
 		if (fill) {
 			let rules = fill.split(",");
-			for (let rule of rules) {
-				let pair = rule.split(":");
+			for (var i = 0; i < rules.length; i++) {
+				let pair = rules[i].split(":");
 				let dest = (pair[1]? pair[0].trim() : "html");
 				let source = (pair[1]? pair[1].trim() : pair[0]);
+				let value;
 
-				if (dest === "class") {
-					$blank.addClass(data[source]);
-				} else if (dest === "html") {
-					$blank.html(data[source]);
-				} else if (dest === "value") {
-					$blank.val(data[source]);
+				source = source.split("/");
+				if (source.length > 1) {
+					// TODO aceitar mais de um nível
+					// let final_source = "data";
+					// for (let level in source) {
+					// 	final_source += "[source[" + level + "]]";
+					// }
+					// console.log(source);
+					// console.log(final_source, data[final_source]);
+					// console.log(data[source[0]][source[1]]);
+					value = data[source[0]][source[1]];
 				} else {
-					$blank.attr(dest, data[source]);
+					value = data[source];
+				}
+
+				if (value) {
+					if (dest === "class") {
+						$blank.addClass(value);
+					} else if (dest === "html") {
+						$blank.html(value);
+					} else if (dest === "value") {
+						$blank.val(value);
+					} else {
+						$blank.attr(dest, value);
+					}
+				} else {
+					let if_null = $blank.data("fill-null");
+					if (if_null === "hide") {
+						$blank.hide();
+					} else if(if_null === "remove") {
+						$blank.remove();
+					}
 				}
 
 				// console.log("[" + dest + ": " + source + "]", data, data[source]);
 			}
-		} else {
-			// deprecated
+		}
+
+		// deprecated
+		else {
 			if (!object) {
 				content = data[field];
 			} else if (object && data[object]) {

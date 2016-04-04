@@ -1,8 +1,14 @@
 "use strict";
 
-var edicao = "xc";
+var edicao = "xci";
+
 var Lista = [];
 Lista.Regulamento = [];
+Lista.Tarefas = [];
+
+var app = [];
+var UI = [],
+    $ui = [];
 
 // laguinho.org/tarefas
 var tarefas = {};
@@ -109,6 +115,10 @@ $(function() {
 });
 */
 
+var api_key = undefined;
+
+api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // template engine /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,53 +147,59 @@ function __render(template, data) {
 		var $blank = $(this);
 		var fill = $blank.data("fill");
 		var object = $blank.data("fill-object");
-		var field = $blank.data("fill-field");
-		var attr = $blank.data("fill-attr");
+		var field = $blank.data("fill-field"); // deprecated
+		var attr = $blank.data("fill-attr"); // deprecated
 		var content = undefined;
 
 		// nova sintaxe
 		if (fill) {
 			var rules = fill.split(",");
-			var _iteratorNormalCompletion = true;
-			var _didIteratorError = false;
-			var _iteratorError = undefined;
+			for (var i = 0; i < rules.length; i++) {
+				var pair = rules[i].split(":");
+				var dest = pair[1] ? pair[0].trim() : "html";
+				var source = pair[1] ? pair[1].trim() : pair[0];
+				var value = undefined;
 
-			try {
-				for (var _iterator = rules[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-					var rule = _step.value;
+				source = source.split("/");
+				if (source.length > 1) {
+					// TODO aceitar mais de um nível
+					// let final_source = "data";
+					// for (let level in source) {
+					// 	final_source += "[source[" + level + "]]";
+					// }
+					// console.log(source);
+					// console.log(final_source, data[final_source]);
+					// console.log(data[source[0]][source[1]]);
+					value = data[source[0]][source[1]];
+				} else {
+					value = data[source];
+				}
 
-					var pair = rule.split(":");
-					var dest = pair[1] ? pair[0].trim() : "html";
-					var source = pair[1] ? pair[1].trim() : pair[0];
-
+				if (value) {
 					if (dest === "class") {
-						$blank.addClass(data[source]);
+						$blank.addClass(value);
 					} else if (dest === "html") {
-						$blank.html(data[source]);
+						$blank.html(value);
 					} else if (dest === "value") {
-						$blank.val(data[source]);
+						$blank.val(value);
 					} else {
-						$blank.attr(dest, data[source]);
+						$blank.attr(dest, value);
 					}
+				} else {
+					var if_null = $blank.data("fill-null");
+					if (if_null === "hide") {
+						$blank.hide();
+					} else if (if_null === "remove") {
+						$blank.remove();
+					}
+				}
 
-					// console.log("[" + dest + ": " + source + "]", data, data[source]);
-				}
-			} catch (err) {
-				_didIteratorError = true;
-				_iteratorError = err;
-			} finally {
-				try {
-					if (!_iteratorNormalCompletion && _iterator["return"]) {
-						_iterator["return"]();
-					}
-				} finally {
-					if (_didIteratorError) {
-						throw _iteratorError;
-					}
-				}
+				// console.log("[" + dest + ": " + source + "]", data, data[source]);
 			}
-		} else {
-				// deprecated
+		}
+
+		// deprecated
+		else {
 				if (!object) {
 					content = data[field];
 				} else if (object && data[object]) {
@@ -226,27 +242,27 @@ function __render(template, data) {
 // placar //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function placar(turmas) {
+app.Placar = function (turmas) {
 	// soma a pontuação de cada turma para obter o total de pontos
 	var total_de_pontos = turmas.reduce(function (total, turma) {
 		return total + turma["pontos"];
 	}, 0);
-	Lista.Regulamento["turmas"] = [];
 
 	// limpa o placar
 	$placar.empty();
 
 	// adiciona cada turma no placar
 	$.each(turmas, function (index, turma) {
-		Lista.Regulamento["turmas"].push(turma["turma"]);
-
 		// calcula % da turma em relação ao total de pontos
 		var percentual_da_turma = total_de_pontos > 0 ? turma["pontos"] / total_de_pontos : 0;
+
+		// formata os dados
 		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
 		turma["turma-formatada"] = turma["turma"].toUpperCase();
 		turma["pontos"] = turma["pontos"];
 		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
+		// renderiza e coloca na página
 		var $turma = __render("scoreboard-team", turma);
 		$placar.append($turma);
 	});
@@ -256,9 +272,9 @@ function placar(turmas) {
 	} else {
 		$placar.parent().removeClass("zeroed");
 	}
-}
+};
 
-var Scoreboard = placar;
+// const Scoreboard = app.Placar;
 
 // jQuery
 var $placar = undefined;
@@ -467,10 +483,24 @@ $(function () {
 // toast ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var toast = (function () {
+UI.toast = (function () {
 	return {
+		// TODO nova sintaxe, usar template e __render
+		// show: function(config) {
+		// 	if (typeof config === "object") {
+		//
+		// 	} else {
+		//
+		// 	}
+		// },
+		//
+		// dismiss: function() {
+		//
+		// },
+
+		// TODO DEPRECATED
 		open: function open(message, action, callback, persistent) {
-			//	open: function(message, addClass) {
+			// open: function(message, addClass) {
 			$toast.message.html(message);
 			$toast.action.html(action ? action : "");
 			$toast.addClass("in").reflow().addClass("slide");
@@ -489,6 +519,7 @@ var toast = (function () {
 				$toast.addClass("stream-only");
 			}
 		},
+
 		close: function close() {
 			$body.removeClass("toast-active");
 			$toast.removeClass("slide").one("transitionend", function () {
@@ -499,6 +530,8 @@ var toast = (function () {
 		}
 	};
 })();
+
+var toast = UI.toast;
 
 // const snackbar = toast;
 
@@ -544,19 +577,53 @@ $(function () {
 // * Stream.sort()
 
 var Stream = (function () {
+	// TODO Passará a se chamar app.Lista
 	return {
 		load: function load() {
 			// mostra a tela de loading e limpa o stream
 			$stream.loading.addClass("fade-in in");
 
 			// carrega os dados da API
-			$.getJSON("//api.laguinho.org/lista/" + edicao + "/tudo?callback=?").done(function (data) {
+			$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function (data) {
+				// "DIRETOR"
+				// TODO O load deve ficar separado do Stream (ver issue #7)
+				Lista.Regulamento = data["meta"];
+				Lista.Tarefas = data["tarefas"];
+
+				// Se tiver título especificado, insere ele
+				if (data["meta"]["titulo"]) {
+					page_title = data["meta"]["titulo"];
+					$("head title").html(page_title);
+				}
+
+				// Se tiver mensagem especificada, insere ela
+				if (data["meta"]["mensagem"]) {
+					$(".js-message").html(data["meta"]["mensagem"]);
+				}
+
+				// Se prazo de postagem estiver encerrado, insere classe no <body>
+				if (moment().isAfter(Lista.Regulamento["fim"])) {
+					$body.addClass("postagens-encerradas");
+				}
+
+				// Se a Edição estiver encerrada...
+				if (Lista.Regulamento["encerrada"] === true) {
+					// ...insere classe no <body>
+					$body.addClass("edicao-encerrada");
+
+					// ...para de atualizar automaticamente
+					clearInterval(update_interval);
+				}
+
+				// FIM DO "DIRETOR"
+
+				// Limpa o stream para começar do zero
 				$stream.empty();
 
-				// monta placar
-				Scoreboard(data["placar"]);
+				// Monta placar
+				app.Placar(data["placar"]);
 
-				// insere os cards de tarefas
+				// Insere os cards de tarefas
 				$.each(data["tarefas"], function (index, tarefa) {
 					tarefas[tarefa["numero"]] = tarefa;
 					tarefa["url"] = "/tarefas/" + tarefa["numero"];
@@ -568,9 +635,15 @@ var Stream = (function () {
 
 					var $card = __render("card-tarefa", tarefa).data({
 						"tarefa": tarefa["numero"],
-						//	"modified": tarefa["ultima-postagem"]
 						"last-modified": tarefa["ultima-postagem"] ? moment(tarefa["ultima-postagem"]).format("X") : 0
 					});
+
+					if (tarefa["preview"]) {
+						$card.addClass("fantasma");
+						$("a", $card).removeAttr("href");
+						$(".body", $card).remove();
+						$(".header .titulo", $card).css("padding-bottom", rand(10, 40));
+					}
 
 					if (!tarefa["imagem"]) {
 						$(".media", $card).remove();
@@ -579,7 +652,7 @@ var Stream = (function () {
 					// posts
 					var $grid = $(".grid", $card);
 
-					if (tarefa["posts"].length) {
+					if (tarefa["posts"] && tarefa["posts"].length) {
 						var total_posts = tarefa["posts"].length;
 						// const total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
 						var max_media_to_show = ui["columns"] < 2 ? 9 : 8;
@@ -637,8 +710,10 @@ var Stream = (function () {
 					$stream.append($card).isotope("appended", $card);
 				});
 
+				// Se a Edição estiver encerrada, ordena por número da tarefa.
+				// Se não, ordena por ordem de atualização
 				Stream.layout();
-				Stream.sort("date");
+				Stream.sort(Lista.Regulamento["encerrada"] ? "tarefa" : "date");
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if (!!autoload) {
@@ -658,9 +733,12 @@ var Stream = (function () {
 				updated["tarefas"] = 0;updated["posts"] = 0;
 			});
 		},
+
 		layout: function layout() {
+			$stream.isotope("reloadItems");
 			$stream.isotope("layout");
 		},
+
 		sort: function sort(criteria) {
 			$stream.isotope({
 				"sortBy": criteria
@@ -696,7 +774,7 @@ $(function () {
 		}
 	});
 
-	$stream.on("click", ".card.tarefa", function (event) {
+	$stream.on("click", ".card.tarefa:not(.fantasma)", function (event) {
 		if (event.which === 1) {
 			event.preventDefault();
 
@@ -886,7 +964,7 @@ var tarefa = (function () {
 				pontuacao_da_turma["turma"] = turma;
 				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
 				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
-				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma];
+				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma] > 0 ? placar_da_tarefa[turma] : 0;
 				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 				var $turma = __render("scoreboard-team", pontuacao_da_turma);
@@ -1033,7 +1111,7 @@ var NewPost = (function () {
 				//	$("form", $new_post_view).dropzone();
 			} else if (type === "video" || type === "vine") {
 					$(".js-media-url-input", $post).focus().on("keyup", function () {
-						//	if($.inArray(event.keyCode, [16, 17, 18])) { return; }
+						//	if ($.inArray(event.keyCode, [16, 17, 18])) { return; }
 						NewPost.getThumbnail($(this).val());
 					});
 				} else if (type === "text") {
@@ -1088,6 +1166,10 @@ $(function () {
 	}).on("click", ".submit", function (event) {
 		event.preventDefault();
 
+		if (moment().isAfter(Lista.Regulamento["fim"])) {
+			toast.open("Postagens encerradas!");
+		}
+
 		if ($(this).hasClass("disabled")) {
 			// TODO melhorar mensagem
 			toast.open("Espere o fim do upload&hellip;");
@@ -1098,7 +1180,7 @@ $(function () {
 
 		$(".submit", $post).addClass("disabled").html("Enviando&hellip;");
 		$.post("/-/lista/novo", data).done(function (response) {
-			if (response["response"]["status"] == 200) {
+			if (response["response"]["status"] === 200) {
 				NewPost.close();
 				tarefa.render(response["data"]);
 				toast.open(response["response"]["message"]);
@@ -1106,7 +1188,7 @@ $(function () {
 
 				tarefas[response["data"]["numero"]] = response["data"];
 			} else {
-				toast.open("Ocorreu um erro. Tente novamente");
+				toast.open(response["response"]["message"] ? response["response"]["message"] : "Ocorreu um erro. Tente novamente");
 			}
 		}).fail(function () {
 			toast.open("Ocorreu um erro. Tente novamente");
@@ -1155,7 +1237,7 @@ $(function () {
 	}).on("submit", "form", function (event) {
 		event.preventDefault();
 
-		$.getJSON("//api.laguinho.org/lista/" + edicao + "/auth?callback=?", $("form", $login).serialize()).done(function (response) {
+		$.getJSON("https://api.laguinho.org/lista/" + edicao + "/auth?key=" + api_key + "&callback=?", $("form", $login).serialize()).done(function (response) {
 			if (response["meta"]["status"] === 200) {
 				user = response["user"];
 				user["signed-in"] = true;
@@ -1283,7 +1365,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xc",
+						edition: "xci",
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -1317,7 +1399,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xc",
+						edition: "xci",
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -1405,7 +1487,7 @@ var updated = { "tarefas": 0, "posts": 0 };
 function checkUpdates() {
 	var update_count = 0;
 
-	$.getJSON("//api.laguinho.org/lista/xc/atividade?callback=?").done(function (data) {
+	$.getJSON("https://api.laguinho.org/lista/" + edicao + "/atividade?key=" + api_key + "&callback=?").done(function (data) {
 		$.each(data, function (index, value) {
 			if (moment(value["ts"]).isAfter(last_updated) && value["autor"] != user["id"]) {
 				update_count++;
@@ -1417,37 +1499,32 @@ function checkUpdates() {
 			}
 		});
 
-		// se tiver atualização, mostra toast
+		// Se tiver atualização, mostra toast
 		if (update_count) {
 			var message = undefined;
 			var total_updates = updated["tarefas"] + updated["posts"];
 
 			// FIXME
-			/*			if(updated["tarefas"] > 0 && updated["posts"] > 0) {
-   				message = updated["tarefas"] +
-   					(updated["tarefas"] > 1? " novas tarefas" : " nova tarefa") +
-   					" e " + updated["posts"] +
-   					(updated["posts"] > 1? " novos posts" : " novo post");
-   			} else if(updated["tarefas"] > 0) {
-   				message = updated["tarefas"] +
-   				(updated["tarefas"] > 1? " novas tarefas" : " nova tarefa");
-   			} else if(updated["posts"] > 0) {
-   				message = updated["posts"] +
-   					(updated["posts"] > 1? " novos posts" : " novo post");
-   			}
-   */
-			//	$("head title").html("(" + total_updates + ") " + page_title);
+			if (updated["tarefas"] > 0 && updated["posts"] > 0) {
+				message = updated["tarefas"] + (updated["tarefas"] > 1 ? " novas tarefas" : " nova tarefa") + " e " + updated["posts"] + (updated["posts"] > 1 ? " novos posts" : " novo post");
+			} else if (updated["tarefas"] > 0) {
+				message = updated["tarefas"] + (updated["tarefas"] > 1 ? " novas tarefas" : " nova tarefa");
+			} else if (updated["posts"] > 0) {
+				message = updated["posts"] + (updated["posts"] > 1 ? " novos posts" : " novo post");
+			}
 
-			//	toast.open("6 novos posts", "Atualizar", Stream.load, true);
-			toast.open(
-			// message,
-			"Novo conteúdo", "Atualizar", function () {
+			$("head title").html("(" + total_updates + ") " + page_title);
+
+			// toast.open("6 novos posts", "Atualizar", Stream.load, true);
+			UI.toast.open(message,
+			// "Novo conteúdo",
+			"Atualizar", function () {
 				Stream.load();
 				updated = { "tarefas": 0, "posts": 0 };
 				$("head title").html(page_title);
 			}, true, "stream-only");
 		}
 
-		last_updated = moment(data[0]["ts"]);
+		last_updated = data[0] ? moment(data[0]["ts"]) : moment();
 	});
 }

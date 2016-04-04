@@ -93,18 +93,18 @@
 <!-- templates -->
 <template id="card-tarefa">
 	<li class="card tarefa">
-		<a href="#" class="fill" data-fill-attr="href" data-fill-field="url">
+		<a href="#" class="fill" data-fill="href: url">
 			<div class="header">
-				<div class="numero">Tarefa <span class="fill" data-fill-field="numero"></span></div>
-				<div class="titulo fill" data-fill-field="titulo"></div>
-				<time class="last-modified fill" data-fill-field="ultima-postagem"></time>
+				<div class="numero">Tarefa <span class="fill" data-fill="numero"></span></div>
+				<div class="titulo fill" data-fill="titulo"></div>
+				<time class="last-modified fill" data-fill="ultima-postagem"></time>
 			</div>
-			<div class="media media-wrapper fill" data-fill-field="imagem-aspecto" data-fill-attr="style">
-				<img class="fill" data-fill-field="imagem-url" data-fill-attr="src">
+			<div class="media media-wrapper fill" data-fill="style: imagem-aspecto">
+				<img class="fill" data-fill="src: imagem-url">
 			</div>
 			<div class="body">
-				<p class="descricao fill" data-fill-field="descricao"></p>
-				<p class="pontuacao fill" data-fill-field="pontuacao"></p>
+				<p class="descricao fill" data-fill="descricao"></p>
+				<p class="pontuacao fill" data-fill="pontuacao"></p>
 			</div>
 			<ul class="grid"></ul>
 		</a>
@@ -225,15 +225,18 @@
 				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
 
 				<input type="hidden" name="type" value="imagem">
-				<input type="file" name="file[]" multiple accept="image/*" id="form-file" style="display: none;">
+				<input type="file" name="file[]" multiple accept="image/gif, image/jpg, image/jpeg, image/png" id="form-file" style="display: none;">
 
 				<div id="dropzone">
 					<ul id="board"></ul>
 					<label class="file-placeholder" for="form-file"><i class="material-icons">photo_library</i>Selecionar imagens&hellip;</label>
 				</div>
-				<p style="margin-bottom: 16px;">Segure e arraste as imagens para reordená-las</p>
+				<p class="form-field" style="margin-bottom: 16px; font-size: 12px; text-align: center;">(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)</p>
 
-				<textarea class="text-field user-border-focus" name="caption" placeholder="Legenda (diga quem aparece nas fotos, quem ajudou a fazer a tarefa, etc.)"></textarea>
+				<div class="form-field">
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -259,7 +262,7 @@
 				<input type="hidden" name="type" value="media">
 
 				<div class="form-field">
-					<label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link abaixo</label>
+					<label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link aqui</label>
 					<label for="form-media-url" class="media-preview js-media-preview"></label>
 					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" value="" placeholder="https://" autocomplete="off">
 					<input class="js-media-provider" type="hidden" name="media-provider">
@@ -267,8 +270,8 @@
 					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
 				</div>
 				<div class="form-field">
-					<label for="form-caption">Legenda</labe>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Fale sobre quem participou e como foi a realização da tarefa, para que a gente possa conhecer vocês melhor. Diga quem filmou, quem editou etc."></textarea>
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do vídeo (elenco, edição, cinegrafia etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
 				</div>
 			</form>
 		</div>
@@ -295,7 +298,7 @@
 				<input type="hidden" name="type" value="media">
 
 				<div class="form-field">
-					<label for="form-media-url">Cole o link abaixo</label>
+					<label for="form-media-url">Cole o link do Vine aqui</label>
 					<label for="form-media-url" class="media-preview js-media-preview"></label>
 					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" placeholder="https://vine.co/v/" autocomplete="off">
 					<input class="js-media-provider" type="hidden" name="media-provider">
@@ -303,8 +306,8 @@
 					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
 				</div>
 				<div class="form-field">
-					<label for="form-caption">Legenda</labe>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Fale sobre quem participou e como foi a realização da tarefa, para que a gente possa conhecer vocês melhor. Diga quem atuou, quem filmou etc."></textarea>
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do Vine (elenco etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
 				</div>
 			</form>
 		</div>
