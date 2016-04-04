@@ -93,18 +93,18 @@
 <!-- templates -->
 <template id="card-tarefa">
 	<li class="card tarefa">
-		<a href="#" class="fill" data-fill-attr="href" data-fill-field="url">
+		<a href="#" class="fill" data-fill="href: url">
 			<div class="header">
-				<div class="numero">Tarefa <span class="fill" data-fill-field="numero"></span></div>
-				<div class="titulo fill" data-fill-field="titulo"></div>
-				<time class="last-modified fill" data-fill-field="ultima-postagem"></time>
+				<div class="numero">Tarefa <span class="fill" data-fill="numero"></span></div>
+				<div class="titulo fill" data-fill="titulo"></div>
+				<time class="last-modified fill" data-fill="ultima-postagem"></time>
 			</div>
-			<div class="media media-wrapper fill" data-fill-field="imagem-aspecto" data-fill-attr="style">
-				<img class="fill" data-fill-field="imagem-url" data-fill-attr="src">
+			<div class="media media-wrapper fill" data-fill="style: imagem-aspecto">
+				<img class="fill" data-fill="src: imagem-url">
 			</div>
 			<div class="body">
-				<p class="descricao fill" data-fill-field="descricao"></p>
-				<p class="pontuacao fill" data-fill-field="pontuacao"></p>
+				<p class="descricao fill" data-fill="descricao"></p>
+				<p class="pontuacao fill" data-fill="pontuacao"></p>
 			</div>
 			<ul class="grid"></ul>
 		</a>
@@ -225,15 +225,18 @@
 				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
 
 				<input type="hidden" name="type" value="imagem">
-				<input type="file" name="file[]" multiple accept="image/*" id="form-file" style="display: none;">
+				<input type="file" name="file[]" multiple accept="image/gif, image/jpg, image/jpeg, image/png" id="form-file" style="display: none;">
 
 				<div id="dropzone">
 					<ul id="board"></ul>
 					<label class="file-placeholder" for="form-file"><i class="material-icons">photo_library</i>Selecionar imagens&hellip;</label>
 				</div>
-				<p style="margin-bottom: 16px;">Segure e arraste as imagens para reordená-las</p>
+				<p class="form-field" style="margin-bottom: 16px; font-size: 12px; text-align: center;">(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)</p>
 
-				<textarea class="text-field user-border-focus" name="caption" placeholder="Legenda (diga quem aparece nas fotos, quem ajudou a fazer a tarefa, etc.)"></textarea>
+				<div class="form-field">
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
+				</div>
 			</form>
 		</div>
 	</div>
@@ -259,7 +262,7 @@
 				<input type="hidden" name="type" value="media">
 
 				<div class="form-field">
-					<label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link abaixo</label>
+					<label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link aqui</label>
 					<label for="form-media-url" class="media-preview js-media-preview"></label>
 					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" value="" placeholder="https://" autocomplete="off">
 					<input class="js-media-provider" type="hidden" name="media-provider">
@@ -267,8 +270,8 @@
 					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
 				</div>
 				<div class="form-field">
-					<label for="form-caption">Legenda</labe>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Fale sobre quem participou e como foi a realização da tarefa, para que a gente possa conhecer vocês melhor. Diga quem filmou, quem editou etc."></textarea>
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do vídeo (elenco, edição, cinegrafia etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
 				</div>
 			</form>
 		</div>
@@ -295,7 +298,7 @@
 				<input type="hidden" name="type" value="media">
 
 				<div class="form-field">
-					<label for="form-media-url">Cole o link abaixo</label>
+					<label for="form-media-url">Cole o link do Vine aqui</label>
 					<label for="form-media-url" class="media-preview js-media-preview"></label>
 					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" placeholder="https://vine.co/v/" autocomplete="off">
 					<input class="js-media-provider" type="hidden" name="media-provider">
@@ -303,8 +306,8 @@
 					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
 				</div>
 				<div class="form-field">
-					<label for="form-caption">Legenda</labe>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Fale sobre quem participou e como foi a realização da tarefa, para que a gente possa conhecer vocês melhor. Diga quem atuou, quem filmou etc."></textarea>
+					<label for="form-caption">Legenda</label>
+					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do Vine (elenco etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
 				</div>
 			</form>
 		</div>
@@ -346,10 +349,10 @@
 </div>
 
 <script>var autoload = <?= (is_numeric($_GET["tarefa"])? $_GET["tarefa"] : "false") ?>;</script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js" integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.16/webfont.js" integrity="sha384-0bIyOfFEbXDmR9pWVT6PKyzSRIx8gTXuOsrfXQA51wfXn3LRXt+ih6riwq9Zv2yn" crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js" integrity="sha384-mXQoED/lFIuocc//nss8aJOIrz7X7XruhR6bO+sGceiSyMELoVdZkN7F0oYwcFH+" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.24/webfontloader.js" integrity="sha384-aKlkTpcApByVvuOfbz5xPYrNRqEr+nvib7HlO6etrAPnV1ddRwFn7+jN/IkeOC2d" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js" integrity="sha384-YeUZ6bm5HaV9hAVzDbZNHOf/1Dez0BMOoh2YzcFprAJAw6UEXThti5aeLOBJ922Z" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js" integrity="sha384-uEKJZcjXxYuCnOPvqTQP6vj69jWPkWzo0YISzCKa0UKHGJp7QpcphU3tW4Whc/bZ" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.12.0/moment.min.js" integrity="sha384-YArKvVMcKCuBUlxmMEAE42BQa4x1hG0HqJPYVMdND/0qv4E+HbCK724R+NqCKBDM" crossorigin="anonymous"></script>
 <script src="https://platform.vine.co/static/scripts/embed.js"></script>
 <script src="//assets.laguinho.org/libs/file-api/2.0.11/dist/FileAPI.min.js"></script>
 <script src="//assets.laguinho.org/libs/file-api/2.0.11/plugins/FileAPI.exif.js"></script>

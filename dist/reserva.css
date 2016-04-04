@@ -486,6 +486,14 @@ main .loading {
   display: block;
 }
 
+.card.tarefa.fantasma {
+  opacity: 0.5;
+}
+
+.card.tarefa.fantasma .titulo {
+  opacity: 0.5;
+}
+
 .card.tarefa .header {
   padding: 28px 16px 16px;
 }
@@ -739,6 +747,7 @@ colunas
 .card.post .result {
   border-top: 1px solid #dcdcdc;
   padding: 12px 16px 12px 64px;
+  background-color: #fafafa;
   font-size: 14px;
   line-height: 1.45;
   color: rgba(0, 0, 0, 0.7);
@@ -882,6 +891,18 @@ colunas
 .slip-reordering {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
   z-index: 1;
+}
+
+#new-post .form-field {
+  margin-top: 9px;
+}
+
+#new-post .form-field + .form-field {
+  margin-top: 24px;
+}
+
+#new-post .form-field .text-field {
+  margin-top: 6px;
 }
 
 #login {

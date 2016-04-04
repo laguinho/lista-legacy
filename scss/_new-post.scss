@@ -24,3 +24,19 @@
 
 .slip-swiping-container { overflow-x: hidden; }
 .slip-reordering { box-shadow: 0 2px 10px rgba(0,0,0,.45); z-index: 1; }
+
+#new-post {
+
+	.form-field {
+		margin-top: 9px;
+
+		& + .form-field {
+			margin-top: 24px;
+		}
+
+		.text-field {
+			margin-top: 6px;
+		}
+
+	}
+}

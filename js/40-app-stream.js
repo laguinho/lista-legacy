@@ -63,9 +63,14 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 
 					let $card = __render("card-tarefa", tarefa).data({
 							"tarefa": tarefa["numero"],
-						//	"modified": tarefa["ultima-postagem"]
 							"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 						});
+
+					if (tarefa["preview"]) {
+						$card.addClass("fantasma");
+						$("a", $card).removeAttr("href");
+						$(".body", $card).remove();
+					}
 
 					if (!tarefa["imagem"]) {
 						$(".media", $card).remove();
@@ -74,7 +79,7 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 					// posts
 					let $grid = $(".grid", $card);
 
-					if (tarefa["posts"].length) {
+					if (tarefa["posts"] && tarefa["posts"].length) {
 						const total_posts = tarefa["posts"].length;
 						// const total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
 						const max_media_to_show = (ui["columns"] < 2? 9 : 8);
@@ -199,7 +204,7 @@ $(function() {
 		}
 	});
 
-	$stream.on("click", ".card.tarefa", function(event) {
+	$stream.on("click", ".card.tarefa:not(.fantasma)", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
 
