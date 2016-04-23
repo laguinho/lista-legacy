@@ -642,7 +642,6 @@ var Stream = (function () {
 						$card.addClass("fantasma");
 						$("a", $card).removeAttr("href");
 						$(".body", $card).remove();
-						$(".header .titulo", $card).css("padding-bottom", rand(10, 40));
 					}
 
 					if (!tarefa["imagem"]) {

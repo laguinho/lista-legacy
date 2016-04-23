@@ -487,11 +487,11 @@ main .loading {
 }
 
 .card.tarefa.fantasma {
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .card.tarefa.fantasma .titulo {
-  opacity: 0.5;
+  opacity: .5;
 }
 
 .card.tarefa .header {
@@ -959,7 +959,7 @@ colunas
   height: 56px;
   background-color: #455a64;
   color: #fff;
-  box-shadow: rgba(0, 0, 0, 0.13725) 0 2px 2px 0, rgba(0, 0, 0, 0.2) 0 3px 1px -2px, rgba(0, 0, 0, 0.11765) 0 1px 5px 0;
+  box-shadow: rgba(0, 0, 0, 0.137255) 0 2px 2px 0, rgba(0, 0, 0, 0.2) 0 3px 1px -2px, rgba(0, 0, 0, 0.117647) 0 1px 5px 0;
   z-index: 1;
   -webkit-user-select: none;
 }

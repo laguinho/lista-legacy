@@ -1,0 +1,62 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		title Lista de Tarefas
+
+		meta(name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui")
+		meta(name="mobile-web-app-capable" content="yes")
+		meta(name="theme-color" content="#455a64")
+
+		link(rel="stylesheet", href="#{assets['lista-css'][env]}")
+		link(rel="shortcut icon", href="#{assets['favicon'][env]}")
+		link(rel="manifest", href="/manifest.json")
+
+	body
+		
+		//- appbar
+		header#appbar.home-appbar.appbar
+			.container.home-container
+				h1.title Lista de Tarefas
+				a.sidenav-trigger(href="#")
+					i.material-icons &#xE5D2;
+	
+		//- sidenav
+		nav#sidenav
+			header
+				img.logo(src="https://assets.laguinho.org/laguinho.svg")
+			section.sort-navigation
+				h1 Ordenar por
+				ul.level-1.js-stream-sort
+					li
+						a.active(href="#", data-sort-by="date")
+							i.material-icons &#xE5CA;
+							| Última postagem
+					li
+						a(href="#", data-sort-by="tarefa")
+							i.material-icons &#xE5CA;
+							| Número da tarefa
+			section.secondary-navigation
+				ul.level-1
+					li
+						a(href="https://twitter.com/listadetarefas", target="_blank") Twitter
+							i.material-icons &#xE879;
+					li
+						a.login-button.js-login-trigger(href="#") Login
+					li
+						a.logout-button.js-logout-trigger(href="#") Logout
+
+
+		include _legacy.html
+
+		#backdrop
+		#bottom-sheet
+		#toast
+			.message
+			.action
+		
+		script.
+			var autoload = false;
+		
+		//- scripts
+		include _scripts.jade
