@@ -1,0 +1,40 @@
+{
+	"favicon": {
+		"development": "./-/assets/favicon.png",
+		"production": "https://assets.laguinho.org/logo/32px.png"
+	},
+	"lista-css": {
+		"development": "./-/assets/lista.min.css",
+		"production": ""
+	},
+	"jquery": {
+		"development": "./-/assets/jquery-2.2.3.min.js",
+		"production": "https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js",
+		"integrity": "sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb"
+	},
+	"isotope": {
+		"development": "./-/assets/isotope-2.2.2.pkgd.min.js",
+		"production": "https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js",
+		"integrity": ""
+	},
+	"moment": {
+		"development": "./-/assets/moment-2.13.0.min.js",
+		"production": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js",
+		"integrity": ""
+	},
+	"webfont": {
+		"development": "./-/assets/webfontloader-1.6.24.js",
+		"production": "https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.24/webfontloader.js",
+		"integrity": ""
+	},
+
+	"autosize": {
+		"development": "./-/assets/autosize-3.0.15.min.js",
+		"production": "https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.15/autosize.min.js"
+	},
+
+	"lista-js": {
+		"development": "./-/assets/lista.min.js",
+		"production": ""
+	}
+}
