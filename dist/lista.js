@@ -1,6 +1,6 @@
 "use strict";
 
-var edicao = "xci";
+var edicao = "xcii";
 
 var Lista = [];
 Lista.Regulamento = [];
@@ -1084,6 +1084,7 @@ var NewPost = (function () {
 		},
 		open: function open(type, numero) {
 			var data = {
+				"edicao": Lista.Regulamento["edicao"],
 				"numero": numero || tarefa_active,
 				"user": user["id"],
 				"turma": user["turma"],
@@ -1362,7 +1363,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xci",
+						edition: Lista.Regulamento["edicao"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -1396,7 +1397,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xci",
+						edition: Lista.Regulamento["edicao"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]

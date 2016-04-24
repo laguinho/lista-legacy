@@ -65,7 +65,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xci",
+						edition: Lista.Regulamento["edicao"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -100,7 +100,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: "xci",
+						edition: Lista.Regulamento["edicao"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]

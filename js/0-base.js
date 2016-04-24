@@ -1,4 +1,4 @@
-const edicao = "xci";
+const edicao = "xcii";
 
 let Lista = [ ];
 Lista.Regulamento = [ ];

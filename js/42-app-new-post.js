@@ -81,6 +81,7 @@ const NewPost = (function() {
 		},
 		open: function(type, numero) {
 			let data = {
+				"edicao": Lista.Regulamento["edicao"],
 				"numero": (numero || tarefa_active),
 				"user": user["id"],
 				"turma": user["turma"],
