@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // auto update /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const update_interval = setInterval(checkUpdates, 30000);
-let page_title = $("head title").html();
-let last_updated;
-let updated = { "tarefas": 0, "posts": 0 };
+var update_interval = setInterval(checkUpdates, 30000);
+var page_title = $("head title").html();
+var last_updated;
+var updated = { "tarefas": 0, "posts": 0 };
 
 function checkUpdates() {
-	let update_count = 0;
+	var update_count = 0;
 
 	$.getJSON("https://api.laguinho.org/lista/" + edicao + "/atividade?key=" + api_key + "&callback=?").done(function(data) {
 		$.each(data, function(index, value) {
@@ -23,8 +23,8 @@ function checkUpdates() {
 
 		// Se tiver atualização, mostra toast
 		if (update_count) {
-			let message;
-			let total_updates = updated["tarefas"] + updated["posts"];
+			var message;
+			var total_updates = updated["tarefas"] + updated["posts"];
 
 			// FIXME
 			if (updated["tarefas"] > 0 && updated["posts"] > 0) {

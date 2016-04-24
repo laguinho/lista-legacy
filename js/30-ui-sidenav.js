@@ -2,7 +2,7 @@
 // sidenav /////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const sidenav = (function() {
+var sidenav = (function() {
 	return {
 		open: function() {
 			backdrop.show();
@@ -20,7 +20,7 @@ const sidenav = (function() {
 })();
 
 // jQuery
-let $sidenav;
+var $sidenav;
 
 $(function() {
 	$sidenav = $("#sidenav");

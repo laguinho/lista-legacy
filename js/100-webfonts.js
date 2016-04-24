@@ -7,6 +7,6 @@ WebFont.load({
 	google: { families: ["Material Icons", "Roboto:400,400italic,500:latin", "Montserrat::latin"] },
 	custom: { families: ["FontAwesome"], urls: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"] },
 	active: function() {
-		$(function() { stream.layout(); });
+		$(function() { app.Lista.layout(); });
 	}
 });

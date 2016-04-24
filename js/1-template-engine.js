@@ -1,13 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // template engine /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-let $templates = { };
+var $templates = { };
 
 $(function() {
 	$("template").each(function() {
-		let $this = $(this);
-		let name = $this.attr("id");
-		let html = $this.html();
+		var $this = $(this);
+		var name = $this.attr("id");
+		var html = $this.html();
 
 		$templates[name] = $(html);
 		$this.remove();
@@ -16,32 +16,32 @@ $(function() {
 
 function __render(template, data) {
 	if (!$templates[template]) { return false; }
-	let $render = $templates[template].clone();
+	var $render = $templates[template].clone();
 
 	$render.data(data);
 
 	$.fn.fillBlanks = function() {
-		let $blank = $(this);
-		let fill = $blank.data("fill");
-		let object = $blank.data("fill-object");
-		let field = $blank.data("fill-field"); // deprecated
-		let attr = $blank.data("fill-attr"); // deprecated
-		let content;
+		var $blank = $(this);
+		var fill = $blank.data("fill");
+		var object = $blank.data("fill-object");
+		var field = $blank.data("fill-field"); // deprecated
+		var attr = $blank.data("fill-attr"); // deprecated
+		var content;
 
 		// nova sintaxe
 		if (fill) {
-			let rules = fill.split(",");
+			var rules = fill.split(",");
 			for (var i = 0; i < rules.length; i++) {
-				let pair = rules[i].split(":");
-				let dest = (pair[1]? pair[0].trim() : "html");
-				let source = (pair[1]? pair[1].trim() : pair[0]);
-				let value;
+				var pair = rules[i].split(":");
+				var dest = (pair[1]? pair[0].trim() : "html");
+				var source = (pair[1]? pair[1].trim() : pair[0]);
+				var value;
 
 				source = source.split("/");
 				if (source.length > 1) {
 					// TODO aceitar mais de um nível
-					// let final_source = "data";
-					// for (let level in source) {
+					// var final_source = "data";
+					// for (var level in source) {
 					// 	final_source += "[source[" + level + "]]";
 					// }
 					// console.log(source);
@@ -63,7 +63,7 @@ function __render(template, data) {
 						$blank.attr(dest, value);
 					}
 				} else {
-					let if_null = $blank.data("fill-null");
+					var if_null = $blank.data("fill-null");
 					if (if_null === "hide") {
 						$blank.hide();
 					} else if(if_null === "remove") {
@@ -92,7 +92,7 @@ function __render(template, data) {
 					$blank.html(content);
 				}
 			} else {
-				let if_null = $blank.data("fill-null");
+				var if_null = $blank.data("fill-null");
 				if (if_null === "hide") {
 					$blank.hide();
 				} else if(if_null === "remove") {

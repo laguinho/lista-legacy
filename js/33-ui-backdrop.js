@@ -2,7 +2,7 @@
 // backdrop ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const backdrop = (function() {
+var backdrop = (function() {
 	return {
 		show: function() {
 			$backdrop.addClass("in");
@@ -14,7 +14,7 @@ const backdrop = (function() {
 })();
 
 // jQuery
-let $backdrop;
+var $backdrop;
 
 $(function() {
 	$backdrop = $("#backdrop");

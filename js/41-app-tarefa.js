@@ -1,12 +1,16 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // tarefa //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// app.Tarefa.open()
+// app.Tarefa.render()
+// app.Tarefa.close()
 
-const tarefa = (function() {
-	let placar_da_tarefa = [ ];
+app.Tarefa = (function() {
+	var placar_da_tarefa = [ ];
+
 	function renderPosts(posts, $posts) {
 		placar_da_tarefa["total"] = 0;
-		for (let turma in Lista.Regulamento["turmas"]) {
+		for (var turma in Lista.Regulamento["turmas"]) {
 			placar_da_tarefa[Lista.Regulamento["turmas"][turma]] = 0;
 		}
 
@@ -41,8 +45,8 @@ const tarefa = (function() {
 			}
 
 			// renderiza o post
-			let $post_card = __render("view-tarefa-post-card", post);
-			let $media = $(".media", $post_card);
+			var $post_card = __render("view-tarefa-post-card", post);
+			var $media = $(".media", $post_card);
 
 			// adiciona mídias
 			if (post["midia"]) {
@@ -52,7 +56,7 @@ const tarefa = (function() {
 						media["default"] = media["caminho"] + media["arquivos"][1];
 						media["padding-aspecto"] = "padding-top: " + (media["aspecto"] * 100).toFixed(2) + "%";
 						media["link-original"] = media["caminho"] + media["arquivos"][2];
-						let $image = __render("media-photo", media);
+						var $image = __render("media-photo", media);
 						$media.append($image);
 					} else
 
@@ -71,7 +75,7 @@ const tarefa = (function() {
 						}
 
 						media["padding-aspecto"] = "padding-top: " + (media["aspecto"] * 100).toFixed(2) + "%";
-						let $embed = __render("media-video", media);
+						var $embed = __render("media-video", media);
 						$media.append($embed);
 					}
 				});
@@ -95,11 +99,11 @@ const tarefa = (function() {
 
 	return {
 		open: function(numero, pushState) {
-			let DATA = tarefas[numero];
+			var DATA = tarefas[numero];
 			tarefa_active = numero;
 
 			$tarefa.addClass("in");
-			tarefa.render(DATA);
+			app.Tarefa.render(DATA);
 
 			$tarefa.reflow().addClass("slide").one("transitionend", function() {
 			//	var view_theme_color = $(".appbar", $tarefa).css("background-color");
@@ -108,24 +112,22 @@ const tarefa = (function() {
 
 			$body.addClass("no-scroll tarefa-active");
 
-			// view manager
-			view_manager.replace("tarefa");
-			if (pushState) {
-				history.pushState({ "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"], "/tarefas/" + DATA["numero"]);
-			}
+			// router
+			router["view-manager"].replace("tarefa");
+			if (pushState) { router.go("/tarefas/" + DATA["numero"], { "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"]); }
 		},
 		render: function(DATA) {
-			let $tarefa_view = __render("view-tarefa", DATA);
+			var $tarefa_view = __render("view-tarefa", DATA);
 
 			// card da tarefa
-			let $meta = $(".painel .meta", $tarefa_view);
+			var $meta = $(".painel .meta", $tarefa_view);
 
 			if (DATA["imagem"]) {
 				tarefa["imagem-url"] = DATA["imagem"]["url"];
 				tarefa["imagem-aspecto"] = "padding-top: " + (DATA["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 			}
 
-			let $meta_card = __render("card-tarefa", DATA);
+			var $meta_card = __render("card-tarefa", DATA);
 
 			if (!DATA["imagem"]) {
 				$(".media", $meta_card).remove();
@@ -135,7 +137,7 @@ const tarefa = (function() {
 			$meta.append($meta_card);
 
 			// posts
-			let $posts = $tarefa_view.find(".posts ul");
+			var $posts = $tarefa_view.find(".posts ul");
 
 			if (DATA["posts"].length) {
 				$posts.isotope({
@@ -159,20 +161,20 @@ const tarefa = (function() {
 			}
 
 			// placar da tarefa
-			let $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
+			var $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
 
 			$.each(Lista.Regulamento["turmas"], function(index, turma) {
-				let pontuacao_da_turma = [ ];
+				var pontuacao_da_turma = [ ];
 
 				// calcula % da turma em relação ao total de pontos
-				const percentual_da_turma = (placar_da_tarefa["total"] > 0? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0);
+				var percentual_da_turma = (placar_da_tarefa["total"] > 0? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0);
 				pontuacao_da_turma["turma"] = turma;
 				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
 				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
 				pontuacao_da_turma["pontos"] = (placar_da_tarefa[turma] > 0? placar_da_tarefa[turma] : 0);
 				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-				let $turma = __render("placar-turma", pontuacao_da_turma);
+				var $turma = __render("placar-turma", pontuacao_da_turma);
 				$placar_da_tarefa.append($turma);
 			});
 		},
@@ -185,22 +187,24 @@ const tarefa = (function() {
 				$tarefa.removeClass("in").empty();
 			});
 
-			view_manager.replace("home");
-			if (pushState) { history.pushState({ "view": "home" }, "Lista de Tarefas", "/tarefas"); }
+			// router
+			router["view-manager"].replace("home");
+			if (pushState) { router.go("/tarefas", { "view": "home" }, "Lista de Tarefas"); }
 		}
 	};
 })();
 
-const Tarefa = tarefa;
+// var tarefa = app.Tarefa;
+// var Tarefa = tarefa;
 
 // jQuery
-let $tarefa;
+var $tarefa;
 
 $(function() {
 	$tarefa = $("#tarefa");
 	$tarefa.on("click", ".back", function(event) {
 		event.preventDefault();
-		tarefa.close(true);
+		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
 		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
 	}).on("click", ".card.tarefa a", function(event) {

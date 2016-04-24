@@ -126,7 +126,6 @@ gulp.task("deploy-css", deployCSS);
 // js //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var babel = require("gulp-babel");
 var uglify = require("gulp-uglify");
 
 CONFIG.js = { };
@@ -139,7 +138,6 @@ function stageJS() {
 		.pipe(sourcemaps.init())
 
 		.pipe(concat("lista.js"))
-		.pipe(babel())
 
 		// source file
 		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
@@ -163,7 +161,6 @@ function deployJS() {
 		.pipe(plumber())
 
 		.pipe(concat("lista.js"))
-		.pipe(babel())
 
 		// minified file
 		.pipe(uglify())

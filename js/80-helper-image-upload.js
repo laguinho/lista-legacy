@@ -1,8 +1,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // image upload ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-const exif_orientation_to_degrees = { 0: 0, 1: 0, 2: 0, 3: 180, 4: 0, 5: 0, 6: 90, 7: 0, 8: 270 };
-let file_stack = {};
+var exif_orientation_to_degrees = { 0: 0, 1: 0, 2: 0, 3: 180, 4: 0, 5: 0, 6: 90, 7: 0, 8: 270 };
+var file_stack = {};
 
 function upload(files) {
 	FileAPI.filterFiles(files, function(file, info) {
@@ -18,21 +18,21 @@ function upload(files) {
 
 			// preview
 			FileAPI.each(files, function(file) {
-				let exif_orientation = file_stack[file["name"]]["exif"]["Orientation"];
+				var exif_orientation = file_stack[file["name"]]["exif"]["Orientation"];
 				file_stack[file["name"]]["ref"] = tarefa_active + "-" + user["id"] + "-" +
 					moment().format("X") + "-" + rand(0, 999).toFixed(0);
 
 				if(file["type"] == "image/gif") {
-					let reader = new FileReader();
+					var reader = new FileReader();
 					reader.onload = function(event) {
-						let img = $("<img />").attr("src", event.target.result);
-						let $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
+						var img = $("<img />").attr("src", event.target.result);
+						var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
 
-						let $status = $("<div />").addClass("progress");
+						var $status = $("<div />").addClass("progress");
 						$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
 						$("<div />").addClass("bar").appendTo($status);
 
-						let $preview = $("<li />").attr("id", "file-" +
+						var $preview = $("<li />").attr("id", "file-" +
 								file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
 						$("#dropzone #board").append($preview);
 					};
@@ -45,13 +45,13 @@ function upload(files) {
 						.get(function(err, img) {
 						//	$tracker = $("<input type=\"hidden\" name=\"image-order[]\" />")
 						//		.val(tarefa_active + "-" + user["id"] + "-" + file["name"]);
-							let $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
+							var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
 
-							let $status = $("<div />").addClass("progress");
+							var $status = $("<div />").addClass("progress");
 							$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
 							$("<div />").addClass("bar").appendTo($status);
 
-							let $preview = $("<li />").attr("id", "file-" +
+							var $preview = $("<li />").attr("id", "file-" +
 									file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
 							$("#dropzone #board").append($preview);
 						});
@@ -162,7 +162,7 @@ $.fn.dropzone = function() {
 	});
 
 	// reorder
-	let $board = $("#board", this);
+	var $board = $("#board", this);
 	$board.on("slip:beforewait", function(event) {
 		if(ui["interaction-type"] === "pointer") {
 			event.preventDefault();

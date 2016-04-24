@@ -1,11 +1,11 @@
-const edicao = "xcii";
+var edicao = "xcii";
 
-let Lista = [ ];
+var Lista = [ ];
 Lista.Regulamento = [ ];
 Lista.Tarefas = [ ];
 
-let app = [ ];
-let UI = [ ], $ui = [ ];
+var app = [ ];
+var UI = [ ], $ui = [ ];
 
 // laguinho.org/tarefas
 var tarefas = { };
@@ -17,10 +17,10 @@ $(function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // elements & helpers //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-let $window, $body;
-let timeout = [];
-let $theme_color, theme_color = { };
-let tarefa_active;
+var $window, $body;
+var timeout = [];
+var $theme_color, theme_color = { };
+var tarefa_active;
 
 $(function() {
 	$window = $(window);
@@ -31,7 +31,7 @@ $(function() {
 
 $.fn.reflow = function() {
 //	$body.offset().left;
-	let offset = $body.offset().left;
+	var offset = $body.offset().left;
 	return $(this);
 };
 
@@ -42,14 +42,14 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
-let ui  = { };
+var ui  = { };
 
 // confere se a interação é por toque ou mouse
 ui["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
 
 function setLayoutProperties() {
 	// largura da coluna, incluindo margem
-	let column_width = 316;
+	var column_width = 316;
 
 	// guarda dimensão da janela
 	ui["window"] = { };
@@ -60,7 +60,7 @@ function setLayoutProperties() {
 	ui["columns"] = Math.floor(ui["window"]["width"] / column_width);
 
 	// adiciona classe no <body> de acordo com a quantidade de colunas
-	let layout_class;
+	var layout_class;
 	if(ui["columns"] === 1) layout_class = "single-column";
 	else if(ui["columns"] === 2) layout_class = "dual-column";
 	else layout_class = "multi-column";
@@ -115,4 +115,4 @@ $(function() {
 });
 */
 
-let api_key;
+var api_key;

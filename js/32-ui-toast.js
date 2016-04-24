@@ -50,12 +50,12 @@ UI.toast = (function() {
 	};
 })();
 
-const toast = UI.toast;
+var toast = UI.toast;
 
-// const snackbar = toast;
+// var snackbar = toast;
 
 // jQuery
-let $toast;
+var $toast;
 
 $(function() {
 	$toast = $("#toast");

@@ -2,7 +2,7 @@
 // bottomsheet /////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const bottomsheet = (function() {
+var bottomsheet = (function() {
 	return {
 		open: function($content, addClass) {
 			backdrop.show();
@@ -13,7 +13,7 @@ const bottomsheet = (function() {
 
 			$backdrop.on("hide", bottomsheet.close);
 
-			view_manager.add("bottomsheet");
+			router["view-manager"].add("bottomsheet");
 			history.pushState({ "view": "bottomsheet" }, null, null);
 		},
 		close: function() {
@@ -25,13 +25,13 @@ const bottomsheet = (function() {
 
 			backdrop.hide();
 
-			view_manager.remove("bottomsheet");
+			router["view-manager"].remove("bottomsheet");
 		}
 	};
 })();
 
 // jQuery
-let $bottomsheet;
+var $bottomsheet;
 
 $(function() {
 	$bottomsheet = $("#bottom-sheet");

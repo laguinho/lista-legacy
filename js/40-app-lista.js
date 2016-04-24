@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // lista ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// * Stream.load()
-// * Stream.layout()
-// * Stream.sort()
+// app.Lista.load()
+// app.Lista.layout()
+// app.Lista.sort()
 
-const Stream = (function() { // TODO Passará a se chamar app.Lista
+app.Lista = (function() {
 	return {
 		load: function() {
 			// mostra a tela de loading e limpa o stream
@@ -55,13 +55,14 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 				$.each(data["tarefas"], function(index, tarefa) {
 					tarefas[tarefa["numero"]] = tarefa;
 					tarefa["url"] = "/tarefas/" + tarefa["numero"];
+					tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
 
 					if (tarefa["imagem"]) {
 						tarefa["imagem-url"] = tarefa["imagem"]["url"];
 						tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 					}
 
-					let $card = __render("card-tarefa", tarefa).data({
+					var $card = __render("card-tarefa", tarefa).data({
 							"tarefa": tarefa["numero"],
 							"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 						});
@@ -77,25 +78,25 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 					}
 
 					// posts
-					let $grid = $(".grid", $card);
+					var $grid = $(".grid", $card);
 
 					if (tarefa["posts"] && tarefa["posts"].length) {
-						const total_posts = tarefa["posts"].length;
-						// const total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
-						const max_media_to_show = (ui["columns"] < 2? 9 : 8);
-						let shown_media_count = 0;
+						var total_posts = tarefa["posts"].length;
+						// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
+						var max_media_to_show = (ui["columns"] < 2? 9 : 8);
+						var shown_media_count = 0;
 
-						const post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
-						const post_types_with_text_preview = ["texto"];
+						var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
+						var post_types_with_text_preview = ["texto"];
 
 						for (var i = 0; i < total_posts; i++) {
-							let post = tarefa["posts"][i];
+							var post = tarefa["posts"][i];
 
 							if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
 								shown_media_count++;
 
-								let tile_type;
-								let media = { };
+								var tile_type;
+								var media = { };
 
 								// imagem
 								if (post_types_with_image_preview.indexOf(post["tipo"]) > -1) {
@@ -126,7 +127,7 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 									media["more"] = "+&thinsp;" + (total_posts - shown_media_count + 1);
 								}
 
-								let $tile = __render(tile_type, media).appendTo($grid);
+								var $tile = __render(tile_type, media).appendTo($grid);
 							}
 						}
 
@@ -141,13 +142,12 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 
 				// Se a Edição estiver encerrada, ordena por número da tarefa.
 				// Se não, ordena por ordem de atualização
-				Stream.layout();
-				Stream.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
+				app.Lista.layout();
+				app.Lista.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
-				if (!!autoload) {
-					tarefa.open(autoload);
-					autoload = null;
+				if (router["path"][1]) {
+					app.Tarefa.open(router["path"][1]);
 				}
 
 				// esconde a tela de loading
@@ -177,10 +177,11 @@ const Stream = (function() { // TODO Passará a se chamar app.Lista
 	};
 })();
 
-const stream = Stream;
+// var stream = app.Lista;
+// var Stream = stream;
 
 // jQuery
-let $stream;
+var $stream;
 
 $(function() {
 	$stream = $("#stream");
@@ -209,21 +210,21 @@ $(function() {
 			event.preventDefault();
 
 			var numero = $(this).data("tarefa");
-			tarefa.open(numero, true);
+			app.Tarefa.open(numero, true);
 		}
 	});
 
-	stream.load();
+	app.Lista.load();
 
 	// ordenação
 	$sidenav.on("click", ".js-stream-sort a", function(event) {
 		event.preventDefault();
 
-		let criteria = $(this).data("sort-by");
+		var criteria = $(this).data("sort-by");
 		$(".js-stream-sort a", $sidenav).removeClass("active");
 		$(this).addClass("active");
 
-		Stream.sort(criteria);
+		app.Lista.sort(criteria);
 		sidenav.close();
 	});
 });

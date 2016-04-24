@@ -9,7 +9,7 @@
 
 // tipos de post: photo, video, vine, text
 
-const NewPost = (function() {
+var NewPost = (function() {
 	return {
 		authorize: function() {
 			// habilita o botão enviar
@@ -23,10 +23,10 @@ const NewPost = (function() {
 			// testa se urls são dos provider aceitos e responde com informações sobre o vídeo,
 			// incluindo a url da miniatura
 			// providers aceitos: youtube, vimeo, vine
-			let media_info = { };
+			var media_info = { };
 
 			function showThumbnail(media_info) {
-				let $thumbnail = $("<img />").attr("src", media_info["thumbnail"]);
+				var $thumbnail = $("<img />").attr("src", media_info["thumbnail"]);
 				$(".js-media-provider", $post).val(media_info["provider"]);
 				$(".js-media-id", $post).val(media_info["id"]);
 				$(".js-media-thumbnail", $post).val(media_info["thumbnail"]);
@@ -36,7 +36,7 @@ const NewPost = (function() {
 			// youtube
 			if (url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)) {
 				// https://www.youtube.com/watch?v=4ct4eNMrJlg
-				let youtube_url = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+				var youtube_url = url.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
 				media_info["provider"] = "youtube";
 				media_info["id"] = youtube_url[1];
 			//	media_info["thumbnail"] = "https://i1.ytimg.com/vi/" + youtube_url[1] + "/maxresdefault.jpg";
@@ -49,7 +49,7 @@ const NewPost = (function() {
 			// vimeo
 			if (url.match(/vimeo\.com/)) {
 				// https://vimeo.com/64279649
-				let vimeo_url = url.match(/\/\/(www\.)?vimeo.com\/(\d+)($|\/)/);
+				var vimeo_url = url.match(/\/\/(www\.)?vimeo.com\/(\d+)($|\/)/);
 				media_info["provider"] = "vimeo";
 				media_info["id"] = vimeo_url[2];
 
@@ -65,7 +65,7 @@ const NewPost = (function() {
 			// vine
 			if (url.match(/vine\.co/)) {
 				// https://vine.co/v/e9IV9OPlrnJ
-				let vine_url = url.match(/\/\/(www\.)?vine\.co\/v\/([^\s&]+)($|\/)/);
+				var vine_url = url.match(/\/\/(www\.)?vine\.co\/v\/([^\s&]+)($|\/)/);
 				media_info["provider"] = "vine";
 				media_info["id"] = vine_url[2];
 
@@ -80,14 +80,14 @@ const NewPost = (function() {
 
 		},
 		open: function(type, numero) {
-			let data = {
+			var data = {
 				"edicao": Lista.Regulamento["edicao"],
 				"numero": (numero || tarefa_active),
 				"user": user["id"],
 				"turma": user["turma"],
 				"token": user["token"]
 			};
-			let $new_post_view = __render("new-post-" + type, data);
+			var $new_post_view = __render("new-post-" + type, data);
 
 			// efeito de abertura
 			// _view.open($post, $newPostView);
@@ -124,7 +124,7 @@ const NewPost = (function() {
 			}
 
 			// view manager
-			view_manager.replace("new-post");
+			router["view-manager"].replace("new-post");
 			history.replaceState({ "view": "new-post", "type": type, "id": data["numero"] }, null, null);
 		},
 /*		send: function() {
@@ -138,15 +138,15 @@ const NewPost = (function() {
 				$post.removeClass("in").empty();
 			});
 
-			view_manager.replace("tarefa");
+			router["view-manager"].replace("tarefa");
 		}
 	};
 })();
 
-const post = NewPost;
+var post = NewPost;
 
 // jQuery
-let $post;
+var $post;
 
 $(function() {
 	$post = $("#new-post");
