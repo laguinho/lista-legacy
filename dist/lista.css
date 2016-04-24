@@ -417,27 +417,27 @@ template {
 @keyframes loading { 0%, 80%, 100% { box-shadow: 0 2.5em 0 -1.3em #ff6d00; } 40% { box-shadow: 0 2.5em 0 0 #ff6d00; } }
 */
 
-.scoreboard {
+.placar {
   margin-bottom: 16px;
 }
 
-.scoreboard ul {
+.placar ul {
   display: table;
   width: 100%;
 }
 
-.scoreboard ul li {
+.placar ul li {
   display: table-cell;
   width: 33.3%;
   height: 64px;
   position: relative;
 }
 
-.scoreboard.zeroed ul li {
+.placar.zeroed ul li {
   height: 32px;
 }
 
-.scoreboard .bar {
+.placar .bar {
   position: absolute;
   top: 0;
   left: 2px;
@@ -446,19 +446,19 @@ template {
   background-color: #37474f;
 }
 
-.scoreboard .bar > div {
+.placar .bar > div {
   position: absolute;
   bottom: -22px;
   left: 4px;
   right: 4px;
 }
 
-.scoreboard .bar strong {
+.placar .bar strong {
   display: inline-block;
   float: left;
 }
 
-.scoreboard .bar .points {
+.placar .bar .points {
   display: inline-block;
   float: right;
 }
@@ -1261,7 +1261,7 @@ colunas
     width: 948px;
   }
 
-  .scoreboard {
+  .placar {
     margin: 0 150px 24px;
   }
 

@@ -1,0 +1,64 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- tarefa
+
+template#view-tarefa
+	header.appbar
+		.container.view-container
+			a.back(href="/tarefas")
+				i.material-icons &#xE5C4;
+				h1.numero.fill(data-fill="titulo")
+	.body
+		.container.view-container
+			.painel
+				.meta
+				.placar
+					ul
+			.posts
+				ul
+				.end
+				
+	button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
+		i.material-icons &#xE145;
+		
+	aside.new-post-sheet(style="display: none;")
+		h1 Postar
+		
+		mixin new-post-link(title, type, icon, icon_source)
+			li
+				a(href="#", data-post-type=type)
+					if (icon_source === "font-awesome")
+						i.fa(class!=icon)
+					else
+						i.material-icons !{icon}
+					= title
+		ul
+			+new-post-link("Foto", "photo", "&#xE251;")
+			+new-post-link("Vídeo", "video", "&#xE02C;")
+			+new-post-link("Vine", "vine", "fa-vine", "font-awesome")
+			+new-post-link("Texto", "text", "&#xE165;")
+
+template#view-tarefa-post-card
+	li.card.card-l.post
+		.header.fill(data-fill="class: turma")
+			.autor.fill(data-fill="autor")
+			.data.fill(data-fill="data-de-postagem-formatada")
+			.turma.turma-background.fill(data-fill="turma-formatada")
+		.body
+			ul.media
+			.caption.fill(data-fill="legenda")
+			.result
+				.status-indicator.fill(data-fill="class: status-class")
+					.status-icon.turma-text.fill(data-fill="status-icon")
+					.status-text.turma-text.fill(data-fill="status")
+				.message.fill(data-fill="message")
+
+template#media-photo
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			a.fill(href="#", target="_blank", data-fill="href: link-original")
+				img.fill(data-fill="src: default")
+
+template#media-video
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			iframe.fill(href="#", target="_blank", data-fill="src: embed", frameborder="0", allowfullscreen)

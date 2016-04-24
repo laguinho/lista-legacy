@@ -21,7 +21,7 @@ app.Placar = function(turmas) {
 		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 		// renderiza e coloca na página
-		let $turma = __render("scoreboard-team", turma);
+		let $turma = __render("placar-turma", turma);
 		$placar.append($turma);
 	});
 
@@ -32,11 +32,9 @@ app.Placar = function(turmas) {
 	}
 };
 
-// const Scoreboard = app.Placar;
-
 // jQuery
 let $placar;
 
 $(function() {
-	$placar = $(".scoreboard ul");
+	$placar = $(".js-placar ul");
 });

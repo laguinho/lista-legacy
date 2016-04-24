@@ -46,15 +46,33 @@ html
 					li
 						a.logout-button.js-logout-trigger(href="#") Logout
 
+		//- main
+		main
+			.container.home-container
+				.placar.js-placar
+					ul
+				#stream
+				.message.js-message
+			.loading.in.fade.fade-in
 
-		include _legacy.html
+		article#tarefa.app-view
+		aside#new-post.app-view
 
+		//- screens
+		include _placar.jade
+		include _lista.jade
+		include _tarefa.jade
+		include _new-post.jade
+		include _login.jade
+		include _common.jade
+
+		//- ui
 		#backdrop
 		#bottom-sheet
 		#toast
 			.message
 			.action
-		
+
 		script.
 			var autoload = false;
 		

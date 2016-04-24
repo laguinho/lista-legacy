@@ -32,300 +32,250 @@
      <li><a href="#" class="logout-button js-logout-trigger">Logout</a></li>
     </ul>
    </section>
-  </nav><main>
-	<div class="container home-container">
-		<div class="scoreboard">
-			<ul>
-				<template id="scoreboard-team">
-					<li class="fill" data-fill="class: turma">
-						<div class="bar turma-background fill" data-fill="style: altura-da-barra">
-							<div class="turma-text">
-								<strong class="fill" data-fill="turma-formatada"></strong>
-								<span class="points fill" data-fill="pontuacao-formatada"></span>
-							</div>
-						</div>
-					</li>
-				</template>
-			</ul>
-		</div>
-		<ul id="stream"></ul>
-		<div class="message js-message"></div>
-	</div>
-	<div class="loading in fade fade-in"></div>
-</main>
-
-<!-- other views -->
-<article id="tarefa" class="app-view"></article>
-
-<aside id="new-post" class="app-view"></aside>
-
-<aside id="login" class="app-view">
-	<header class="appbar">
-		<div class="container modal-container">
-			<a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
-			<h1>Login</h1>
-		</div>
-	</header>
-	<div class="container modal-container">
-		<form method="post" action="/tarefas/login">
-			<div class="form-group">
-				<input type="email" name="email" placeholder="E-mail">
-				<input type="password" name="password" placeholder="Senha">
-			</div>
-			<button class="btn btn-primary">Login</button>
-		</form>
-	</div>
-</aside>
-
-<!-- templates -->
-<template id="card-tarefa">
-	<li class="card tarefa">
-		<a href="#" class="fill" data-fill="href: url">
-			<div class="header">
-				<div class="numero">Tarefa <span class="fill" data-fill="numero"></span></div>
-				<div class="titulo fill" data-fill="titulo"></div>
-				<time class="last-modified fill" data-fill="ultima-postagem"></time>
-			</div>
-			<div class="media media-wrapper fill" data-fill="style: imagem-aspecto">
-				<img class="fill" data-fill="src: imagem-url">
-			</div>
-			<div class="body">
-				<p class="descricao fill" data-fill="descricao"></p>
-				<p class="pontuacao fill" data-fill="pontuacao"></p>
-			</div>
-			<ul class="grid"></ul>
-		</a>
-	</li>
-</template>
-
-<template id="tile-image">
-	<li class="fill" data-fill-field="modifier" data-fill-attr="class">
-		<div class="media-placeholder">
-			<div class="tile tile-image fill" data-fill-field="preview" data-fill-attr="style"></div>
-			<div class="tile tile-more fill" data-fill-field="more"></div>
-			<div class="tile tile-play">
-				<i class="material-icons">&#xE037;</i>
-			</div>
-		</div>
-	</li>
-</template>
-
-<template id="tile-text">
-	<li class="fill" data-fill-field="modifier" data-fill-attr="class">
-		<div class="media-placeholder">
-			<div class="tile tile-text fill" data-fill-field="preview"></div>
-			<div class="tile tile-more fill" data-fill-field="more"></div>
-		</div>
-	</li>
-</template>
-
-<template id="view-tarefa">
-	<header class="appbar">
-		<div class="container view-container">
-			<a class="back" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a>
-			<h1 class="numero fill" data-fill-field="titulo"></h1>
-		</div>
-	</header>
-	<div class="body">
-		<div class="container view-container">
-			<div class="painel">
-				<div class="meta"></div>
-				<div class="placar scoreboard">
-					<ul></ul>
-				</div>
-			</div>
-			<div class="posts">
-				<ul></ul>
-				<div class="end"></div>
-			</div>
-		</div>
-	</div>
-	<button class="fab fab-bottom user-background new-post js-new-post-trigger" title="Novo post"><i class="material-icons">&#xE145;</i></button>
-	<aside class="new-post-sheet" style="display: none;">
-		<h1>Postar</h1>
-		<ul>
-			<li><a href="#" data-post-type="photo"><i class="material-icons">insert_photo</i>Foto</a></li>
-			<li><a href="#" data-post-type="video"><i class="material-icons">movie</i>Vídeo</a></li>
-			<li><a href="#" data-post-type="vine"><i class="fa fa-vine"></i>Vine</a></li>
-			<li><a href="#" data-post-type="text"><i class="material-icons">text_format</i>Texto</a></li>
-			<!--<li class="divider"><a href="#" data-post-type="camera"><i class="material-icons">photo_camera</i>Câmera</a></li>-->
-		</ul>
-	</aside>
-</template>
-
-<template id="view-tarefa-post-card">
-	<li class="card card-l post">
-		<div class="header fill" data-fill-field="turma" data-fill-attr="class">
-			<div class="autor fill" data-fill-field="autor"></div>
-			<div class="data fill" data-fill-field="data-de-postagem-formatada"></div>
-			<div class="turma turma-background fill" data-fill-field="turma-formatada"></div>
-		</div>
-		<div class="body">
-			<ul class="media"></ul>
-			<div class="caption fill" data-fill-field="legenda"></div>
-			<div class="result">
-				<div class="status-indicator fill" data-fill-field="status-class" data-fill-attr="class">
-					<span class="status-icon turma-text fill" data-fill-field="status-icon"></span>
-					<span class="status-text turma-text fill" data-fill-field="status"></span>
-				</div>
-				<div class="message fill" data-fill-field="mensagem"></div>
-			</div>
-		</div>
-	</li>
-</template>
-
-<template id="media-photo">
-	<li>
-		<div class="media-wrapper fill" data-fill-field="padding-aspecto" data-fill-attr="style">
-			<a href="#" target="_blank" class="fill" data-fill-field="link-original" data-fill-attr="href">
-				<img class="fill" data-fill-field="default" data-fill-attr="src">
-			</a>
-		</div>
-	</li>
-</template>
-
-<template id="media-video">
-	<li>
-		<div class="media-wrapper fill" data-fill-field="padding-aspecto" data-fill-attr="style">
-			<iframe class="fill" data-fill-field="embed" data-fill-attr="src" frameborder="0" allowfullscreen></iframe>
-		</div>
-	</li>
-</template>
-
-<!-- new post templates -->
-<template id="new-post-photo">
-	<header class="appbar user-background">
-		<div class="container modal-container">
-			<a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
-			<a class="submit disabled" href="/">Enviar</a>
-			<h1>Postar foto</h1>
-		</div>
-	</header>
-	<div class="body">
-		<div class="container modal-container">
-			<form method="post" action="/-/lista/novo" enctype="multipart/form-data">
-				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xci">
-				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
-				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
-				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
-				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
-
-				<input type="hidden" name="type" value="imagem">
-				<input type="file" name="file[]" multiple accept="image/gif, image/jpg, image/jpeg, image/png" id="form-file" style="display: none;">
-
-				<div id="dropzone">
-					<ul id="board"></ul>
-					<label class="file-placeholder" for="form-file"><i class="material-icons">photo_library</i>Selecionar imagens&hellip;</label>
-				</div>
-				<p class="form-field" style="margin-bottom: 16px; font-size: 12px; text-align: center;">(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)</p>
-
-				<div class="form-field">
-					<label for="form-caption">Legenda</label>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
-				</div>
-			</form>
-		</div>
-	</div>
-</template>
-
-<template id="new-post-video">
-	<header class="appbar user-background">
-		<div class="container modal-container">
-			<a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
-			<a class="submit disabled" href="/">Enviar</a>
-			<h1>Postar vídeo</h1>
-		</div>
-	</header>
-	<div class="body">
-		<div class="container modal-container">
-			<form method="post" action="/-/lista/novo">
-				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xci">
-				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
-				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
-				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
-				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
-				<input type="hidden" name="type" value="media">
-
-				<div class="form-field">
-					<label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link aqui</label>
-					<label for="form-media-url" class="media-preview js-media-preview"></label>
-					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" value="" placeholder="https://" autocomplete="off">
-					<input class="js-media-provider" type="hidden" name="media-provider">
-					<input class="js-media-id" type="hidden" name="media-id">
-					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
-				</div>
-				<div class="form-field">
-					<label for="form-caption">Legenda</label>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do vídeo (elenco, edição, cinegrafia etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
-				</div>
-			</form>
-		</div>
-	</div>
-</template>
-
-<template id="new-post-vine">
-	<header class="appbar user-background">
-		<div class="container modal-container">
-			<a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
-			<a class="submit disabled" href="/">Enviar</a>
-			<h1>Postar Vine</h1>
-		</div>
-	</header>
-	<div class="body">
-		<div class="container modal-container">
-			<form method="post" action="/-/lista/novo">
-				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xci">
-				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
-				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
-				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
-				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
-				<input type="hidden" name="type" value="media">
-
-				<div class="form-field">
-					<label for="form-media-url">Cole o link do Vine aqui</label>
-					<label for="form-media-url" class="media-preview js-media-preview"></label>
-					<input id="form-media-url" class="text-field user-border-focus js-media-url-input" type="text" name="url" placeholder="https://vine.co/v/" autocomplete="off">
-					<input class="js-media-provider" type="hidden" name="media-provider">
-					<input class="js-media-id" type="hidden" name="media-id">
-					<input class="js-media-thumbnail" type="hidden" name="media-thumbnail">
-				</div>
-				<div class="form-field">
-					<label for="form-caption">Legenda</label>
-					<textarea id="form-caption" class="text-field user-border-focus js-caption-input" name="caption" placeholder="Coloque aqui os créditos do Vine (elenco etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
-				</div>
-			</form>
-		</div>
-	</div>
-</template>
-
-<template id="new-post-text">
-	<header class="appbar user-background">
-		<div class="container modal-container">
-			<a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
-			<a class="submit disabled" href="/">Enviar</a>
-			<h1>Postar texto</h1>
-		</div>
-	</header>
-	<div class="body">
-		<div class="container modal-container">
-			<form method="post" action="/-/lista/novo">
-				<input type="hidden" name="action" value="post">
-				<input type="hidden" name="edition" value="xci">
-				<input type="hidden" name="tarefa" value="" class="fill" data-fill-field="numero" data-fill-attr="value">
-				<input type="hidden" name="user" value="" class="fill" data-fill-field="user" data-fill-attr="value">
-				<input type="hidden" name="turma" value="" class="fill" data-fill-field="turma" data-fill-attr="value">
-				<input type="hidden" name="token" value="" class="fill" data-fill-field="token" data-fill-attr="value">
-
-				<input type="hidden" name="type" value="texto">
-				<textarea class="text-field user-border-focus js-text-input" name="caption" placeholder="Digite o texto aqui"></textarea>
-			</form>
-		</div>
-	</div>
-</template>
-
+  </nav>
+  <main>
+   <div class="container home-container">
+    <div class="placar js-placar">
+     <ul></ul>
+    </div>
+    <div id="stream"></div>
+    <div class="message js-message"></div>
+   </div>
+   <div class="loading in fade fade-in"></div>
+  </main>
+  <article id="tarefa" class="app-view"></article>
+  <aside id="new-post" class="app-view"></aside>
+  <template id="placar-turma">
+   <li data-fill="class: turma" class="fill">
+    <div data-fill="style: altura-da-barra" class="bar turma-background fill">
+     <div class="turma-text"><strong data-fill="turma-formatada" class="fill"></strong><span data-fill="pontuacao-formatada" class="points fill"></span></div>
+    </div>
+   </li>
+  </template>
+  <template id="tile-image">
+   <li data-fill="class: modifier" class="fill">
+    <div class="media-placeholder">
+     <div data-fill="style: preview" class="tile tile-image fill"></div>
+     <div data-fill="more" class="tile tile-more fill"></div>
+     <div class="tile tile-play"><i class="material-icons">&#xE037;</i></div>
+    </div>
+   </li>
+  </template>
+  <template id="tile-text">
+   <li data-fill="class: modifier" class="fill">
+    <div class="media-placeholder">
+     <div data-fill="preview" class="tile tile-text fill"></div>
+     <div data-fill="more" class="tile tile-more fill"></div>
+    </div>
+   </li>
+  </template>
+  <template id="view-tarefa">
+   <header class="appbar">
+    <div class="container view-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i>
+      <h1 data-fill="titulo" class="numero fill"></h1></a></div>
+   </header>
+   <div class="body">
+    <div class="container view-container">
+     <div class="painel">
+      <div class="meta"></div>
+      <div class="placar">
+       <ul></ul>
+      </div>
+     </div>
+     <div class="posts">
+      <ul></ul>
+      <div class="end"></div>
+     </div>
+    </div>
+   </div>
+   <button title="Novo post" class="fab fab-bottom user-background new-post js-new-post-trigger"><i class="material-icons">&#xE145;</i></button>
+   <aside style="display: none;" class="new-post-sheet">
+    <h1>Postar</h1>
+    <ul>
+         <li><a href="#" data-post-type="photo"><i class="material-icons">&#xE251;</i>Foto</a></li>
+         <li><a href="#" data-post-type="video"><i class="material-icons">&#xE02C;</i>Vídeo</a></li>
+         <li><a href="#" data-post-type="vine"><i class="fa fa-vine"></i>Vine</a></li>
+         <li><a href="#" data-post-type="text"><i class="material-icons">&#xE165;</i>Texto</a></li>
+    </ul>
+   </aside>
+  </template>
+  <template id="view-tarefa-post-card">
+   <li class="card card-l post">
+    <div data-fill="class: turma" class="header fill">
+     <div data-fill="autor" class="autor fill"></div>
+     <div data-fill="data-de-postagem-formatada" class="data fill"></div>
+     <div data-fill="turma-formatada" class="turma turma-background fill"></div>
+    </div>
+    <div class="body">
+     <ul class="media"></ul>
+     <div data-fill="legenda" class="caption fill"></div>
+     <div class="result">
+      <div data-fill="class: status-class" class="status-indicator fill">
+       <div data-fill="status-icon" class="status-icon turma-text fill"></div>
+       <div data-fill="status" class="status-text turma-text fill"></div>
+      </div>
+      <div data-fill="message" class="message fill"></div>
+     </div>
+    </div>
+   </li>
+  </template>
+  <template id="media-photo">
+   <li>
+    <div data-fill="style: padding-aspecto" class="media-wrapper fill"><a href="#" target="_blank" data-fill="href: link-original" class="fill"><img data-fill="src: default" class="fill"></a></div>
+   </li>
+  </template>
+  <template id="media-video">
+   <li>
+    <div data-fill="style: padding-aspecto" class="media-wrapper fill">
+     <iframe href="#" target="_blank" data-fill="src: embed" frameborder="0" allowfullscreen class="fill"></iframe>
+    </div>
+   </li>
+  </template>
+  <template id="new-post-photo">
+     <header class="appbar user-background">
+      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+       <h1>Postar foto</h1>
+      </div>
+     </header>
+   <div class="body">
+    <div class="container modal-container">
+     <form method="post" action="/-/lista/novo" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="post">
+        <input type="hidden" name="edicao" value="" data-fill="value: edicao" class="fill">
+        <input type="hidden" name="tarefa" value="" data-fill="value: numero" class="fill">
+        <input type="hidden" name="user" value="" data-fill="value: user" class="fill">
+        <input type="hidden" name="turma" value="" data-fill="value: turma" class="fill">
+        <input type="hidden" name="token" value="" data-fill="value: token" class="fill">
+        <input type="hidden" name="type" value="imagem">
+      <input id="form-file" type="file" multiple accept="image/gif, image/jpg, image/jpeg, image/png" style="display: none;">
+      <div id="dropzone">
+       <ul id="board"></ul>
+       <label for="form-file" class="file-placeholder"><i class="material-icons">&#xE413;</i>Selecionar imagens&hellip;</label>
+      </div>
+      <p style="margin-bottom: 16px; font-size: 12px; text-align: center;" class="form-field"></p>(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)
+      <div class="form-field">
+       <label for="form-caption">Legenda</label>
+       <textarea id="form-caption" name="caption" placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)" class="text-field user-border-focus js-caption-input"></textarea>
+      </div>
+     </form>
+    </div>
+   </div>
+  </template>
+  <template id="new-post-video">
+     <header class="appbar user-background">
+      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+       <h1>Postar vídeo</h1>
+      </div>
+     </header>
+   <div class="body">
+    <div class="container modal-container">
+     <form method="post" action="/-/lista/novo" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="post">
+        <input type="hidden" name="edicao" value="" data-fill="value: edicao" class="fill">
+        <input type="hidden" name="tarefa" value="" data-fill="value: numero" class="fill">
+        <input type="hidden" name="user" value="" data-fill="value: user" class="fill">
+        <input type="hidden" name="turma" value="" data-fill="value: turma" class="fill">
+        <input type="hidden" name="token" value="" data-fill="value: token" class="fill">
+        <input type="hidden" name="type" value="media">
+      <div class="form-field">
+       <label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link aqui</label>
+       <label for="form-media-url" class="media-preview js-media-preview"></label>
+       <input id="form-media-url" type="text" name="url" value="" placeholder="https://" autocomplete="off" class="text-field user-border-focus js-media-url-input">
+       <input type="hidden" name="media-provider" class="js-media-provider">
+       <input type="hidden" name="media-id" class="js-media-id">
+       <input type="hidden" name="media-thumbnail" class="js-media-thumbnail">
+      </div>
+      <div class="form-field">
+       <label for="form-caption">Legenda</label>
+       <textarea id="form-caption" name="caption" placeholder="Coloque aqui os créditos do vídeo (elenco, edição, cinegrafia etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)" class="text-field user-border-focus js-caption-input"></textarea>
+      </div>
+     </form>
+    </div>
+   </div>
+  </template>
+  <template id="new-post-vine">
+     <header class="appbar user-background">
+      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+       <h1>Postar Vine</h1>
+      </div>
+     </header>
+   <div class="body">
+    <div class="container modal-container">
+     <form method="post" action="/-/lista/novo" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="post">
+        <input type="hidden" name="edicao" value="" data-fill="value: edicao" class="fill">
+        <input type="hidden" name="tarefa" value="" data-fill="value: numero" class="fill">
+        <input type="hidden" name="user" value="" data-fill="value: user" class="fill">
+        <input type="hidden" name="turma" value="" data-fill="value: turma" class="fill">
+        <input type="hidden" name="token" value="" data-fill="value: token" class="fill">
+        <input type="hidden" name="type" value="media">
+      <div class="form-field">
+       <label for="form-media-url">Cole o link do Vine aqui</label>
+       <label for="form-media-url" class="media-preview js-media-preview"></label>
+       <input id="form-media-url" type="text" name="url" value="" placeholder="https://vine.co/v/" autocomplete="off" class="text-field user-border-focus js-media-url-input">
+       <input type="hidden" name="media-provider" class="js-media-provider">
+       <input type="hidden" name="media-id" class="js-media-id">
+       <input type="hidden" name="media-thumbnail" class="js-media-thumbnail">
+      </div>
+      <div class="form-field">
+       <label for="form-caption">Legenda</label>
+       <textarea id="form-caption" name="caption" placeholder="Coloque aqui os créditos do Vine (elenco etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)" class="text-field user-border-focus js-caption-input"></textarea>
+      </div>
+     </form>
+    </div>
+   </div>
+  </template>
+  <template id="new-post-text">
+     <header class="appbar user-background">
+      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+       <h1>Postar texto</h1>
+      </div>
+     </header>
+   <div class="body">
+    <div class="container modal-container">
+     <form method="post" action="/-/lista/novo" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="post">
+        <input type="hidden" name="edicao" value="" data-fill="value: edicao" class="fill">
+        <input type="hidden" name="tarefa" value="" data-fill="value: numero" class="fill">
+        <input type="hidden" name="user" value="" data-fill="value: user" class="fill">
+        <input type="hidden" name="turma" value="" data-fill="value: turma" class="fill">
+        <input type="hidden" name="token" value="" data-fill="value: token" class="fill">
+        <input type="hidden" name="type" value="texto">
+      <textarea id="form-caption" name="caption" placeholder="Digite o texto aqui" class="text-field user-border-focus js-caption-input"></textarea>
+     </form>
+    </div>
+   </div>
+  </template>
+  <aside id="login" class="app-view">
+   <header class="appbar">
+    <div class="container modal-container"><a href="/" class="back"><i class="material-icons">&#xE5C4;</i></a>
+     <h1>Login</h1>
+    </div>
+   </header>
+   <div class="container modal-container">
+    <form method="post" action="/tarefas/login">
+     <div class="form-group">
+      <input type="email" name="email" placeholder="E-mail">
+      <input type="password" name="password" placeholder="Senha">
+     </div>
+     <button class="btn btn-primary">Login</button>
+    </form>
+   </div>
+  </aside>
+  <template id="card-tarefa">
+   <li class="card tarefa"><a href="#" data-fill="href: url" class="fill">
+     <div class="header">
+      <div class="numero">Tarefa&nbsp;<span data-fill="numero" class="fill"></span></div>
+      <div data-fill="titulo" class="titulo fill"></div>
+      <time data-fill="ultima-postagem" class="last-modified fill"></time>
+     </div>
+     <div data-fill="style: imagem-aspecto" class="media media-wrapper fill"><img data-fill="src: imagem-url" class="fill"></div>
+     <div class="body">
+      <div data-fill="descricao" class="descricao fill"></div>
+      <div data-fill="pontuacao" class="pontuacao fill"></div>
+     </div>
+     <ul class="grid"></ul></a></li>
+  </template>
   <div id="backdrop"></div>
   <div id="bottom-sheet"></div>
   <div id="toast">

@@ -263,7 +263,7 @@ app.Placar = function (turmas) {
 		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
 		// renderiza e coloca na página
-		var $turma = __render("scoreboard-team", turma);
+		var $turma = __render("placar-turma", turma);
 		$placar.append($turma);
 	});
 
@@ -274,13 +274,11 @@ app.Placar = function (turmas) {
 	}
 };
 
-// const Scoreboard = app.Placar;
-
 // jQuery
 var $placar = undefined;
 
 $(function () {
-	$placar = $(".scoreboard ul");
+	$placar = $(".js-placar ul");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -966,7 +964,7 @@ var tarefa = (function () {
 				pontuacao_da_turma["pontos"] = placar_da_tarefa[turma] > 0 ? placar_da_tarefa[turma] : 0;
 				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-				var $turma = __render("scoreboard-team", pontuacao_da_turma);
+				var $turma = __render("placar-turma", pontuacao_da_turma);
 				$placar_da_tarefa.append($turma);
 			});
 		},

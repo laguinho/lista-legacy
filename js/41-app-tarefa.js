@@ -172,7 +172,7 @@ const tarefa = (function() {
 				pontuacao_da_turma["pontos"] = (placar_da_tarefa[turma] > 0? placar_da_tarefa[turma] : 0);
 				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-				let $turma = __render("scoreboard-team", pontuacao_da_turma);
+				let $turma = __render("placar-turma", pontuacao_da_turma);
 				$placar_da_tarefa.append($turma);
 			});
 		},
