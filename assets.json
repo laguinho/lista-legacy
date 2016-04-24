@@ -27,12 +27,22 @@
 		"production": "https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.24/webfontloader.js",
 		"integrity": ""
 	},
-
-	"autosize": {
-		"development": "./-/assets/autosize-3.0.15.min.js",
-		"production": "https://cdnjs.cloudflare.com/ajax/libs/autosize.js/3.0.15/autosize.min.js"
+	"vine": {
+		"development": "./-/assets/vine-embed.js",
+		"production": "https://platform.vine.co/static/scripts/embed.js"
 	},
-
+	"file-api": {
+		"development": "./-/assets/FileAPI-2.0.19.min.js",
+		"production": "https://assets.laguinho.org/libs/file-api/2.0.19/dist/FileAPI.min.js"
+	},
+	"file-api-exif": {
+		"development": "./-/assets/FileAPI.exif.js",
+		"production": "https://assets.laguinho.org/libs/file-api/2.0.19/plugins/FileAPI.exif.js"
+	},
+	"slip": {
+		"development": "./-/assets/slip-1.2.0.js",
+		"production": "hhttps://assets.laguinho.org/libs/slip/1.2.0/slip.js"
+	},
 	"lista-js": {
 		"development": "./-/assets/lista.min.js",
 		"production": ""
