@@ -2,41 +2,15 @@
 // app /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// appbar
-.home-appbar { color: #fff; z-index: 99; }
-.home-appbar .title { display: block; position: absolute; top: 0; bottom: 0; left: 56px; right: 56px;
-	font: 400 16px/56px montserrat, sans-serif; text-align: center; text-transform: uppercase; }
-
-// #appbar #marquee { display: block; position: absolute; top: 10px; bottom: 10px; left: 50%; width: 220px; margin-left: -110px; text-align: center; }
-// #appbar #marquee .logo { font: 400 16px/40px montserrat, sans-serif; text-transform: uppercase; }
-
-#appbar .appbar-icon { display: block; position: absolute; top: 0; bottom: 0; font-size: 36px; width: 56px; padding-top: 16px; text-align: center; }
-#appbar .appbar-icon i { font-size: 24px; }
-	#appbar #sidenav-trigger { left: 0; }
-	#appbar #sidenav-trigger h2 { font: 400 14px montserrat, sans-serif; text-transform: uppercase; display: none; }
-	#appbar #search-trigger { right: 0; }
-
-.appbar-placeholder { height: 56px; }
-
-.sidenav-trigger { display: block; position: absolute; top: 0; left: 0; width: 56px; height: 56px; color: #fff; text-align: center; }
-.sidenav-trigger i { line-height: 56px; }
-
-@media (min-width: $column-width * 4) {
-	.home-appbar .title { left: 64px; right: 64px; }
-	.home-appbar .title, .home-appbar .sidenav-trigger i { line-height: 64px; }
-	.sidenav-trigger { width: 64px; height: 64px; }
-}
-
-
 // sidenav
-#sidenav { position: fixed; top: 0; bottom: 0; left: 0; width: 240px; background-color: #fff; z-index: 112; overflow: auto;
-	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12); -webkit-overflow-scrolling: touch;
-	will-change: transform; transform: translateX(-250px); transform-style: preserve-3d; transition: transform cubic-bezier(.4,0,.2,1) .2s;
-	-webkit-transform: translateX(-250px); -webkit-transform-style: preserve-3d; -webkit-transition: -webkit-transform cubic-bezier(.4,0,.2,1) .2s; }
-#sidenav.in { transform: translateX(0); -webkit-transform: translateX(0); }
+// #sidenav { position: fixed; top: 0; bottom: 0; left: 0; width: 240px; background-color: #fff; z-index: 112; overflow: auto;
+// 	box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12); -webkit-overflow-scrolling: touch;
+// 	will-change: transform; transform: translateX(-250px); transform-style: preserve-3d; transition: transform cubic-bezier(.4,0,.2,1) .2s;
+// 	-webkit-transform: translateX(-250px); -webkit-transform-style: preserve-3d; -webkit-transition: -webkit-transform cubic-bezier(.4,0,.2,1) .2s; }
+// #sidenav.in { transform: translateX(0); -webkit-transform: translateX(0); }
 
-#sidenav header { padding: 12px 0 12px 16px; position: relative; }
-#sidenav header .logo { width: 64px; height: 64px; padding: 12px 12px 0 0; }
+// #sidenav header { padding: 12px 0 12px 16px; position: relative; }
+// #sidenav header .logo { width: 64px; height: 64px; padding: 12px 12px 0 0; }
 
 #sidenav section h1 { padding: 16px 16px 8px 16px; font-size: inherit; color: rgba(0,0,0,.54); }
 #sidenav .level-1 > li > a { display: block; padding: 12px 16px; line-height: 24px; color: #000; position: relative; -webkit-tap-highlight-color: rgba(0,0,0,.1); }
@@ -63,13 +37,6 @@
 	transition-property: transform, opacity; transition-timing-function: cubic-bezier(.4,0,.2,1); transition-duration: .2s;
 	-webkit-transition-property: -webkit-transform, opacity; -webkit-transition-timing-function: cubic-bezier(.4,0,.2,1); -webkit-transition-duration: .2s; }
 .app-view > .body { position: fixed; top: 56px; bottom: 0; left: 0; right: 0; padding-top: 8px; overflow: auto; -webkit-overflow-scrolling: touch; }
-
-
-// backdrop
-#backdrop { position: fixed; top: 0; bottom: 0; left: 0; right: 0; background-color: transparent; z-index: 110; visibility: hidden;
-	transition: background-color cubic-bezier(.4,0,.2,1) .2s; }
-/* #backdrop.in { background-color: rgba(236,239,241,.93); visibility: visible; } */
-#backdrop.in { background-color: rgba(0,0,0,.4); visibility: visible; }
 
 
 // loading

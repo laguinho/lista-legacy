@@ -1,24 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // new post ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// * NewPost.authorize()
-// * NewPost.deauthorize()
-// * NewPost.getThumbnail()
-// * NewPost.open()
-// * NewPost.close()
+// * app.Post.authorize()
+// * app.Post.deauthorize()
+// * app.Post.getThumbnail()
+// * app.Post.open()
+// * app.Post.close()
 
 // tipos de post: photo, video, vine, text
 
-var NewPost = (function() {
+app.Post = (function() {
 	return {
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.authorize()
 		authorize: function() {
 			// habilita o botão enviar
 			$(".submit", $post).removeClass("disabled");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.deauthorize()
 		deauthorize: function() {
 			// desabilita o botão "enviar"
 			$(".submit", $post).addClass("disabled");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.getThumbnail()
 		getThumbnail: function(url) {
 			// testa se urls são dos provider aceitos e responde com informações sobre o vídeo,
 			// incluindo a url da miniatura
@@ -79,6 +88,9 @@ var NewPost = (function() {
 			}
 
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.open()
 		open: function(type, numero) {
 			var data = {
 				"edicao": Lista.Regulamento["edicao"],
@@ -114,7 +126,7 @@ var NewPost = (function() {
 			} else
 
 			if (type === "text") {
-				$(".js-text-input", $post).focus().on("keyup", function() {
+				$(".js-caption-input", $post).focus().on("keyup", function() {
 					if ($(this).val().length > 0) {
 						NewPost.authorize();
 					} else {
@@ -127,9 +139,13 @@ var NewPost = (function() {
 			router["view-manager"].replace("new-post");
 			history.replaceState({ "view": "new-post", "type": type, "id": data["numero"] }, null, null);
 		},
-/*		send: function() {
 
-},*/
+		// send: function() {
+		//
+		// },
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.close()
 		close: function() {
 		//	tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
@@ -178,16 +194,17 @@ $(function() {
 		var data = $("form", $post).serialize();
 
 		$(".submit", $post).addClass("disabled").html("Enviando&hellip;");
+
 		$.post("/-/lista/novo", data).done(function(response) {
-			if (response["response"]["status"] === 200) {
+			if (response["meta"]["status"] === 200) {
 				NewPost.close();
-				tarefa.render(response["data"]);
-				toast.open(response["response"]["message"]);
+				app.Tarefa.render(response["data"]);
+				UI.toast.open(response["meta"]["message"]);
 				navigator.vibrate(800);
 
 				tarefas[response["data"]["numero"]] = response["data"];
 			} else {
-				toast.open((response["response"]["message"]? response["response"]["message"] : "Ocorreu um erro. Tente novamente"));
+				UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
 			}
 		}).fail(function() {
 			toast.open("Ocorreu um erro. Tente novamente");
@@ -198,3 +215,5 @@ $(function() {
 		NewPost.close();
 	});
 });
+
+var NewPost = app.Post;

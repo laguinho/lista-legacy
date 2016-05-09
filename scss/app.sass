@@ -1,1 +1,32 @@
+@import "reset"
+@import "helpers"
+@import "ui-settings"
+
+body
+	padding-top: $appbar-height
+	background-color: $background-color
+
+body, input, button, textarea, select
+	font: 16px roboto, arial, helvetica, sans-serif
+	color: #666
+
+@media (min-width: $column-width * 4)
+	body
+		padding-top: $appbar-height-bigger
+
 @import "legacy"
+
+
+// app
+@import "app/turmas"
+@import "app/placar"
+@import "app/lista"
+@import "app/tarefa"
+
+// ui
+@import "ui/containers"
+@import "ui/appbar"
+@import "ui/sidenav"
+@import "ui/card"
+@import "ui/backdrop"
+@import "ui/toast"

@@ -1,0 +1,90 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// appbar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.ui-appbar
+	position: fixed
+	top: 0
+	left: 0
+	right: 0
+	height: $appbar-height
+	background-color: #fff
+	color: #666
+	box-shadow: 0 0 2px rgba(0,0,0,.12)
+	z-index: 1
+	-webkit-user-select: none
+
+	.ui-pointer &
+		-webkit-user-select: inherit
+
+	.container
+		height: 100%
+		// padding: 0 8px
+
+	h1
+		font-size: 20px
+		// line-height: 56px
+
+	// appbar button
+	.appbar-btn
+		display: block
+		position: absolute
+		width: $appbar-height
+		height: $appbar-height
+		text-align: center
+
+		i
+			line-height: $appbar-height
+
+	.appbar-left-btn
+		top: 0
+		left: 0
+
+	@media (min-width: $column-width * 4)
+		height: 64px
+
+		h1
+			font-size: 24px
+			// line-height: 64px
+
+		.appbar-btn
+			width: $appbar-height-bigger
+			height: $appbar-height-bigger
+
+			i
+				line-height: $appbar-height-bigger
+
+		.appbar-left-btn
+			left: 8px
+
+	&.lista-appbar
+		// border-bottom: 1px solid #efefef
+		background-color: #fff
+		color: #444
+		box-shadow: 0 0 2px rgba(0,0,0,.137255)
+		z-index: 99
+
+		h1
+			display: block
+			position: absolute
+			top: 50%
+			left: 50%
+			width: 200px
+			height: 20px
+			font: 400 16px/20px montserrat, sans-serif !important
+			letter-spacing: 2px
+			word-spacing: 2px
+			text-align: center
+			text-transform: uppercase
+			opacity: .7
+			transform: translateX(-100px) translateY(-10px)
+
+			span
+				display: inline-block
+				padding-left: 2px
+				background-image: linear-gradient(-45deg, #ff553b, #fdbc41, #9ed150, #00eaff, #3f8fff, #ff85ff, #ff553b)
+				-webkit-background-clip: text
+				-webkit-text-fill-color: transparent
+
+@media (min-width: $column-width * 4)
+	//

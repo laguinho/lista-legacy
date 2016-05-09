@@ -98,6 +98,9 @@ app.Tarefa = (function() {
 	}
 
 	return {
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.open()
 		open: function(numero, pushState) {
 			var DATA = tarefas[numero];
 			tarefa_active = numero;
@@ -105,7 +108,7 @@ app.Tarefa = (function() {
 			$tarefa.addClass("in");
 			app.Tarefa.render(DATA);
 
-			$tarefa.reflow().addClass("slide").one("transitionend", function() {
+			$tarefa.reflow().addClass("slide-x").one("transitionend", function() {
 			//	var view_theme_color = $(".appbar", $tarefa).css("background-color");
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
@@ -116,6 +119,9 @@ app.Tarefa = (function() {
 			router["view-manager"].replace("tarefa");
 			if (pushState) { router.go("/tarefas/" + DATA["numero"], { "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"]); }
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.render()
 		render: function(DATA) {
 			var $tarefa_view = __render("view-tarefa", DATA);
 
@@ -178,12 +184,15 @@ app.Tarefa = (function() {
 				$placar_da_tarefa.append($turma);
 			});
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.close()
 		close: function(pushState) {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
 			$body.removeClass("no-scroll tarefa-active");
-			$tarefa.removeClass("slide").one("transitionend", function() {
+			$tarefa.removeClass("slide-x").one("transitionend", function() {
 				$tarefa.removeClass("in").empty();
 			});
 
@@ -207,7 +216,7 @@ $(function() {
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
 		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
-	}).on("click", ".card.tarefa a", function(event) {
+	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
 		}

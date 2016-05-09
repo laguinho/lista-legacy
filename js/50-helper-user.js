@@ -23,7 +23,7 @@ var login = (function() {
 
 $(function() {
 	$login = $("#login");
-	$(".js-login-trigger", $sidenav).on("click", function(event) {
+	$(".js-login-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
 		sidenav.close();
 		login.show();
@@ -43,7 +43,7 @@ $(function() {
 				$body.addClass("signed-in user-" + user["turma"]);
 				login.hide();
 				setTimeout(function() {
-					toast.open("Olá " + user["name"] + "!");
+					UI.toast.show("Olá " + user["name"] + "!");
 				}, 500);
 			} else {
 				$(".form-group", $login).addClass("animated shake");
@@ -52,7 +52,7 @@ $(function() {
 		});
 	});
 
-	$(".js-logout-trigger", $sidenav).on("click", function(event) {
+	$(".js-logout-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
 		$body.removeClass("signed-in user-" + user["turma"]);
 
@@ -68,17 +68,13 @@ $(function() {
 
 		sidenav.close();
 		setTimeout(function() {
-			toast.open("Sessão encerrada!");
+			UI.toast.show("Sessão encerrada!");
 		}, 500);
 	});
 });
 
-
-/*
-	----------------------------------------------------------------------------------------------------
-	user -----------------------------------------------------------------------------------------------
-
-*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var user = {
 	"id": null,
@@ -89,14 +85,15 @@ var user = {
 	"signed-in": false
 };
 
-if(localStorage && localStorage.getItem("user")) {
+if (localStorage && localStorage.getItem("user")) {
 	user = JSON.parse(localStorage.getItem("user"));
+
 	$(function() {
-		if(user["id"] !== null) {
+		if (user["id"] !== null) {
 			$body.addClass("signed-in user-" + user["turma"]);
 			setTimeout(function() {
-				toast.open("Olá " + user["name"] + "!");
-			}, 4000);
+				UI.toast.show("Olá " + user["name"] + "!");
+			}, 3000);
 		}
 	});
 }

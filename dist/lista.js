@@ -5,7 +5,6 @@ Lista.Regulamento = [ ];
 Lista.Tarefas = [ ];
 
 var app = [ ];
-var UI = [ ], $ui = [ ];
 
 // laguinho.org/tarefas
 var tarefas = { };
@@ -17,23 +16,9 @@ $(function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // elements & helpers //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var $window, $body;
-var timeout = [];
+var timeout = [ ];
 var $theme_color, theme_color = { };
 var tarefa_active;
-
-$(function() {
-	$window = $(window);
-	$body = $(document.body);
-	$theme_color = $("meta[name='theme-color']");
-	theme_color["original"] = $theme_color.attr("content");
-});
-
-$.fn.reflow = function() {
-//	$body.offset().left;
-	var offset = $body.offset().left;
-	return $(this);
-};
 
 function rand(min, max) { return Math.random() * (max - min) + min; }
 
@@ -43,9 +28,6 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
 var ui  = { };
-
-// confere se a interação é por toque ou mouse
-ui["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
 
 function setLayoutProperties() {
 	// largura da coluna, incluindo margem
@@ -248,7 +230,8 @@ function __render(template, data) {
 
 app.Placar = function(turmas) {
 	// soma a pontuação de cada turma para obter o total de pontos
-	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0});
+	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0 });
+	total_de_pontos = (total_de_pontos? total_de_pontos : 0);
 
 	// limpa o placar
 	$placar.empty();
@@ -347,27 +330,29 @@ moment.locale('pt-br', {
 
 var router = { };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // navigation mode
 router["path"] = location.pathname.split("/");
 
-if (router["path"][0] === "tarefas") {
+if (router["path"][1] === "tarefas") {
 	router["navigation-mode"] = "path";
 } else {
 	router["navigation-mode"] = "hash";
 	router["path"] = location.hash.split("/");
-	router["path"].splice(0, 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // go
 router["go"] = function(path, object, title) {
-	if (router["navigation-mode"] === "path" && pushState) {
+	if (router["navigation-mode"] === "path") {
 		history.pushState(object, title, path);
 	} else {
 		history.pushState(object, title, "#" + path);
-		location.hash = path;
+		// location.hash = path;
 	}
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // build link
 router["build-link"] = function(path) {
 	if (router["navigation-mode"] === "path") {
@@ -379,6 +364,7 @@ router["build-link"] = function(path) {
 	return link;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // view manager
 router["current-view"] = ["home"];
 router["view-manager"] = (function() {
@@ -389,8 +375,8 @@ router["view-manager"] = (function() {
 		},
 		remove: function(view) {
 			router["current-view"] = $.grep(router["current-view"], function(value) {
-  				return value !== view;
-  			});
+				return value !== view;
+			});
 			// console.log(router["current-view"]);
 		},
 		replace: function(view) {
@@ -399,6 +385,8 @@ router["view-manager"] = (function() {
 		}
 	};
 })();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 window.addEventListener("popstate", function(event) {
 	// console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
@@ -428,46 +416,113 @@ window.addEventListener("popstate", function(event) {
 
 });
 
-/*
-
-states:
-* tarefa
-* home
-* new-post
-* bottomsheet
-
-*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// states:
+// * tarefa
+// * home
+// * new-post
+// * bottomsheet
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// sidenav /////////////////////////////////////////////////////////////////////////////////////////
+// ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+var UI = { }, $ui = [ ];
+UI["data"] = [ ];
 
-var sidenav = (function() {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// body
+UI.body = (function() {
 	return {
-		open: function() {
-			backdrop.show();
-			$sidenav.addClass("in");
-			$body.addClass("no-scroll");
-
-			$backdrop.on("hide", sidenav.close);
+		lock: function() {
+			$ui["body"].addClass("no-scroll");
 		},
-		close: function() {
-			$body.removeClass("no-scroll");
-			$sidenav.removeClass("in");
-			backdrop.hide();
+		unlock: function() {
+			$ui["body"].removeClass("no-scroll");
 		}
 	};
 })();
 
-// jQuery
-var $sidenav;
+$(function() {
+	$ui["body"] = $(document.body);
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// backdrop
+UI.backdrop = (function() {
+	return {
+		show: function() {
+			$ui["backdrop"].addClass("in");
+		},
+		hide: function() {
+			$ui["backdrop"].removeClass("in").off("hide");
+		}
+	};
+})();
 
 $(function() {
-	$sidenav = $("#sidenav");
-	$(".sidenav-trigger").on("click", function(event) {
-		event.preventDefault();
-		sidenav.open();
+	$ui["backdrop"] = $(".js-ui-backdrop");
+	$ui["backdrop"].on("click", function() {
+		$ui["backdrop"].trigger("hide");
 	});
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// sidenav
+UI.sidenav = (function() {
+	return {
+		open: function() {
+			UI.body.lock();
+			UI.backdrop.show();
+			$ui["sidenav"].addClass("in");
+
+			$ui["backdrop"].on("hide", UI.sidenav.close);
+		},
+		close: function() {
+			$ui["sidenav"].removeClass("in");
+			UI.backdrop.hide();
+			UI.body.unlock();
+		}
+	};
+})();
+
+$(function() {
+	$ui["sidenav"] = $(".js-ui-sidenav");
+
+	$(".js-sidenav-trigger").on("click", function(event) {
+		event.preventDefault();
+		UI.sidenav.open();
+	});
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// reflow
+$.fn.reflow = function() {
+	var offset = $ui["body"].offset().left;
+	return $(this);
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// confere se a interação é por toque ou mouse
+UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
+$(function() {
+	$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// legacy
+
+var $window, $body;
+
+$(function() {
+	$ui["window"] = $(window);
+
+	$window = $ui["window"];
+	$body = $ui["body"];
+	$theme_color = $("meta[name='theme-color']");
+	theme_color["original"] = $theme_color.attr("content");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -516,87 +571,80 @@ $(function() {
 UI.toast = (function() {
 	return {
 		// TODO nova sintaxe, usar template e __render
-		// show: function(config) {
-		// 	if (typeof config === "object") {
-		//
-		// 	} else {
-		//
-		// 	}
-		// },
-		//
-		// dismiss: function() {
-		//
-		// },
+		show: function(config) {
+			if (typeof config === "object") {
+				$ui.toast["message"].html(config["message"]);
+				$ui.toast["action"].html((config["action"]? config["action"] : ""));
+				$ui.toast.addClass("in").reflow().addClass("slide");
+				$body.addClass("toast-active");
+
+				// TODO: .fab-bottom transform: translateY
+
+				$ui.toast.on("click", UI.toast.dismiss);
+				$ui.toast["action"].on("click", config["callback"]);
+
+				clearTimeout(timeout["toast"]);
+
+				if (!config["persistent"]) {
+					$ui.toast.removeClass("stream-only");
+					timeout["toast"] = setTimeout(UI.toast.dismiss, (config["timeout"]? config["timeout"] : 6000));
+				} else {
+					$ui.toast.addClass("stream-only");
+				}
+			} else {
+				UI.toast.show({
+					"message": config
+				})
+			}
+		},
+
+		dismiss: function() {
+			$ui.toast.removeClass("slide").one("transitionend", function() {
+				$body.removeClass("toast-active");
+				$ui.toast.removeClass("in stream-only");
+
+				$ui.toast["message"].empty();
+				$ui.toast["action"].empty();
+			});
+			clearTimeout(timeout["toast"]);
+		},
 
 		// TODO DEPRECATED
 		open: function(message, action, callback, persistent) {
 		// open: function(message, addClass) {
-			$toast.message.html(message);
-			$toast.action.html((action? action : ""));
-			$toast.addClass("in").reflow().addClass("slide");
+			$ui.toast.message.html(message);
+			$ui.toast.action.html((action? action : ""));
+			$ui.toast.addClass("in").reflow().addClass("slide");
 			$body.addClass("toast-active");
 
 			// TODO: .fab-bottom transform: translateY
 
-			$toast.on("click", toast.close);
-			$toast.action.on("click", callback);
+			$ui.toast.on("click", toast.close);
+			$ui.toast.action.on("click", callback);
 
 			clearTimeout(timeout["toast"]);
 			if (!persistent) {
-				$toast.removeClass("stream-only");
+				$ui.toast.removeClass("stream-only");
 				timeout["toast"] = setTimeout(toast.close, 6500);
 			} else {
-				$toast.addClass("stream-only");
+				$ui.toast.addClass("stream-only");
 			}
-		},
-
-		close: function() {
-			$body.removeClass("toast-active");
-			$toast.removeClass("slide").one("transitionend", function() {
-				$toast.removeClass("in").removeClass();
-				$toast.message.empty();
-			});
-			clearTimeout(timeout["toast"]);
 		}
 	};
 })();
 
 var toast = UI.toast;
+toast.close = UI.toast.dismiss;
 
 // var snackbar = toast;
 
 // jQuery
-var $toast;
+$ui.toast = [ ];
 
 $(function() {
-	$toast = $("#toast");
-	$toast.message = $(".message", $toast);
-	$toast.action = $(".action", $toast);
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// backdrop ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var backdrop = (function() {
-	return {
-		show: function() {
-			$backdrop.addClass("in");
-		},
-		hide: function() {
-			$backdrop.removeClass("in").off("hide");
-		}
-	};
-})();
-
-// jQuery
-var $backdrop;
-
-$(function() {
-	$backdrop = $("#backdrop");
-	$backdrop.on("click", function() {
-		$backdrop.trigger("hide");
-	});
+	$ui.toast = $(".js-ui-toast");
+	$ui.toast["message"] = $(".toast-message", $ui.toast);
+	$ui.toast["action"] = $(".toast-action", $ui.toast);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -627,7 +675,7 @@ app.Lista = (function() {
 
 				// Se tiver mensagem especificada, insere ela
 				if (data["meta"]["mensagem"]) {
-					$(".js-message").html(data["meta"]["mensagem"]);
+					$(".js-mensagem-final").html(data["meta"]["mensagem"]);
 				}
 
 				// Se prazo de postagem estiver encerrado, insere classe no <body>
@@ -747,8 +795,8 @@ app.Lista = (function() {
 				app.Lista.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
-				if (router["path"][1]) {
-					app.Tarefa.open(router["path"][1]);
+				if (router["path"][2]) {
+					app.Tarefa.open(router["path"][2]);
 				}
 
 				// esconde a tela de loading
@@ -788,7 +836,7 @@ $(function() {
 	$stream = $("#stream");
 	$stream.loading = $("main .loading");
 	$stream.isotope({
-		"itemSelector": ".card",
+		"itemSelector": ".card-tarefa",
 		"transitionDuration": ".8s",
 		"getSortData": {
 			"date": ".last-modified",
@@ -806,7 +854,7 @@ $(function() {
 		}
 	});
 
-	$stream.on("click", ".card.tarefa:not(.fantasma)", function(event) {
+	$stream.on("click", ".card-tarefa:not(.fantasma)", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
 
@@ -818,15 +866,15 @@ $(function() {
 	app.Lista.load();
 
 	// ordenação
-	$sidenav.on("click", ".js-stream-sort a", function(event) {
+	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {
 		event.preventDefault();
 
 		var criteria = $(this).data("sort-by");
-		$(".js-stream-sort a", $sidenav).removeClass("active");
+		$(".js-stream-sort a", $ui["sidenav"]).removeClass("active");
 		$(this).addClass("active");
 
 		app.Lista.sort(criteria);
-		sidenav.close();
+		UI.sidenav.close();
 	});
 });
 
@@ -930,6 +978,9 @@ app.Tarefa = (function() {
 	}
 
 	return {
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.open()
 		open: function(numero, pushState) {
 			var DATA = tarefas[numero];
 			tarefa_active = numero;
@@ -937,7 +988,7 @@ app.Tarefa = (function() {
 			$tarefa.addClass("in");
 			app.Tarefa.render(DATA);
 
-			$tarefa.reflow().addClass("slide").one("transitionend", function() {
+			$tarefa.reflow().addClass("slide-x").one("transitionend", function() {
 			//	var view_theme_color = $(".appbar", $tarefa).css("background-color");
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
@@ -948,6 +999,9 @@ app.Tarefa = (function() {
 			router["view-manager"].replace("tarefa");
 			if (pushState) { router.go("/tarefas/" + DATA["numero"], { "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"]); }
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.render()
 		render: function(DATA) {
 			var $tarefa_view = __render("view-tarefa", DATA);
 
@@ -1010,12 +1064,15 @@ app.Tarefa = (function() {
 				$placar_da_tarefa.append($turma);
 			});
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.close()
 		close: function(pushState) {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
 			$body.removeClass("no-scroll tarefa-active");
-			$tarefa.removeClass("slide").one("transitionend", function() {
+			$tarefa.removeClass("slide-x").one("transitionend", function() {
 				$tarefa.removeClass("in").empty();
 			});
 
@@ -1039,7 +1096,7 @@ $(function() {
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
 		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
-	}).on("click", ".card.tarefa a", function(event) {
+	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
 		}
@@ -1049,24 +1106,33 @@ $(function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // new post ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// * NewPost.authorize()
-// * NewPost.deauthorize()
-// * NewPost.getThumbnail()
-// * NewPost.open()
-// * NewPost.close()
+// * app.Post.authorize()
+// * app.Post.deauthorize()
+// * app.Post.getThumbnail()
+// * app.Post.open()
+// * app.Post.close()
 
 // tipos de post: photo, video, vine, text
 
-var NewPost = (function() {
+app.Post = (function() {
 	return {
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.authorize()
 		authorize: function() {
 			// habilita o botão enviar
 			$(".submit", $post).removeClass("disabled");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.deauthorize()
 		deauthorize: function() {
 			// desabilita o botão "enviar"
 			$(".submit", $post).addClass("disabled");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.getThumbnail()
 		getThumbnail: function(url) {
 			// testa se urls são dos provider aceitos e responde com informações sobre o vídeo,
 			// incluindo a url da miniatura
@@ -1127,6 +1193,9 @@ var NewPost = (function() {
 			}
 
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.open()
 		open: function(type, numero) {
 			var data = {
 				"edicao": Lista.Regulamento["edicao"],
@@ -1162,7 +1231,7 @@ var NewPost = (function() {
 			} else
 
 			if (type === "text") {
-				$(".js-text-input", $post).focus().on("keyup", function() {
+				$(".js-caption-input", $post).focus().on("keyup", function() {
 					if ($(this).val().length > 0) {
 						NewPost.authorize();
 					} else {
@@ -1175,9 +1244,13 @@ var NewPost = (function() {
 			router["view-manager"].replace("new-post");
 			history.replaceState({ "view": "new-post", "type": type, "id": data["numero"] }, null, null);
 		},
-/*		send: function() {
 
-},*/
+		// send: function() {
+		//
+		// },
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// NewPost.close()
 		close: function() {
 		//	tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
@@ -1226,16 +1299,17 @@ $(function() {
 		var data = $("form", $post).serialize();
 
 		$(".submit", $post).addClass("disabled").html("Enviando&hellip;");
+
 		$.post("/-/lista/novo", data).done(function(response) {
-			if (response["response"]["status"] === 200) {
+			if (response["meta"]["status"] === 200) {
 				NewPost.close();
-				tarefa.render(response["data"]);
-				toast.open(response["response"]["message"]);
+				app.Tarefa.render(response["data"]);
+				UI.toast.open(response["meta"]["message"]);
 				navigator.vibrate(800);
 
 				tarefas[response["data"]["numero"]] = response["data"];
 			} else {
-				toast.open((response["response"]["message"]? response["response"]["message"] : "Ocorreu um erro. Tente novamente"));
+				UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
 			}
 		}).fail(function() {
 			toast.open("Ocorreu um erro. Tente novamente");
@@ -1246,6 +1320,8 @@ $(function() {
 		NewPost.close();
 	});
 });
+
+var NewPost = app.Post;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // login ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1272,7 +1348,7 @@ var login = (function() {
 
 $(function() {
 	$login = $("#login");
-	$(".js-login-trigger", $sidenav).on("click", function(event) {
+	$(".js-login-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
 		sidenav.close();
 		login.show();
@@ -1292,7 +1368,7 @@ $(function() {
 				$body.addClass("signed-in user-" + user["turma"]);
 				login.hide();
 				setTimeout(function() {
-					toast.open("Olá " + user["name"] + "!");
+					UI.toast.show("Olá " + user["name"] + "!");
 				}, 500);
 			} else {
 				$(".form-group", $login).addClass("animated shake");
@@ -1301,7 +1377,7 @@ $(function() {
 		});
 	});
 
-	$(".js-logout-trigger", $sidenav).on("click", function(event) {
+	$(".js-logout-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
 		$body.removeClass("signed-in user-" + user["turma"]);
 
@@ -1317,17 +1393,13 @@ $(function() {
 
 		sidenav.close();
 		setTimeout(function() {
-			toast.open("Sessão encerrada!");
+			UI.toast.show("Sessão encerrada!");
 		}, 500);
 	});
 });
 
-
-/*
-	----------------------------------------------------------------------------------------------------
-	user -----------------------------------------------------------------------------------------------
-
-*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 var user = {
 	"id": null,
@@ -1338,14 +1410,15 @@ var user = {
 	"signed-in": false
 };
 
-if(localStorage && localStorage.getItem("user")) {
+if (localStorage && localStorage.getItem("user")) {
 	user = JSON.parse(localStorage.getItem("user"));
+
 	$(function() {
-		if(user["id"] !== null) {
+		if (user["id"] !== null) {
 			$body.addClass("signed-in user-" + user["turma"]);
 			setTimeout(function() {
-				toast.open("Olá " + user["name"] + "!");
-			}, 4000);
+				UI.toast.show("Olá " + user["name"] + "!");
+			}, 3000);
 		}
 	});
 }

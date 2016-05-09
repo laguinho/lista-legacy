@@ -4,7 +4,8 @@
 
 app.Placar = function(turmas) {
 	// soma a pontuação de cada turma para obter o total de pontos
-	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0});
+	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0 });
+	total_de_pontos = (total_de_pontos? total_de_pontos : 0);
 
 	// limpa o placar
 	$placar.empty();

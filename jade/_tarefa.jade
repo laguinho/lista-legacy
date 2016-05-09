@@ -2,13 +2,13 @@
 //- tarefa
 
 template#view-tarefa
-	header.appbar
-		.container.view-container
-			a.back(href="/tarefas")
+	header.tarefa-appbar.ui-appbar
+		.tarefa-container.container
+			a.appbar-btn.appbar-left-btn.back(href="/tarefas")
 				i.material-icons &#xE5C4;
-				h1.numero.fill(data-fill="titulo")
+			h1.fill(data-fill="titulo")
 	.body
-		.container.view-container
+		.tarefa-container.container
 			.painel
 				.meta
 				.placar
@@ -38,7 +38,7 @@ template#view-tarefa
 			+new-post-link("Texto", "text", "&#xE165;")
 
 template#view-tarefa-post-card
-	li.card.card-l.post
+	li.ui-card.card.card-l.post
 		.header.fill(data-fill="class: turma")
 			.autor.fill(data-fill="autor")
 			.data.fill(data-fill="data-de-postagem-formatada")

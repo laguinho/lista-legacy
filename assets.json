@@ -41,7 +41,7 @@
 	},
 	"slip": {
 		"development": "./-/assets/slip-1.2.0.js",
-		"production": "hhttps://assets.laguinho.org/libs/slip/1.2.0/slip.js"
+		"production": "https://assets.laguinho.org/libs/slip/1.2.0/slip.js"
 	},
 	"lista-js": {
 		"development": "./-/assets/lista.min.js",

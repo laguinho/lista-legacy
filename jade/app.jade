@@ -15,48 +15,29 @@ html
 	body
 		
 		//- appbar
-		header#appbar.home-appbar.appbar
-			.container.home-container
-				h1.title Lista de Tarefas
-				a.sidenav-trigger(href="#")
+		header.lista-appbar.ui-appbar
+			.lista-container.container
+				h1
+					span Lista de Tarefas
+				a.appbar-btn.appbar-left-btn.sidenav-trigger.js-sidenav-trigger(href="#")
 					i.material-icons &#xE5D2;
 	
 		//- sidenav
-		nav#sidenav
-			header
-				img.logo(src="https://assets.laguinho.org/laguinho.svg")
-			section.sort-navigation
-				h1 Ordenar por
-				ul.level-1.js-stream-sort
-					li
-						a.active(href="#", data-sort-by="date")
-							i.material-icons &#xE5CA;
-							| Última postagem
-					li
-						a(href="#", data-sort-by="tarefa")
-							i.material-icons &#xE5CA;
-							| Número da tarefa
-			section.secondary-navigation
-				ul.level-1
-					li
-						a(href="https://twitter.com/listadetarefas", target="_blank") Twitter
-							i.material-icons &#xE879;
-					li
-						a.login-button.js-login-trigger(href="#") Login
-					li
-						a.logout-button.js-logout-trigger(href="#") Logout
+		include _sidenav.jade
 
-		//- main
-		main
-			.container.home-container
+		//- lista
+		main.lista-capa
+			.lista-container.container
 				.placar.js-placar
 					ul
-				#stream
-				.message.js-message
-			.loading.in.fade.fade-in
+				#stream.app-lista
+				.mensagem-final.js-mensagem-final
 
-		article#tarefa.app-view
-		aside#new-post.app-view
+			.loading.in.fade.fade-in
+		
+		//- tarefa
+		article#tarefa.app-tarefa.app-view
+		aside#new-post.app-post.app-view
 
 		//- screens
 		include _placar.jade
@@ -67,14 +48,11 @@ html
 		include _common.jade
 
 		//- ui
-		#backdrop
-		#bottom-sheet
-		#toast
-			.message
-			.action
+		.ui-backdrop.js-ui-backdrop
+		#bottom-sheet.ui-bottomsheet.js-ui-bottomsheet
+		.ui-toast.js-ui-toast
+			.toast-message
+			.toast-action
 
-		script.
-			var autoload = false;
-		
 		//- scripts
 		include _scripts.jade

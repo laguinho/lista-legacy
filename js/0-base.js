@@ -5,7 +5,6 @@ Lista.Regulamento = [ ];
 Lista.Tarefas = [ ];
 
 var app = [ ];
-var UI = [ ], $ui = [ ];
 
 // laguinho.org/tarefas
 var tarefas = { };
@@ -17,23 +16,9 @@ $(function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // elements & helpers //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var $window, $body;
-var timeout = [];
+var timeout = [ ];
 var $theme_color, theme_color = { };
 var tarefa_active;
-
-$(function() {
-	$window = $(window);
-	$body = $(document.body);
-	$theme_color = $("meta[name='theme-color']");
-	theme_color["original"] = $theme_color.attr("content");
-});
-
-$.fn.reflow = function() {
-//	$body.offset().left;
-	var offset = $body.offset().left;
-	return $(this);
-};
 
 function rand(min, max) { return Math.random() * (max - min) + min; }
 
@@ -43,9 +28,6 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
 var ui  = { };
-
-// confere se a interação é por toque ou mouse
-ui["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
 
 function setLayoutProperties() {
 	// largura da coluna, incluindo margem

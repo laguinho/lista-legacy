@@ -26,7 +26,7 @@ app.Lista = (function() {
 
 				// Se tiver mensagem especificada, insere ela
 				if (data["meta"]["mensagem"]) {
-					$(".js-message").html(data["meta"]["mensagem"]);
+					$(".js-mensagem-final").html(data["meta"]["mensagem"]);
 				}
 
 				// Se prazo de postagem estiver encerrado, insere classe no <body>
@@ -146,8 +146,8 @@ app.Lista = (function() {
 				app.Lista.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
-				if (router["path"][1]) {
-					app.Tarefa.open(router["path"][1]);
+				if (router["path"][2]) {
+					app.Tarefa.open(router["path"][2]);
 				}
 
 				// esconde a tela de loading
@@ -187,7 +187,7 @@ $(function() {
 	$stream = $("#stream");
 	$stream.loading = $("main .loading");
 	$stream.isotope({
-		"itemSelector": ".card",
+		"itemSelector": ".card-tarefa",
 		"transitionDuration": ".8s",
 		"getSortData": {
 			"date": ".last-modified",
@@ -205,7 +205,7 @@ $(function() {
 		}
 	});
 
-	$stream.on("click", ".card.tarefa:not(.fantasma)", function(event) {
+	$stream.on("click", ".card-tarefa:not(.fantasma)", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
 
@@ -217,14 +217,14 @@ $(function() {
 	app.Lista.load();
 
 	// ordenação
-	$sidenav.on("click", ".js-stream-sort a", function(event) {
+	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {
 		event.preventDefault();
 
 		var criteria = $(this).data("sort-by");
-		$(".js-stream-sort a", $sidenav).removeClass("active");
+		$(".js-stream-sort a", $ui["sidenav"]).removeClass("active");
 		$(this).addClass("active");
 
 		app.Lista.sort(criteria);
-		sidenav.close();
+		UI.sidenav.close();
 	});
 });

@@ -4,27 +4,29 @@
 
 var router = { };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // navigation mode
 router["path"] = location.pathname.split("/");
 
-if (router["path"][0] === "tarefas") {
+if (router["path"][1] === "tarefas") {
 	router["navigation-mode"] = "path";
 } else {
 	router["navigation-mode"] = "hash";
 	router["path"] = location.hash.split("/");
-	router["path"].splice(0, 1);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // go
 router["go"] = function(path, object, title) {
-	if (router["navigation-mode"] === "path" && pushState) {
+	if (router["navigation-mode"] === "path") {
 		history.pushState(object, title, path);
 	} else {
 		history.pushState(object, title, "#" + path);
-		location.hash = path;
+		// location.hash = path;
 	}
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // build link
 router["build-link"] = function(path) {
 	if (router["navigation-mode"] === "path") {
@@ -36,6 +38,7 @@ router["build-link"] = function(path) {
 	return link;
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // view manager
 router["current-view"] = ["home"];
 router["view-manager"] = (function() {
@@ -46,8 +49,8 @@ router["view-manager"] = (function() {
 		},
 		remove: function(view) {
 			router["current-view"] = $.grep(router["current-view"], function(value) {
-  				return value !== view;
-  			});
+				return value !== view;
+			});
 			// console.log(router["current-view"]);
 		},
 		replace: function(view) {
@@ -56,6 +59,8 @@ router["view-manager"] = (function() {
 		}
 	};
 })();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 window.addEventListener("popstate", function(event) {
 	// console.log("location: " + document.location + ", state: " + JSON.stringify(event.state));
@@ -85,12 +90,9 @@ window.addEventListener("popstate", function(event) {
 
 });
 
-/*
-
-states:
-* tarefa
-* home
-* new-post
-* bottomsheet
-
-*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// states:
+// * tarefa
+// * home
+// * new-post
+// * bottomsheet

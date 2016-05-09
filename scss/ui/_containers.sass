@@ -1,0 +1,33 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// containers //////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// o "container" define apenas as propriedades comuns dos containers:
+// margin, padding e position
+.container
+	margin: 0 auto
+	padding: 0 8px
+	position: relative
+
+// "lista-container" é o container da página inicial.
+// a largura dele é sempre exata, de acordo com o número de colunas
+.lista-container
+
+// "tarefa-container" é o container das views de tarefas.
+// leva em consideração a coluna de conteúdo mais larga
+.tarefa-container
+	max-width: ($large-column-width * 2) + $column-width + 16px
+
+.modal-container
+	max-width: 480px
+
+// cria containers com largura apropriada ao número de colunas, até 8 colunas.
+// quando há apenas 1 coluna, ela ocupa 100% da largura.
+$columns: 2
+
+@while $columns <= 8
+	@media (min-width: $column-width * $columns)
+		.lista-container
+			width: $column-width * $columns
+
+	$columns: $columns + 1

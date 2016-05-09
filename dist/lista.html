@@ -11,12 +11,12 @@
   <link rel="manifest" href="/manifest.json">
  </head>
  <body>
-  <header id="appbar" class="home-appbar appbar">
-   <div class="container home-container">
-    <h1 class="title">Lista de Tarefas</h1><a href="#" class="sidenav-trigger"><i class="material-icons">&#xE5D2;</i></a>
+  <header class="lista-appbar ui-appbar">
+   <div class="lista-container container">
+    <h1><span>Lista de Tarefas</span></h1><a href="#" class="appbar-btn appbar-left-btn sidenav-trigger js-sidenav-trigger"><i class="material-icons">&#xE5D2;</i></a>
    </div>
   </header>
-  <nav id="sidenav">
+  <nav id="sidenav" class="ui-sidenav js-ui-sidenav">
    <header><img src="https://assets.laguinho.org/laguinho.svg" class="logo"></header>
    <section class="sort-navigation">
     <h1>Ordenar por</h1>
@@ -33,18 +33,18 @@
     </ul>
    </section>
   </nav>
-  <main>
-   <div class="container home-container">
+  <main class="lista-capa">
+   <div class="lista-container container">
     <div class="placar js-placar">
      <ul></ul>
     </div>
-    <div id="stream"></div>
-    <div class="message js-message"></div>
+    <div id="stream" class="app-lista"></div>
+    <div class="mensagem-final js-mensagem-final"></div>
    </div>
    <div class="loading in fade fade-in"></div>
   </main>
-  <article id="tarefa" class="app-view"></article>
-  <aside id="new-post" class="app-view"></aside>
+  <article id="tarefa" class="app-tarefa app-view"></article>
+  <aside id="new-post" class="app-post app-view"></aside>
   <template id="placar-turma">
    <li data-fill="class: turma" class="fill">
     <div data-fill="style: altura-da-barra" class="bar turma-background fill">
@@ -70,12 +70,13 @@
    </li>
   </template>
   <template id="view-tarefa">
-   <header class="appbar">
-    <div class="container view-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i>
-      <h1 data-fill="titulo" class="numero fill"></h1></a></div>
+   <header class="tarefa-appbar ui-appbar">
+    <div class="tarefa-container container"><a href="/tarefas" class="appbar-btn appbar-left-btn back"><i class="material-icons">&#xE5C4;</i></a>
+     <h1 data-fill="titulo" class="fill"></h1>
+    </div>
    </header>
    <div class="body">
-    <div class="container view-container">
+    <div class="tarefa-container container">
      <div class="painel">
       <div class="meta"></div>
       <div class="placar">
@@ -100,7 +101,7 @@
    </aside>
   </template>
   <template id="view-tarefa-post-card">
-   <li class="card card-l post">
+   <li class="ui-card card card-l post">
     <div data-fill="class: turma" class="header fill">
      <div data-fill="autor" class="autor fill"></div>
      <div data-fill="data-de-postagem-formatada" class="data fill"></div>
@@ -133,7 +134,7 @@
   </template>
   <template id="new-post-photo">
      <header class="appbar user-background">
-      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+      <div class="container modal-container"><a href="/tarefas" class="appbar-btn appbar-left-btn back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
        <h1>Postar foto</h1>
       </div>
      </header>
@@ -163,7 +164,7 @@
   </template>
   <template id="new-post-video">
      <header class="appbar user-background">
-      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+      <div class="container modal-container"><a href="/tarefas" class="appbar-btn appbar-left-btn back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
        <h1>Postar vídeo</h1>
       </div>
      </header>
@@ -195,7 +196,7 @@
   </template>
   <template id="new-post-vine">
      <header class="appbar user-background">
-      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+      <div class="container modal-container"><a href="/tarefas" class="appbar-btn appbar-left-btn back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
        <h1>Postar Vine</h1>
       </div>
      </header>
@@ -227,7 +228,7 @@
   </template>
   <template id="new-post-text">
      <header class="appbar user-background">
-      <div class="container modal-container"><a href="/tarefas" class="back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
+      <div class="container modal-container"><a href="/tarefas" class="appbar-btn appbar-left-btn back"><i class="material-icons">&#xE5C4;</i></a><a href="/tarefas" class="submit disabled">Enviar</a>
        <h1>Postar texto</h1>
       </div>
      </header>
@@ -263,7 +264,7 @@
    </div>
   </aside>
   <template id="card-tarefa">
-   <li class="card tarefa"><a href="#" data-fill="href: url" class="fill">
+   <li class="ui-card card-tarefa"><a href="#" data-fill="href: url" class="fill">
      <div class="header">
       <div class="numero">Tarefa&nbsp;<span data-fill="numero" class="fill"></span></div>
       <div data-fill="titulo" class="titulo fill"></div>
@@ -276,16 +277,12 @@
      </div>
      <ul class="grid"></ul></a></li>
   </template>
-  <div id="backdrop"></div>
-  <div id="bottom-sheet"></div>
-  <div id="toast">
-   <div class="message"></div>
-   <div class="action"></div>
+  <div class="ui-backdrop js-ui-backdrop"></div>
+  <div id="bottom-sheet" class="ui-bottomsheet js-ui-bottomsheet"></div>
+  <div class="ui-toast js-ui-toast">
+   <div class="toast-message"></div>
+   <div class="toast-action"></div>
   </div>
-  <script>
-   var autoload = false;
-   
-  </script>
   <script src="./-/assets/jquery-2.2.3.min.js"></script>
   <script src="./-/assets/isotope-2.2.2.pkgd.min.js"></script>
   <script src="./-/assets/moment-2.13.0.min.js"></script>
