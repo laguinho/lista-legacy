@@ -129,7 +129,7 @@ gulp.task("deploy-css", deployCSS);
 var uglify = require("gulp-uglify");
 
 CONFIG.js = { };
-CONFIG.js.source = ["./js/**/**.js"];
+CONFIG.js.source = JSON.parse(fs.readFileSync("modules.json"));
 CONFIG.js.watch = CONFIG.js.source;
 
 function stageJS() {

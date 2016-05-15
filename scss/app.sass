@@ -4,7 +4,10 @@
 
 body
 	padding-top: $appbar-height
-	background-color: $background-color
+	// background-color: $background-color
+	background: lighten($background-color, 1%) url("http://www.transparenttextures.com/patterns/green-gobbler.png") top center
+	// http://www.transparenttextures.com/patterns/green-gobbler.png
+	// http://www.transparenttextures.com/patterns/inspiration-geometry.png
 
 body, input, button, textarea, select
 	font: 16px roboto, arial, helvetica, sans-serif
@@ -14,7 +17,7 @@ body, input, button, textarea, select
 	body
 		padding-top: $appbar-height-bigger
 
-@import "legacy"
+@import "DEPRECATED"
 
 
 // app
@@ -29,4 +32,5 @@ body, input, button, textarea, select
 @import "ui/sidenav"
 @import "ui/card"
 @import "ui/backdrop"
+@import "ui/bottomsheet"
 @import "ui/toast"

@@ -29,39 +29,6 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
 var ui  = { };
 
-function setLayoutProperties() {
-	// largura da coluna, incluindo margem
-	var column_width = 316;
-
-	// guarda dimensão da janela
-	ui["window"] = { };
-	ui["window"]["width"] = $window.width();
-	ui["window"]["height"] = $window.height();
-
-	// calcula número de colunas
-	ui["columns"] = Math.floor(ui["window"]["width"] / column_width);
-
-	// adiciona classe no <body> de acordo com a quantidade de colunas
-	var layout_class;
-	if(ui["columns"] === 1) layout_class = "single-column";
-	else if(ui["columns"] === 2) layout_class = "dual-column";
-	else layout_class = "multi-column";
-	$body.removeClass("single-column dual-column multi-column").addClass(layout_class);
-}
-
-$(document).on("ready", setLayoutProperties);
-$(window).on("resize", setLayoutProperties);
-
-// scroll
-ui["scroll-position"] = { };
-
-function setScrollPosition() {
-	ui["scroll-position"]["top"] = $window.scrollTop();
-	ui["scroll-position"]["bottom"] = ui["scroll-position"]["top"] + ui["window"]["height"];
-}
-
-$(document).on("ready", setScrollPosition);
-$(window).on("scroll", setScrollPosition);
 
 /*
 
@@ -104,6 +71,7 @@ api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // template engine /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 var $templates = { };
 
 $(function() {
@@ -126,73 +94,32 @@ function __render(template, data) {
 	$.fn.fillBlanks = function() {
 		var $blank = $(this);
 		var fill = $blank.data("fill");
-		var object = $blank.data("fill-object");
-		var field = $blank.data("fill-field"); // deprecated
-		var attr = $blank.data("fill-attr"); // deprecated
-		var content;
 
-		// nova sintaxe
-		if (fill) {
-			var rules = fill.split(",");
-			for (var i = 0; i < rules.length; i++) {
-				var pair = rules[i].split(":");
-				var dest = (pair[1]? pair[0].trim() : "html");
-				var source = (pair[1]? pair[1].trim() : pair[0]);
-				var value;
+		var rules = fill.split(",");
+		for (var i = 0; i < rules.length; i++) {
+			var pair = rules[i].split(":");
+			var dest = (pair[1]? pair[0].trim() : "html");
+			var source = (pair[1]? pair[1].trim() : pair[0]);
+			var value = data[source];
 
-				source = source.split("/");
-				if (source.length > 1) {
-					// TODO aceitar mais de um nível
-					// var final_source = "data";
-					// for (var level in source) {
-					// 	final_source += "[source[" + level + "]]";
-					// }
-					// console.log(source);
-					// console.log(final_source, data[final_source]);
-					// console.log(data[source[0]][source[1]]);
-					value = data[source[0]][source[1]];
-				} else {
-					value = data[source];
+			source = source.split("/");
+			if (source.length > 1) {
+				value = data[source[0]];
+
+				for (var j = 1; j < source.length; j++) {
+					value = value[source[j]];
 				}
-
-				if (value) {
-					if (dest === "class") {
-						$blank.addClass(value);
-					} else if (dest === "html") {
-						$blank.html(value);
-					} else if (dest === "value") {
-						$blank.val(value);
-					} else {
-						$blank.attr(dest, value);
-					}
-				} else {
-					var if_null = $blank.data("fill-null");
-					if (if_null === "hide") {
-						$blank.hide();
-					} else if(if_null === "remove") {
-						$blank.remove();
-					}
-				}
-
-				// console.log("[" + dest + ": " + source + "]", data, data[source]);
-			}
-		}
-
-		// deprecated
-		else {
-			if (!object) {
-				content = data[field];
-			} else if (object && data[object]) {
-				content = data[object][field];
 			}
 
-			if (content) {
-				if (attr === "class") {
-					$blank.addClass(content);
-				} else if (attr) {
-					$blank.attr(attr, content);
+			if (typeof value !== "undefined" && value !== null) {
+				if (dest === "class") {
+					$blank.addClass(value);
+				} else if (dest === "html") {
+					$blank.html(value);
+				} else if (dest === "value") {
+					$blank.val(value);
 				} else {
-					$blank.html(content);
+					$blank.attr(dest, value);
 				}
 			} else {
 				var if_null = $blank.data("fill-null");
@@ -207,9 +134,6 @@ function __render(template, data) {
 		$blank
 			.removeClass("fill")
 			.removeAttr("data-fill")
-			.removeAttr("data-fill-object")
-			.removeAttr("data-fill-field")
-			.removeAttr("data-fill-attr")
 			.removeAttr("data-fill-null");
 	};
 
@@ -225,110 +149,9 @@ function __render(template, data) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// placar //////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-app.Placar = function(turmas) {
-	// soma a pontuação de cada turma para obter o total de pontos
-	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0 });
-	total_de_pontos = (total_de_pontos? total_de_pontos : 0);
-
-	// limpa o placar
-	$placar.empty();
-
-	// adiciona cada turma no placar
-	$.each(turmas, function(index, turma) {
-		// calcula % da turma em relação ao total de pontos
-		var percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / total_de_pontos : 0);
-
-		// formata os dados
-		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
-		turma["turma-formatada"] = turma["turma"].toUpperCase();
-		turma["pontos"] = turma["pontos"];
-		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-		// renderiza e coloca na página
-		var $turma = __render("placar-turma", turma);
-		$placar.append($turma);
-	});
-
-	if (total_de_pontos === 0) {
-		$placar.parent().addClass("zeroed");
-	} else {
-		$placar.parent().removeClass("zeroed");
-	}
-};
-
-// jQuery
-var $placar;
-
-$(function() {
-	$placar = $(".js-placar ul");
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// fonts ///////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-WebFont.load({
-	timeout: 10000,
-	google: { families: ["Material Icons", "Roboto:400,400italic,500:latin", "Montserrat::latin"] },
-	custom: { families: ["FontAwesome"], urls: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"] },
-	active: function() {
-		$(function() { app.Lista.layout(); });
-	}
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// momentjs ////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-moment.locale('pt-br', {
-		months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-		monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
-		weekdays : 'domingo_segunda-feira_terça-feira_quarta-feira_quinta-feira_sexta-feira_sábado'.split('_'),
-		weekdaysShort : 'dom_seg_ter_qua_qui_sex_sáb'.split('_'),
-		weekdaysMin : 'dom_2ª_3ª_4ª_5ª_6ª_sáb'.split('_'),
-		longDateFormat : {
-			LT : 'HH:mm',
-			LTS : 'HH:mm:ss',
-			L : 'DD/MM/YYYY',
-			LL : 'D [de] MMMM [de] YYYY',
-			LLL : 'D [de] MMMM [de] YYYY [às] HH:mm',
-			LLLL : 'dddd, D [de] MMMM [de] YYYY [às] HH:mm'
-		},
-		calendar : {
-			sameDay: '[hoje às] LT',
-			nextDay: '[amanhã às] LT',
-			nextWeek: 'dddd [às] LT',
-			lastDay: '[ontem às] LT',
-			lastWeek: 'dddd [às] LT',
-			sameElse: 'L'
-		},
-		relativeTime : {
-			future : 'daqui %s',
-			past : '%s atrás',
-			s : 'poucos segundos',
-			m : 'um minuto',
-			mm : '%d minutos',
-			h : 'uma hora',
-			hh : '%d horas',
-			d : 'um dia',
-			dd : '%d dias',
-			M : 'um mês',
-			MM : '%d meses',
-			y : 'um ano',
-			yy : '%d anos'
-		},
-		ordinalParse: /\d{1,2}º/,
-		ordinal : '%dº'
-	});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // router //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var router = { };
+var router = [ ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // navigation mode
@@ -355,6 +178,7 @@ router["go"] = function(path, object, title) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // build link
 router["build-link"] = function(path) {
+	var link;
 	if (router["navigation-mode"] === "path") {
 		link = path;
 	} else {
@@ -427,7 +251,28 @@ window.addEventListener("popstate", function(event) {
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 var UI = { }, $ui = [ ];
-UI["data"] = [ ];
+$ui["window"] = $(window);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// reflow
+$.fn.reflow = function() {
+	var offset = $ui["body"].offset().left;
+	return $(this);
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// legacy
+
+var $window, $body;
+
+$(function() {
+
+	$window = $ui["window"];
+	$body = $ui["body"];
+	$theme_color = $("meta[name='theme-color']");
+	theme_color["original"] = $theme_color.attr("content");
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // body
@@ -447,14 +292,74 @@ $(function() {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+UI.data = [ ];
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// confere se a interação é por toque ou mouse
+UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
+$(function() {
+	$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// calcula dimensões da janela e do layout
+function setLayoutProperties() {
+	// largura da coluna, incluindo margem
+	UI.data["column-width"] = 316;
+
+	// guarda dimensão da janela
+	UI.data["window"] = [ ];
+	UI.data["window"]["width"] = $ui["window"].width();
+	UI.data["window"]["height"] = $ui["window"].height();
+
+	// calcula número de colunas
+	UI.data["columns"] = Math.floor(UI.data["window"]["width"] / UI.data["column-width"]);
+
+	// adiciona classe no <body> de acordo com a quantidade de colunas
+	var layout_class;
+	if (UI.data["columns"] === 1) {
+		layout_class = "ui-single-column";
+	} else if (UI.data["columns"] === 2) {
+		layout_class = "ui-dual-column";
+	} else {
+		layout_class = "ui-multi-column";
+	}
+
+	$ui["body"].removeClass("ui-single-column ui-dual-column ui-multi-column").addClass(layout_class);
+}
+
+$(document).on("ready", setLayoutProperties);
+$ui["window"].on("resize", setLayoutProperties);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// scroll
+UI.data["scroll-position"] = [ ];
+
+function setScrollPosition() {
+	UI.data["scroll-position"]["top"] = $ui["window"].scrollTop();
+	UI.data["scroll-position"]["bottom"] = UI.data["scroll-position"]["top"] + UI.data["window"]["height"];
+}
+
+$(document).on("ready", setScrollPosition);
+$ui["window"].on("scroll", setScrollPosition);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // backdrop
 UI.backdrop = (function() {
 	return {
-		show: function() {
-			$ui["backdrop"].addClass("in");
+		show: function($screen) {
+			var zindex = $screen.css("z-index") - 1;
+			$ui["backdrop"].css("z-index", zindex).addClass("in");
 		},
 		hide: function() {
-			$ui["backdrop"].removeClass("in").off("hide");
+			$ui["backdrop"].removeClass("in").css("z-index", "").off("hide");
 		}
 	};
 })();
@@ -472,7 +377,7 @@ UI.sidenav = (function() {
 	return {
 		open: function() {
 			UI.body.lock();
-			UI.backdrop.show();
+			UI.backdrop.show($ui["sidenav"]);
 			$ui["sidenav"].addClass("in");
 
 			$ui["backdrop"].on("hide", UI.sidenav.close);
@@ -495,73 +400,37 @@ $(function() {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// reflow
-$.fn.reflow = function() {
-	var offset = $ui["body"].offset().left;
-	return $(this);
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// confere se a interação é por toque ou mouse
-UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
-$(function() {
-	$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// legacy
-
-var $window, $body;
-
-$(function() {
-	$ui["window"] = $(window);
-
-	$window = $ui["window"];
-	$body = $ui["body"];
-	$theme_color = $("meta[name='theme-color']");
-	theme_color["original"] = $theme_color.attr("content");
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// bottomsheet /////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var bottomsheet = (function() {
+// bottomsheet
+UI.bottomsheet = (function() {
 	return {
 		open: function($content, addClass) {
-			backdrop.show();
-			$bottomsheet.html($content).addClass((addClass? addClass + " " : "") + "in").reflow().addClass("slide");
+			UI.backdrop.show($ui["bottomsheet"]);
+			$ui["bottomsheet"].html($content).addClass((addClass? addClass + " " : "") + "in").reflow().addClass("slide");
 
 			theme_color["buffer"] = $theme_color.attr("content");
 			$theme_color.attr("content", "#000");
 
-			$backdrop.on("hide", bottomsheet.close);
+			$ui["backdrop"].on("hide", UI.bottomsheet.close);
 
 			router["view-manager"].add("bottomsheet");
 			history.pushState({ "view": "bottomsheet" }, null, null);
 		},
 		close: function() {
-			$bottomsheet.removeClass("slide").one("transitionend", function() {
-				$bottomsheet.removeClass("in").empty().removeClass();
+			$ui["bottomsheet"].removeClass("slide").one("transitionend", function() {
+				$ui["bottomsheet"].removeClass("in").empty().attr("class", "ui-bottomsheet js-ui-bottomsheet");
 			});
 
 			$theme_color.attr("content", theme_color["buffer"]);
 
-			backdrop.hide();
+			UI.backdrop.hide();
 
 			router["view-manager"].remove("bottomsheet");
 		}
 	};
 })();
 
-// jQuery
-var $bottomsheet;
-
 $(function() {
-	$bottomsheet = $("#bottom-sheet");
+	$ui["bottomsheet"] = $(".js-ui-bottomsheet");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -576,7 +445,7 @@ UI.toast = (function() {
 				$ui.toast["message"].html(config["message"]);
 				$ui.toast["action"].html((config["action"]? config["action"] : ""));
 				$ui.toast.addClass("in").reflow().addClass("slide");
-				$body.addClass("toast-active");
+				$ui["body"].addClass("toast-active");
 
 				// TODO: .fab-bottom transform: translateY
 
@@ -600,7 +469,7 @@ UI.toast = (function() {
 
 		dismiss: function() {
 			$ui.toast.removeClass("slide").one("transitionend", function() {
-				$body.removeClass("toast-active");
+				$ui["body"].removeClass("toast-active");
 				$ui.toast.removeClass("in stream-only");
 
 				$ui.toast["message"].empty();
@@ -615,7 +484,7 @@ UI.toast = (function() {
 			$ui.toast.message.html(message);
 			$ui.toast.action.html((action? action : ""));
 			$ui.toast.addClass("in").reflow().addClass("slide");
-			$body.addClass("toast-active");
+			$ui["body"].addClass("toast-active");
 
 			// TODO: .fab-bottom transform: translateY
 
@@ -645,6 +514,48 @@ $(function() {
 	$ui.toast = $(".js-ui-toast");
 	$ui.toast["message"] = $(".toast-message", $ui.toast);
 	$ui.toast["action"] = $(".toast-action", $ui.toast);
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// placar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.Placar = function(turmas) {
+	// soma a pontuação de cada turma para obter o total de pontos
+	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0 });
+	total_de_pontos = (total_de_pontos? total_de_pontos : 0);
+
+	// limpa o placar
+	$placar.empty();
+
+	// adiciona cada turma no placar
+	$.each(turmas, function(index, turma) {
+		// calcula % da turma em relação ao total de pontos
+		var percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / total_de_pontos : 0);
+
+		// formata os dados
+		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+		turma["turma-formatada"] = turma["turma"].toUpperCase();
+		turma["pontos"] = turma["pontos"];
+		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+		// renderiza e coloca na página
+		var $turma = __render("placar-turma", turma);
+		$placar.append($turma);
+	});
+
+	if (total_de_pontos === 0) {
+		$placar.parent().addClass("zeroed");
+	} else {
+		$placar.parent().removeClass("zeroed");
+	}
+};
+
+// jQuery
+var $placar;
+
+$(function() {
+	$placar = $(".js-placar ul");
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -985,6 +896,11 @@ app.Tarefa = (function() {
 			var DATA = tarefas[numero];
 			tarefa_active = numero;
 
+			if (UI.data["columns"] >= 3) {
+				UI.backdrop.show($tarefa);
+				$ui["backdrop"].on("hide", app.Tarefa.close);
+			}
+
 			$tarefa.addClass("in");
 			app.Tarefa.render(DATA);
 
@@ -993,7 +909,7 @@ app.Tarefa = (function() {
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
-			$body.addClass("no-scroll tarefa-active");
+			$ui["body"].addClass("no-scroll tarefa-active");
 
 			// router
 			router["view-manager"].replace("tarefa");
@@ -1071,10 +987,14 @@ app.Tarefa = (function() {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
-			$body.removeClass("no-scroll tarefa-active");
+			$ui["body"].removeClass("no-scroll tarefa-active");
 			$tarefa.removeClass("slide-x").one("transitionend", function() {
 				$tarefa.removeClass("in").empty();
 			});
+
+			if (UI.data["columns"] >= 3) {
+				UI.backdrop.hide();
+			}
 
 			// router
 			router["view-manager"].replace("home");
@@ -1095,7 +1015,7 @@ $(function() {
 		event.preventDefault();
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
-		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
+		UI.bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
 	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
@@ -1271,7 +1191,7 @@ var $post;
 
 $(function() {
 	$post = $("#new-post");
-	$bottomsheet.on("click", ".new-post-sheet a", function(event) {
+	$ui["bottomsheet"].on("click", ".new-post-sheet a", function(event) {
 		event.preventDefault();
 
 		var type = $(this).data("post-type");
@@ -1415,7 +1335,7 @@ if (localStorage && localStorage.getItem("user")) {
 
 	$(function() {
 		if (user["id"] !== null) {
-			$body.addClass("signed-in user-" + user["turma"]);
+			$ui["body"].addClass("signed-in user-" + user["turma"]);
 			setTimeout(function() {
 				UI.toast.show("Olá " + user["name"] + "!");
 			}, 3000);
@@ -1665,3 +1585,61 @@ function checkUpdates() {
 		last_updated = (data[0]? moment(data[0]["ts"]) : moment());
 	});
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// fonts ///////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+WebFont.load({
+	timeout: 10000,
+	google: { families: ["Material Icons", "Roboto:400,400italic,500:latin", "Montserrat::latin"] },
+	custom: { families: ["FontAwesome"], urls: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"] },
+	active: function() {
+		$(function() { app.Lista.layout(); });
+	}
+});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// momentjs ////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+moment.locale('pt-br', {
+		months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
+		monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
+		weekdays : 'domingo_segunda-feira_terça-feira_quarta-feira_quinta-feira_sexta-feira_sábado'.split('_'),
+		weekdaysShort : 'dom_seg_ter_qua_qui_sex_sáb'.split('_'),
+		weekdaysMin : 'dom_2ª_3ª_4ª_5ª_6ª_sáb'.split('_'),
+		longDateFormat : {
+			LT : 'HH:mm',
+			LTS : 'HH:mm:ss',
+			L : 'DD/MM/YYYY',
+			LL : 'D [de] MMMM [de] YYYY',
+			LLL : 'D [de] MMMM [de] YYYY [às] HH:mm',
+			LLLL : 'dddd, D [de] MMMM [de] YYYY [às] HH:mm'
+		},
+		calendar : {
+			sameDay: '[hoje às] LT',
+			nextDay: '[amanhã às] LT',
+			nextWeek: 'dddd [às] LT',
+			lastDay: '[ontem às] LT',
+			lastWeek: 'dddd [às] LT',
+			sameElse: 'L'
+		},
+		relativeTime : {
+			future : 'daqui %s',
+			past : '%s atrás',
+			s : 'poucos segundos',
+			m : 'um minuto',
+			mm : '%d minutos',
+			h : 'uma hora',
+			hh : '%d horas',
+			d : 'um dia',
+			dd : '%d dias',
+			M : 'um mês',
+			MM : '%d meses',
+			y : 'um ano',
+			yy : '%d anos'
+		},
+		ordinalParse: /\d{1,2}º/,
+		ordinal : '%dº'
+	});

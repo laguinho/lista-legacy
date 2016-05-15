@@ -7,7 +7,7 @@ template#view-tarefa
 			a.appbar-btn.appbar-left-btn.back(href="/tarefas")
 				i.material-icons &#xE5C4;
 			h1.fill(data-fill="titulo")
-	.body
+	.tarefa-body.view-body
 		.tarefa-container.container
 			.painel
 				.meta
@@ -15,14 +15,15 @@ template#view-tarefa
 					ul
 			.posts
 				ul
-				.end
-				
+				.tarefa-end
+	//- .tarefa-backdrop
+
 	button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
 		i.material-icons &#xE145;
-		
+
 	aside.new-post-sheet(style="display: none;")
 		h1 Postar
-		
+
 		mixin new-post-link(title, type, icon, icon_source)
 			li
 				a(href="#", data-post-type=type)

@@ -105,6 +105,11 @@ app.Tarefa = (function() {
 			var DATA = tarefas[numero];
 			tarefa_active = numero;
 
+			if (UI.data["columns"] >= 3) {
+				UI.backdrop.show($tarefa);
+				$ui["backdrop"].on("hide", app.Tarefa.close);
+			}
+
 			$tarefa.addClass("in");
 			app.Tarefa.render(DATA);
 
@@ -113,7 +118,7 @@ app.Tarefa = (function() {
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
-			$body.addClass("no-scroll tarefa-active");
+			$ui["body"].addClass("no-scroll tarefa-active");
 
 			// router
 			router["view-manager"].replace("tarefa");
@@ -191,10 +196,14 @@ app.Tarefa = (function() {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
-			$body.removeClass("no-scroll tarefa-active");
+			$ui["body"].removeClass("no-scroll tarefa-active");
 			$tarefa.removeClass("slide-x").one("transitionend", function() {
 				$tarefa.removeClass("in").empty();
 			});
+
+			if (UI.data["columns"] >= 3) {
+				UI.backdrop.hide();
+			}
 
 			// router
 			router["view-manager"].replace("home");
@@ -215,7 +224,7 @@ $(function() {
 		event.preventDefault();
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
-		bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
+		UI.bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
 	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();

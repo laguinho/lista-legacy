@@ -29,39 +29,6 @@ function rand(min, max) { return Math.random() * (max - min) + min; }
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
 var ui  = { };
 
-function setLayoutProperties() {
-	// largura da coluna, incluindo margem
-	var column_width = 316;
-
-	// guarda dimensão da janela
-	ui["window"] = { };
-	ui["window"]["width"] = $window.width();
-	ui["window"]["height"] = $window.height();
-
-	// calcula número de colunas
-	ui["columns"] = Math.floor(ui["window"]["width"] / column_width);
-
-	// adiciona classe no <body> de acordo com a quantidade de colunas
-	var layout_class;
-	if(ui["columns"] === 1) layout_class = "single-column";
-	else if(ui["columns"] === 2) layout_class = "dual-column";
-	else layout_class = "multi-column";
-	$body.removeClass("single-column dual-column multi-column").addClass(layout_class);
-}
-
-$(document).on("ready", setLayoutProperties);
-$(window).on("resize", setLayoutProperties);
-
-// scroll
-ui["scroll-position"] = { };
-
-function setScrollPosition() {
-	ui["scroll-position"]["top"] = $window.scrollTop();
-	ui["scroll-position"]["bottom"] = ui["scroll-position"]["top"] + ui["window"]["height"];
-}
-
-$(document).on("ready", setScrollPosition);
-$(window).on("scroll", setScrollPosition);
 
 /*
 

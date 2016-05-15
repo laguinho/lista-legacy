@@ -10,7 +10,7 @@ UI.toast = (function() {
 				$ui.toast["message"].html(config["message"]);
 				$ui.toast["action"].html((config["action"]? config["action"] : ""));
 				$ui.toast.addClass("in").reflow().addClass("slide");
-				$body.addClass("toast-active");
+				$ui["body"].addClass("toast-active");
 
 				// TODO: .fab-bottom transform: translateY
 
@@ -34,7 +34,7 @@ UI.toast = (function() {
 
 		dismiss: function() {
 			$ui.toast.removeClass("slide").one("transitionend", function() {
-				$body.removeClass("toast-active");
+				$ui["body"].removeClass("toast-active");
 				$ui.toast.removeClass("in stream-only");
 
 				$ui.toast["message"].empty();
@@ -49,7 +49,7 @@ UI.toast = (function() {
 			$ui.toast.message.html(message);
 			$ui.toast.action.html((action? action : ""));
 			$ui.toast.addClass("in").reflow().addClass("slide");
-			$body.addClass("toast-active");
+			$ui["body"].addClass("toast-active");
 
 			// TODO: .fab-bottom transform: translateY
 

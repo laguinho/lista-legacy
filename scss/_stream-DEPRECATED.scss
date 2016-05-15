@@ -18,7 +18,7 @@
 .card-tarefa .grid li div span { position: absolute; bottom: 0; display: inline-block; padding: 0 4px; background-color: #333; color: #fff; }
 
 @media (min-width: $column-width * 2) {
-	#stream .card-tarefa { width: 300px; }
+	// #stream .card-tarefa { width: 300px; }
 	.card-tarefa .grid li { width: 25%; padding: 1px; }
 	.card-tarefa .grid .tile-text { font-size: 10px; }
 	.card-tarefa .grid .tile-more { font-size: 24px; }

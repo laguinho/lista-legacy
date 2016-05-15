@@ -90,7 +90,7 @@ if (localStorage && localStorage.getItem("user")) {
 
 	$(function() {
 		if (user["id"] !== null) {
-			$body.addClass("signed-in user-" + user["turma"]);
+			$ui["body"].addClass("signed-in user-" + user["turma"]);
 			setTimeout(function() {
 				UI.toast.show("Olá " + user["name"] + "!");
 			}, 3000);

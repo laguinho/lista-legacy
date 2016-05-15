@@ -1,10 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // tarefa //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// #tarefa { background-color: #eceff1; z-index: 100; }
-// #tarefa .appbar { background-color: #546e7a; }
-
-.posts .empty { margin-top: 15px; font-weight: 500; font-size: 14px; color: #aaa; text-align: center; text-transform: uppercase; }
 
 /*
 
@@ -17,21 +13,6 @@ colunas
 
 
 */
-
-#tarefa .painel {
-	.card {
-		margin: 0 auto;
-		z-index: 1;
-	}
-
-	.placar {
-		height: 90px;
-		margin: 0 auto;
-		padding: 0 16px;
-	}
-}
-
-#tarefa .posts { margin: 0 auto; }
 
 .card.post { width: 100%; }
 .card.post .header { padding: 18px 16px 16px 64px; position: relative; }
@@ -57,40 +38,32 @@ colunas
 .card.post .result .status-icon i { line-height: 32px; }
 .card.post .result .message { }
 
-#tarefa .new-post { position: fixed; bottom: 16px; right: 16px; display: none !important; }
-.signed-in #tarefa .new-post { display: block !important; }
-.postagens-encerradas #tarefa .new-post { display: none !important; }
+.signed-in .app-tarefa .new-post { display: block !important; }
+.postagens-encerradas .app-tarefa .new-post { display: none !important; }
 
 @media (min-width: $column-width * 2) {
-	#tarefa.app-view > .body { top: 0; padding-top: 32px; }
+	// .app-tarefa .tarefa-body { top: 0; }
 
-//	#tarefa { background-color: rgba(144,164,174,.93); }
-//	#tarefa { background-color: rgba(236,239,241,.92); }
-	#tarefa { background-color: rgba($background-color,.92); }
+	// .app-tarefa { background-color: rgba($background-color,.92); }
 
-	#tarefa .appbar { background-color: transparent; color: #263238; box-shadow: 0 0 0; }
-	#tarefa .appbar .numero { display: none; }
+	// .app-tarefa .appbar { background-color: transparent; color: #263238; box-shadow: 0 0 0; }
+	// .app-tarefa .appbar .numero { display: none; }
 
-	#tarefa .painel .card { width: 300px; }
-	#tarefa .card-l { width: 616px; }
+	.app-tarefa .card-l { width: 616px; }
 
-	#tarefa .new-post { position: fixed; bottom: 24px; right: 24px; }
+	// .app-tarefa .posts { width: 632px; padding: 0 8px; }
 
-	#tarefa .posts { width: 632px; padding: 0 8px; }
-
-	#tarefa .painel .placar { width: 300px; }
+	// .app-tarefa .painel .placar { width: 300px; }
 }
 
 @media (min-width: $column-width * 3) {
-	#tarefa .posts { width: $large-column-width * 2; }
-	#tarefa .card-l { width: 450px; }
+	// .app-tarefa .posts { width: $large-column-width * 2; }
+	.app-tarefa .card-l { width: 500px; }
 }
 
-@media (min-width: $column-width * 4) {
-	#tarefa.app-view > .body { padding-top: 64px; }
-
-	#tarefa .painel { position: fixed; }
-	#tarefa .posts { margin-left: 324px; }
-}
-
-#tarefa .end { height: 20px; margin: 16px 0 24px; background: url("//assets.laguinho.org/logo/000-64px.png") no-repeat center; background-size: contain; opacity: .18; }
+// @media (min-width: $column-width * 4) {
+// 	// .app-tarefa .tarefa-body { padding-top: 64px; }
+//
+// 	// .app-tarefa .painel { position: fixed; }
+// 	// .app-tarefa .posts { margin-left: 324px; }
+// }

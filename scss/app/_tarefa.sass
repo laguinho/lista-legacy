@@ -8,8 +8,87 @@
 
 	transform: translateX(6%) !important
 
+	@media (min-width: $large-column-width * 2)
+		left: auto
+		width: ($large-column-width * 2) + 32px
+		background: $background-color
+		box-shadow: 0 0 6px rgba(0,0,0,.36)
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
 	.tarefa-appbar
 		// background-color: #546e7a
 
 		.container
 			padding-left: $appbar-height
+
+		@media (min-width: $large-column-width * 2)
+			display: none
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.tarefa-body
+		@media (min-width: $large-column-width * 2)
+			top: 0
+			left: auto
+			width: ($large-column-width * 2) + 32px
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.painel
+		.card
+			margin: 0 auto
+			z-index: 1
+
+		.placar
+			height: 90px
+			margin: 0 auto
+			padding: 0 16px
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// .tarefa-backdrop
+	// 	@extend %ui-backdrop
+	// 	position: fixed
+	// 	top: 0
+	// 	bottom: 0
+	// 	left: 0
+	// 	display: none
+	//
+	// 	@media (min-width: $large-column-width * 2)
+	// 		display: block
+	// 		right: ($large-column-width * 2) + 32px
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.posts
+		margin: 0 auto
+
+		.empty
+			margin-top: 15px
+			font-weight: 500
+			font-size: 14px
+			color: #aaa
+			text-align: center
+			text-transform: uppercase
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.new-post
+		position: fixed
+		bottom: 16px
+		right: 16px
+		display: none !important
+
+		@media (min-width: $column-width * 2)
+			bottom: 24px
+			right: 24px
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.tarefa-end
+		height: 20px
+		margin: 16px 0 24px
+		background: url("//assets.laguinho.org/logo/000-64px.png") no-repeat center
+		background-size: contain
+		opacity: .18

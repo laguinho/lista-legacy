@@ -108,7 +108,7 @@ template {
 
 body {
   padding-top: 56px;
-  background-color: #f0f5f7;
+  background: #f3f7f9 url("http://www.transparenttextures.com/patterns/green-gobbler.png") top center;
 }
 
 body,
@@ -224,7 +224,8 @@ colunas
   -webkit-transition-duration: .2s;
 }
 
-.app-view > .body {
+.app-view > .body,
+.app-view .view-body {
   position: fixed;
   top: 56px;
   bottom: 0;
@@ -309,15 +310,6 @@ colunas
   color: #fff;
 }
 
-.posts .empty {
-  margin-top: 15px;
-  font-weight: 500;
-  font-size: 14px;
-  color: #aaa;
-  text-align: center;
-  text-transform: uppercase;
-}
-
 /*
 
 TAREFA VIEW
@@ -329,21 +321,6 @@ colunas
 
 
 */
-
-#tarefa .painel .card {
-  margin: 0 auto;
-  z-index: 1;
-}
-
-#tarefa .painel .placar {
-  height: 90px;
-  margin: 0 auto;
-  padding: 0 16px;
-}
-
-#tarefa .posts {
-  margin: 0 auto;
-}
 
 .card.post {
   width: 100%;
@@ -456,27 +433,12 @@ colunas
   line-height: 32px;
 }
 
-#tarefa .new-post {
-  position: fixed;
-  bottom: 16px;
-  right: 16px;
-  display: none !important;
-}
-
-.signed-in #tarefa .new-post {
+.signed-in .app-tarefa .new-post {
   display: block !important;
 }
 
-.postagens-encerradas #tarefa .new-post {
+.postagens-encerradas .app-tarefa .new-post {
   display: none !important;
-}
-
-#tarefa .end {
-  height: 20px;
-  margin: 16px 0 24px;
-  background: url("//assets.laguinho.org/logo/000-64px.png") no-repeat center;
-  background-size: contain;
-  opacity: .18;
 }
 
 #new-post {
@@ -628,92 +590,6 @@ colunas
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
-.fab {
-  display: block;
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: #ef6c00;
-  color: #fff;
-  text-align: center;
-  box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24);
-}
-
-.fab i {
-  line-height: 56px;
-}
-
-.toast-active .fab-bottom {
-  transform: translateY(-48px);
-}
-
-#bottom-sheet {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 0;
-  background-color: #fff;
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(0, 0, 0, 0.87);
-  overflow: auto;
-  z-index: 112;
-  display: none;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  will-change: transform;
-  transform: translateY(250px);
-  transform-style: preserve-3d;
-  transition-property: transform, opacity;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: .2s;
-  -webkit-overflow-scrolling: touch;
-}
-
-#bottom-sheet h1 {
-  min-height: 56px;
-  padding: 16px 16px 0 16px;
-  font-size: inherit;
-  color: rgba(0, 0, 0, 0.54);
-}
-
-#bottom-sheet .divider {
-  margin-top: 7px;
-  border-top: 1px solid #eee;
-  padding-top: 8px;
-}
-
-#bottom-sheet a {
-  display: block;
-  padding: 12px 16px 12px 72px;
-  position: relative;
-}
-
-#bottom-sheet a:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
-#bottom-sheet a i {
-  display: block;
-  position: absolute;
-  top: 12px;
-  left: 16px;
-  width: 24px;
-  height: 24px;
-  color: #777;
-  line-height: 24px;
-  text-align: center;
-}
-
-.text-field {
-  border: 0;
-  border-bottom: 2px solid #eee;
-}
-
-.text-field:focus {
-  border-color: #455a64;
-}
-
 /* animate.css */
 
 .animated {
@@ -760,6 +636,34 @@ colunas
     -webkit-transform: translate3d(10px, 0, 0);
     transform: translate3d(10px, 0, 0);
   }
+}
+
+.fab {
+  display: block;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #ef6c00;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 1px 1.5px 0 rgba(0, 0, 0, 0.12), 0 1px 1px 0 rgba(0, 0, 0, 0.24);
+}
+
+.fab i {
+  line-height: 56px;
+}
+
+.toast-active .fab-bottom {
+  transform: translateY(-48px);
+}
+
+.text-field {
+  border: 0;
+  border-bottom: 2px solid #eee;
+}
+
+.text-field:focus {
+  border-color: #455a64;
 }
 
 /*
@@ -906,6 +810,45 @@ main .loading {
   padding-left: 56px;
 }
 
+.app-tarefa .painel .card {
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.app-tarefa .painel .placar {
+  height: 90px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.app-tarefa .posts {
+  margin: 0 auto;
+}
+
+.app-tarefa .posts .empty {
+  margin-top: 15px;
+  font-weight: 500;
+  font-size: 14px;
+  color: #aaa;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.app-tarefa .new-post {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: none !important;
+}
+
+.app-tarefa .tarefa-end {
+  height: 20px;
+  margin: 16px 0 24px;
+  background: url("//assets.laguinho.org/logo/000-64px.png") no-repeat center;
+  background-size: contain;
+  opacity: .18;
+}
+
 .container {
   margin: 0 auto;
   padding: 0 8px;
@@ -913,7 +856,7 @@ main .loading {
 }
 
 .tarefa-container {
-  max-width: 1264px;
+  max-width: 1364px;
 }
 
 .modal-container {
@@ -1002,7 +945,7 @@ main .loading {
   background-color: #fff;
   z-index: 112;
   overflow: auto;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.36);
   -webkit-overflow-scrolling: touch;
   will-change: transform;
   transform: translateX(-250px);
@@ -1098,6 +1041,10 @@ main .loading {
   padding: 1px;
 }
 
+.ui-backdrop.in {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
 .ui-backdrop {
   position: fixed;
   top: 0;
@@ -1111,8 +1058,65 @@ main .loading {
 }
 
 .ui-backdrop.in {
-  background-color: rgba(0, 0, 0, 0.4);
   visibility: visible;
+}
+
+.ui-bottomsheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px 0;
+  background-color: #fff;
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(0, 0, 0, 0.87);
+  overflow: auto;
+  z-index: 112;
+  display: none;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  will-change: transform;
+  transform: translateY(250px);
+  transform-style: preserve-3d;
+  transition-property: transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: .2s;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ui-bottomsheet h1 {
+  min-height: 56px;
+  padding: 16px 16px 0 16px;
+  font-size: inherit;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.ui-bottomsheet .divider {
+  margin-top: 7px;
+  border-top: 1px solid #eee;
+  padding-top: 8px;
+}
+
+.ui-bottomsheet a {
+  display: block;
+  padding: 12px 16px 12px 72px;
+  position: relative;
+}
+
+.ui-bottomsheet a:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.ui-bottomsheet a i {
+  display: block;
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  width: 24px;
+  height: 24px;
+  color: #777;
+  line-height: 24px;
+  text-align: center;
 }
 
 .ui-toast {
@@ -1150,10 +1154,6 @@ main .loading {
 }
 
 @media (min-width: 632px) {
-  #stream .card-tarefa {
-    width: 300px;
-  }
-
   .card-tarefa .grid li {
     width: 25%;
     padding: 1px;
@@ -1175,46 +1175,13 @@ main .loading {
     font-size: 48px;
   }
 
-  #tarefa.app-view > .body {
-    top: 0;
-    padding-top: 32px;
-  }
-
-  #tarefa {
-    background-color: rgba(240, 245, 247, 0.92);
-  }
-
-  #tarefa .appbar {
-    background-color: transparent;
-    color: #263238;
-    box-shadow: 0 0 0;
-  }
-
-  #tarefa .appbar .numero {
-    display: none;
-  }
-
-  #tarefa .painel .card {
-    width: 300px;
-  }
-
-  #tarefa .card-l {
+  .app-tarefa .card-l {
     width: 616px;
   }
 
-  #tarefa .new-post {
-    position: fixed;
+  .app-tarefa .new-post {
     bottom: 24px;
     right: 24px;
-  }
-
-  #tarefa .posts {
-    width: 632px;
-    padding: 0 8px;
-  }
-
-  #tarefa .painel .placar {
-    width: 300px;
   }
 
   .lista-container {
@@ -1224,20 +1191,15 @@ main .loading {
   .ui-card {
     margin-bottom: 16px;
   }
+
+  .card-tarefa {
+    width: 300px;
+  }
 }
 
 @media (min-width: 948px) {
-  #tarefa .posts {
-    width: 932px;
-  }
-
-  #tarefa .card-l {
-    width: 450px;
-  }
-
-  #bottom-sheet {
-    left: auto;
-    width: 400px;
+  .app-tarefa .card-l {
+    width: 500px;
   }
 
   .placar {
@@ -1246,6 +1208,11 @@ main .loading {
 
   .lista-container {
     width: 948px;
+  }
+
+  .ui-bottomsheet {
+    left: auto;
+    width: 400px;
   }
 
   .ui-toast {
@@ -1258,21 +1225,28 @@ main .loading {
   }
 }
 
+@media (min-width: 1032px) {
+  .app-tarefa {
+    left: auto;
+    width: 1064px;
+    background: #f0f5f7;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.36);
+  }
+
+  .app-tarefa .tarefa-appbar {
+    display: none;
+  }
+
+  .app-tarefa .tarefa-body {
+    top: 0;
+    left: auto;
+    width: 1064px;
+  }
+}
+
 @media (min-width: 1264px) {
   body {
     padding-top: 64px;
-  }
-
-  #tarefa.app-view > .body {
-    padding-top: 64px;
-  }
-
-  #tarefa .painel {
-    position: fixed;
-  }
-
-  #tarefa .posts {
-    margin-left: 324px;
   }
 
   .lista-container {

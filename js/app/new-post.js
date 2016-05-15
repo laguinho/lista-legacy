@@ -166,7 +166,7 @@ var $post;
 
 $(function() {
 	$post = $("#new-post");
-	$bottomsheet.on("click", ".new-post-sheet a", function(event) {
+	$ui["bottomsheet"].on("click", ".new-post-sheet a", function(event) {
 		event.preventDefault();
 
 		var type = $(this).data("post-type");
