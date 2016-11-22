@@ -7,6 +7,33 @@
 
 app.Lista = (function() {
 	return {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.start()
+		start: function() {
+			log("app.Lista.start", "info");
+
+			// se tiver título especificado, insere ele
+			if (Lista.Edicao["mensagem"]["titulo"]) {
+				let titulo_da_pagina = Lista.Edicao["mensagem"]["titulo"];
+				$ui["title"].html(titulo_da_pagina);
+			}
+
+			// de tiver mensagem especificada, insere ela
+			if (Lista.Edicao["mensagem"]["rodape"]) {
+				$(".js-mensagem-final").html(Lista.Edicao["mensagem"]["rodape"]);
+			}
+
+			// de prazo de postagem estiver encerrado, insere classe no <body>
+			if (moment().isAfter(Lista.Edicao["fim"])) {
+				$ui["body"].addClass("postagens-encerradas");
+			}
+
+			// tira a tela de loading
+			UI.loadbar.hide();
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.load()
 		load: function() {
 			// mostra a tela de loading e limpa o stream
 			$stream.loading.addClass("fade-in in");
@@ -15,29 +42,29 @@ app.Lista = (function() {
 			$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
 				// "DIRETOR"
 				// TODO O load deve ficar separado do Stream (ver issue #7)
-				Lista.Regulamento = data["meta"];
+				Lista.Regulamento = data["edicao"];
 				Lista.Tarefas = data["tarefas"];
 
 				// Se tiver título especificado, insere ele
-				if (data["meta"]["titulo"]) {
-					page_title = data["meta"]["titulo"];
+				if (data["edicao"]["mensagem"]["titulo"]) {
+					page_title = data["edicao"]["mensagem"]["titulo"];
 					$("head title").html(page_title);
 				}
 
 				// Se tiver mensagem especificada, insere ela
-				if (data["meta"]["mensagem"]) {
-					$(".js-mensagem-final").html(data["meta"]["mensagem"]);
+				if (data["edicao"]["mensagem"]["rodape"]) {
+					$(".js-mensagem-final").html(data["edicao"]["mensagem"]["rodape"]);
 				}
 
 				// Se prazo de postagem estiver encerrado, insere classe no <body>
 				if (moment().isAfter(Lista.Regulamento["fim"])) {
-					$body.addClass("postagens-encerradas");
+					$ui["body"].addClass("postagens-encerradas");
 				}
 
 				// Se a Edição estiver encerrada...
 				if (Lista.Regulamento["encerrada"] === true) {
 					// ...insere classe no <body>
-					$body.addClass("edicao-encerrada");
+					$ui["body"].addClass("edicao-encerrada");
 
 					// ...para de atualizar automaticamente
 					clearInterval(update_interval);
@@ -49,7 +76,7 @@ app.Lista = (function() {
 				$stream.empty();
 
 				// Monta placar
-				app.Placar(data["placar"]);
+				app.Placar.update(data["placar"]);
 
 				// Insere os cards de tarefas
 				$.each(data["tarefas"], function(index, tarefa) {
@@ -159,7 +186,7 @@ app.Lista = (function() {
 				}, 1200);
 
 				// guarda a data da última atualização e zera o contador de novidades
-				last_updated = moment(data["meta"]["ultima-atualizacao"]);
+				last_updated = moment(data["edicao"]["ultima-atualizacao"]);
 				updated["tarefas"] = 0; updated["posts"] = 0;
 			});
 		},
@@ -177,15 +204,13 @@ app.Lista = (function() {
 	};
 })();
 
-// var stream = app.Lista;
-// var Stream = stream;
-
 // jQuery
 var $stream;
 
 $(function() {
-	$stream = $("#stream");
-	$stream.loading = $("main .loading");
+	$stream = $(".js-app-lista");
+	// $stream.loading = $("main .loading");
+
 	$stream.isotope({
 		"itemSelector": ".card-tarefa",
 		"transitionDuration": ".8s",
@@ -214,7 +239,7 @@ $(function() {
 		}
 	});
 
-	app.Lista.load();
+	// app.Lista.load();
 
 	// ordenação
 	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {

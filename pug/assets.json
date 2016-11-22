@@ -1,0 +1,108 @@
+{
+	"assets": {
+		"lista": {
+			"development": {
+				"rel": "stylesheet",
+				"href": "./dist/lista.css"
+			},
+			"production": {
+				"rel": "stylesheet",
+				"href": ""
+			}
+		},
+		"favicon": {
+			"development": {
+				"rel": "shortcut icon",
+				"href": "./dist/favicon.png"
+			},
+			"production": {
+				"rel": "shortcut icon",
+				"href": "https://assets.laguinho.org/logo/32px.png"
+			}
+		},
+		"manifest": {
+			"development": {
+				"rel": "manifest",
+				"href": "/manifest.json"
+			},
+			"production": {
+				"rel": "manifest",
+				"href": "/manifest.json"
+			}
+		}
+	},
+	"scripts": {
+		"jquery": {
+			"development": {
+				"src": "./bower_components/jquery/dist/jquery.min.js"
+			},
+			"production": {
+				"src": "https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js",
+				"integrity": "sha384-3ceskX3iaEnIogmQchP8opvBy3Mi7Ce34nWjpBIwVTHfGYWQS9jwHDVRnpKKHJg7",
+				"crossorigin": "anonymous"
+			}
+		},
+		"isotope": {
+			"development": {
+				"src": "./bower_components/isotope/dist/isotope.pkgd.min.js"
+			},
+			"production": {
+				"src": "https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.1/isotope.pkgd.min.js",
+				"integrity": "sha384-zKykcVs0Wyy7O+3o0XHwl+IsDQzTtEit/zZCbtuKItqRwemhEEgd1nGHEoNBpYhR",
+				"crossorigin": "anonymous"
+			}
+		},
+		"moment": {
+			"development": {
+				"src": "./bower_components/moment/min/moment.min.js"
+			},
+			"production": {
+				"src": "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.16.0/moment.min.js",
+				"integrity": "sha384-P1rx1DvplSwkzJ8DaoLvKTTQbzsNKJjTu6KY5zcEqubI6C+qS3O+Q7Guotoo7z2T",
+				"crossorigin": "anonymous"
+			}
+		},
+		"webfontloader": {
+			"development": {
+				"src": "./bower_components/webfontloader/webfontloader.js"
+			},
+			"production": {
+				"src": "https://cdnjs.cloudflare.com/ajax/libs/webfont/1.6.26/webfontloader.js",
+				"integrity": "sha384-CbaP80ymy5JnSZidJIwSR9aN9P8VefqLxKALKKcdEiegkrQ+yKP9d9K02mDbuG/8",
+				"crossorigin": "anonymous"
+			}
+		},
+		"file-api": {
+			"development": {
+				"src": "./bower_components/fileapi/dist/FileAPI.min.js"
+			},
+			"production": {
+				"src": "https://assets.laguinho.org/libs/file-api/2.0.19/dist/FileAPI.min.js"
+			}
+		},
+		"file-api-exif": {
+			"development": {
+				"src": "./bower_components/FileAPI.exif/index.js"
+			},
+			"production": {
+				"src": "https://assets.laguinho.org/libs/file-api/2.0.19/plugins/FileAPI.exif.js"
+			}
+		},
+		"slip": {
+			"development": {
+				"src": "./bower_components/slip/slip.js"
+			},
+			"production": {
+				"src": "https://assets.laguinho.org/libs/slip/1.2.0/slip.js"
+			}
+		},
+		"lista": {
+			"development": {
+				"src": "./dist/lista.js"
+			},
+			"production": {
+				"src": ""
+			}
+		}
+	}
+}

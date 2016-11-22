@@ -3,13 +3,11 @@
 UI.bottomsheet = (function() {
 	return {
 		open: function($content, addClass) {
-			UI.backdrop.show($ui["bottomsheet"]);
+			UI.backdrop.show($ui["bottomsheet"], { "hide": UI.bottomsheet.close });
 			$ui["bottomsheet"].html($content).addClass((addClass? addClass + " " : "") + "in").reflow().addClass("slide");
 
 			theme_color["buffer"] = $theme_color.attr("content");
 			$theme_color.attr("content", "#000");
-
-			$ui["backdrop"].on("hide", UI.bottomsheet.close);
 
 			router["view-manager"].add("bottomsheet");
 			history.pushState({ "view": "bottomsheet" }, null, null);
@@ -21,7 +19,7 @@ UI.bottomsheet = (function() {
 
 			$theme_color.attr("content", theme_color["buffer"]);
 
-			UI.backdrop.hide();
+			UI.backdrop.hide($ui["bottomsheet"]);
 
 			router["view-manager"].remove("bottomsheet");
 		}

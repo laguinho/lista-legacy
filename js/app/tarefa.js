@@ -20,7 +20,7 @@ app.Tarefa = (function() {
 
 			// avaliação
 			if (post["avaliacao"]) {
-				if (post["avaliacao"]["status"] == 200) {
+				if (post["avaliacao"]["status"] === 200) {
 					post["status-class"] = post["turma"];
 					post["status-icon"] = "<i class=\"material-icons\">&#xE87D;</i>"; // coração
 					post["status"] = post["avaliacao"]["pontos"] + " ponto" + (post["avaliacao"]["pontos"] > 1? "s": "");
@@ -46,7 +46,7 @@ app.Tarefa = (function() {
 
 			// renderiza o post
 			var $post_card = __render("view-tarefa-post-card", post);
-			var $media = $(".media", $post_card);
+			var $media = $(".post-media > ul", $post_card);
 
 			// adiciona mídias
 			if (post["midia"]) {
@@ -83,7 +83,11 @@ app.Tarefa = (function() {
 
 			// tira legenda se não tiver
 			if (!post["legenda"]) {
-				$(".caption", $post_card).remove();
+				$post_card.addClass("no-caption");
+			}
+
+			if (!post["media"]) {
+				$post_card.addClass("no-media");
 			}
 
 			// tira mensagem de avaliação se não tiver
@@ -93,7 +97,8 @@ app.Tarefa = (function() {
 
 
 			// adiciona o post à tarefa
-			$posts.append($post_card).isotope("appended", $post_card);
+			// $posts.append($post_card).isotope("appended", $post_card);
+			$posts.append($post_card);
 		});
 	}
 
@@ -102,19 +107,19 @@ app.Tarefa = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Tarefa.open()
 		open: function(numero, pushState) {
-			var DATA = tarefas[numero];
+			var tarefa = tarefas[numero];
 			tarefa_active = numero;
 
 			if (UI.data["columns"] >= 3) {
-				UI.backdrop.show($tarefa);
-				$ui["backdrop"].on("hide", app.Tarefa.close);
+				// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
+				// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
 			}
 
-			$tarefa.addClass("in");
-			app.Tarefa.render(DATA);
+			$app["tarefa"].addClass("in");
+			app.Tarefa.render(tarefa);
 
-			$tarefa.reflow().addClass("slide-x").one("transitionend", function() {
-			//	var view_theme_color = $(".appbar", $tarefa).css("background-color");
+			$app["tarefa"].reflow().addClass("slide-x").one("transitionend", function() {
+			//	var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
@@ -122,57 +127,78 @@ app.Tarefa = (function() {
 
 			// router
 			router["view-manager"].replace("tarefa");
-			if (pushState) { router.go("/tarefas/" + DATA["numero"], { "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"]); }
+			if (pushState) { router.go("/tarefas/" + tarefa["numero"], { "view": "tarefa", "id": tarefa["numero"] }, tarefa["titulo"]); }
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		// app.Tarefa.render()
-		render: function(DATA) {
-			var $tarefa_view = __render("view-tarefa", DATA);
+		// app.Tarefa.render() /////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
+		render: function(tarefa) {
+			var $tarefa = __render("view-tarefa", tarefa);
 
+			////////////////////////////////////////////////////////////////////////////////////////
 			// card da tarefa
-			var $meta = $(".painel .meta", $tarefa_view);
-
-			if (DATA["imagem"]) {
-				tarefa["imagem-url"] = DATA["imagem"]["url"];
-				tarefa["imagem-aspecto"] = "padding-top: " + (DATA["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+			if (tarefa["imagem"]) {
+				tarefa["imagem"]["aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 			}
 
-			var $meta_card = __render("card-tarefa", DATA);
+			var $tarefa_card = __render("card-tarefa", tarefa);
 
-			if (!DATA["imagem"]) {
-				$(".media", $meta_card).remove();
+			if (!tarefa["imagem"]) {
+				$(".media", $tarefa_card).remove();
 			}
-			$(".grid", $meta_card).remove();
+			$(".grid", $tarefa_card).remove();
+			$("a", $tarefa_card).removeAttr("href");
 
-			$meta.append($meta_card);
+			$(".tarefa-meta .tarefa-card", $tarefa).append($tarefa_card);
 
+			////////////////////////////////////////////////////////////////////////////////////////
 			// posts
-			var $posts = $tarefa_view.find(".posts ul");
+			var $posts = $(".tarefa-posts > ul", $tarefa);
 
-			if (DATA["posts"].length) {
+			if (tarefa["posts"].length) {
+				renderPosts(tarefa["posts"], $posts);
+
 				$posts.isotope({
-					"itemSelector": ".card",
+					"itemSelector": ".post-card",
 					"transitionDuration": 0,
 					"masonry": {
-						"gutter": (ui["columns"] === 1? 8 : 16),
+						"isFitWidth": true,
+						"gutter": (ui["columns"] === 1? 8 : 24),
 					//	"columnWidth": (ui["columns"] < 1? 300 : 450)
 					}
+				// }).on("layoutComplete", function(event, posts) {
+				// 	var previous_position;
+				//
+				// 	for (var post in posts) {
+				// 		var $this = $(posts[post].element);
+				// 		var offset = posts[post].position;
+				// 		var side = (offset["x"] === 0? "left" : "right");
+				//
+				// 		$this.addClass("timeline-" + side);
+				//
+				// 		if (offset["y"] - previous_position < 10) {
+				// 			$this.addClass("extra-offset");
+				// 		}
+				//
+				// 		previous_position = offset["y"];
+				// 	}
 				});
 
-				renderPosts(DATA["posts"], $posts);
 			} else {
 				$("<li />").addClass("empty").text("Nenhum post").appendTo($posts);
 			}
 
-			$tarefa.html($tarefa_view);
+			////////////////////////////////////////////////////////////////////////////////////////
+			// layout
+			$app["tarefa"].html($tarefa);
 
-			if (DATA["posts"].length) {
+			if (tarefa["posts"].length) {
 				$posts.isotope("layout");
 			}
 
 			// placar da tarefa
-			var $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
+			var $placar_da_tarefa = $(".painel .placar ul", $tarefa);
 
 			$.each(Lista.Regulamento["turmas"], function(index, turma) {
 				var pontuacao_da_turma = [ ];
@@ -197,12 +223,12 @@ app.Tarefa = (function() {
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
 			$ui["body"].removeClass("no-scroll tarefa-active");
-			$tarefa.removeClass("slide-x").one("transitionend", function() {
-				$tarefa.removeClass("in").empty();
+			$app["tarefa"].removeClass("slide-x").one("transitionend", function() {
+				$app["tarefa"].removeClass("in").empty();
 			});
 
 			if (UI.data["columns"] >= 3) {
-				UI.backdrop.hide();
+				// UI.backdrop.hide($app["tarefa"]);
 			}
 
 			// router
@@ -212,19 +238,13 @@ app.Tarefa = (function() {
 	};
 })();
 
-// var tarefa = app.Tarefa;
-// var Tarefa = tarefa;
-
-// jQuery
-var $tarefa;
-
 $(function() {
-	$tarefa = $("#tarefa");
-	$tarefa.on("click", ".back", function(event) {
+	$app["tarefa"] = $(".js-app-tarefa");
+	$app["tarefa"].on("click", ".js-tarefa-close", function(event) {
 		event.preventDefault();
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
-		UI.bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
+		UI.bottomsheet.open($(".new-post-sheet", $app["tarefa"]).clone().show());
 	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();

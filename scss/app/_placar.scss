@@ -1,0 +1,48 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// placar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.app-placar {
+	font-size: 13px;
+	display: none;
+
+	@media ($--from-4columns) {
+		width: 250px;
+	}
+
+	li {
+		height: 17px;
+		padding: 0 64px 0 28px;
+		position: relative;
+
+		&::after {
+			@include pseudo-clearfix();
+		}
+	}
+
+	.label {
+		position: absolute;
+		top: 2px;
+		left: 0;
+		width: 42px;
+		padding-right: 6px;
+	}
+
+	.score {
+		position: relative;
+		padding-top: 11px;
+
+		.bar {
+			min-width: 2px;
+			height: 2px;
+		}
+
+		.points {
+			position: absolute;
+			top: 2px;
+			right: -64px;
+			width: 64px;
+			padding-left: 8px;
+		}
+	}
+}

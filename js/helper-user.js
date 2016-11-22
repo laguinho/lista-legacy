@@ -8,11 +8,11 @@ var login = (function() {
 		show: function() {
 		//	backdrop.show();
 			$login.addClass("in").reflow().addClass("slide");
-			$body.addClass("no-scroll");
+			$ui["body"].addClass("no-scroll");
 			setTimeout(function() { $("input[name='email']", $login).focus(); }, 300);
 		},
 		hide: function() {
-			$body.removeClass("no-scroll");
+			$ui["body"].removeClass("no-scroll");
 			$login.removeClass("slide").one("transitionend", function() {
 				$login.removeClass("in");
 			});
@@ -40,7 +40,7 @@ $(function() {
 				user["signed-in"] = true;
 				localStorage.setItem("user", JSON.stringify(user));
 
-				$body.addClass("signed-in user-" + user["turma"]);
+				$ui["body"].addClass("signed-in user-" + user["turma"]);
 				login.hide();
 				setTimeout(function() {
 					UI.toast.show("Olá " + user["name"] + "!");
@@ -54,7 +54,7 @@ $(function() {
 
 	$(".js-logout-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
-		$body.removeClass("signed-in user-" + user["turma"]);
+		$ui["body"].removeClass("signed-in user-" + user["turma"]);
 
 		user = {
 			"id": null,

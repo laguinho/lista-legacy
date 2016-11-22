@@ -33,11 +33,11 @@ function __render(template, data) {
 			var value = data[source];
 
 			source = source.split("/");
-			if (source.length > 1) {
+			if (source.length > 1 && typeof value !== "undefined") {
 				value = data[source[0]];
 
 				for (var j = 1; j < source.length; j++) {
-					value = value[source[j]];
+					value = (value[source[j]])? value[source[j]] : null;
 				}
 			}
 

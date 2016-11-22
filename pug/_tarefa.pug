@@ -1,0 +1,98 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- tarefa
+
+template#view-tarefa
+	.tarefa-container
+	
+		//- header
+		header.ui-appbar.tarefa-appbar
+			a.appbar-button.appbar-left-button.back.js-tarefa-close(href="/tarefas")
+				i.material-icons &#xE5C4;
+			h1.fill(data-fill="titulo")
+		
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+		//- body
+		.tarefa-body
+		
+			//- meta
+			.tarefa-meta
+				.tarefa-card
+				.tarefa-placar
+			
+			//- posts
+			.tarefa-posts
+				ul
+				.eot
+
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+
+		//- .tarefa-body.view-body
+		//- 	.tarefa-container.container
+		//- 		.painel
+		//- 			.meta
+		//- 			.placar
+		//- 				ul
+		//- 		.posts
+		//- 			ul
+		//- 			.tarefa-end
+					
+		.tarefa-close.js-tarefa-close.material-icons(title="Voltar à Lista") &#xE5C4;
+
+		//- new post
+		button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
+			i.material-icons &#xE145;
+			
+		aside.new-post-sheet(style="display: none;")
+			h1 Postar
+
+			mixin new-post-link(title, type, icon, icon_source)
+				li
+					a(href="#", data-post-type=type)
+						if (icon_source === "font-awesome")
+							i.fa(class!=icon)
+						else
+							i.material-icons !{icon}
+						= title
+			ul
+				+new-post-link("Foto", "photo", "&#xE251;")
+				+new-post-link("Vídeo", "video", "&#xE02C;")
+				+new-post-link("Vine", "vine", "fa-vine", "font-awesome")
+				+new-post-link("Texto", "text", "&#xE165;")
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- post cards
+template#view-tarefa-post-card
+	//- li.ui-card.card.card-l.post
+	li.post-card
+		.post-body.ui-card
+			.post-media
+				ul
+			.post-caption.fill(data-fill="legenda", data-fill-null="remove")
+		.post-label
+			.post-turma.fill(data-fill="class: turma")
+				.post-bullet.turma-background.turma-border
+				span.turma-text.fill(data-fill="turma-formatada")
+				span.post-date.fill(data-fill="data-de-postagem-formatada")
+		.post-rating
+			.post-review.fill(data-fill="avaliacao/mensagem")
+			.post-points.fill(data-fill="avaliacao/pontos")
+			
+		//- .body
+		//- 	.result
+		//- 		.status-indicator.fill(data-fill="class: status-class")
+		//- 			.status-icon.turma-text.fill(data-fill="status-icon")
+		//- 			.status-text.turma-text.fill(data-fill="status")
+		//- 		.message.fill(data-fill="message")
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- post media
+template#media-photo
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			a.fill(href="#", target="_blank", data-fill="href: link-original")
+				img.fill(data-fill="src: default")
+
+template#media-video
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			iframe.fill(href="#", target="_blank", data-fill="src: embed", frameborder="0", allowfullscreen)

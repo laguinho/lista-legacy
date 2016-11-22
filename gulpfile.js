@@ -1,209 +1,82 @@
-var gulp = require("gulp");
+"use strict";
+const gulp = require("gulp");
 
-var util = require("gulp-util");
-var plumber = require("gulp-plumber");
-var rename = require("gulp-rename");
-var sourcemaps = require("gulp-sourcemaps");
-var rev = require("gulp-rev");
-var concat = require("gulp-concat");
-var fs = require("fs");
-var sftp = require("gulp-sftp");
+const util = require("gulp-util");
+const plumber = require("gulp-plumber");
+const rename = require("gulp-rename");
+const sourcemaps = require("gulp-sourcemaps");
+const rev = require("gulp-rev");
+const concat = require("gulp-concat");
+const fs = require("fs");
+const sftp = require("gulp-sftp");
+const livereload = require("gulp-livereload");
+const clone = require("gulp-clone");
 
-var edicao = JSON.parse(fs.readFileSync("./edicoes.json", "utf8"))["edicao-atual"];
+const edicao = "xciii";
+
+let CONFIG = { };
 
 
+// server //////////////////////////////////////////////////////////////////////////////////////////
+CONFIG.server = { };
+CONFIG.server.host = "ftp.laguinho.org";
+CONFIG.server.remotePath = "/";
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// config //////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var CONFIG = { };
-
-// paths
+// paths ///////////////////////////////////////////////////////////////////////////////////////////
 CONFIG.paths = { };
 
 CONFIG.paths.development = { };
 CONFIG.paths.development.repo = "./";
-CONFIG.paths.development.dist = "./dist/";
-CONFIG.paths.development.staging = "./public/";
-CONFIG.paths.development.assets = CONFIG.paths.development.staging + "/-/assets/";
+CONFIG.paths.development.dist = "./dist";
+CONFIG.paths.development.staging = "./";
 
 CONFIG.paths.production = { };
 CONFIG.paths.production.assets = "/home/laguinho/assets.laguinho.org/lista/" + edicao + "/";
 CONFIG.paths.production.app = "/home/laguinho/" + edicao + ".laguinho.org/";
 
-// server
-CONFIG.server = { };
-CONFIG.server.host = "ftp.laguinho.org";
-CONFIG.server.remotePath = "/";
-
 // urls
 CONFIG.urls = { };
 CONFIG.urls.assets = "https://assets.laguinho.org/lista/" + edicao + "/";
 
+// colors
+// html: magenta
+// css: blue
+// js: yellow
+// pwa: gray
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// default tasks ///////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task("default", ["stage"]);
-gulp.task("watch", ["watch-css", "watch-js", "watch-html"]);
-gulp.task("stage", ["stage-css", "stage-js"], stageHTML);
-gulp.task("deploy", ["deploy-css", "deploy-js"], deployHTML);
-gulp.task("deploy-assets", ["deploy-css", "deploy-js"]);
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// css /////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var sass = require("gulp-sass");
-var groupMediaQueries = require("gulp-group-css-media-queries");
-var cssnano = require("gulp-cssnano");
-
-CONFIG.css = { };
-CONFIG.css.source = ["./scss/app.sass"];
-CONFIG.css.watch = ["./scss/**/**.sass", "./scss/**/**.scss"];
-
-function stageCSS() {
-	gulp.src(CONFIG.css.source)
-		.pipe(plumber())
-		.pipe(sourcemaps.init())
-		.pipe(rename({ basename: "lista" }))
-
-		.pipe(sass())
-		.pipe(groupMediaQueries())
-
-		// [DIST] source file
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		// [DIST] minified file
-		.pipe(cssnano({ autoprefixer: { add: true, browsers: ["> 1%"] }, zindex: true }))
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		// [STAGING] minified file with sourcemap
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest(CONFIG.paths.development.assets, { mode: "0644" }));
-
-	util.log(util.colors.bgCyan.bold("CSS") + util.colors.cyan(" compiled"));
-}
-
-function deployCSS() {
-	CONFIG.server.remotePath = CONFIG.paths.production.assets;
-
-	gulp.src(CONFIG.css.source)
-		.pipe(plumber())
-		.pipe(rename({ basename: "lista" }))
-
-		.pipe(sass())
-		.pipe(groupMediaQueries())
-
-		// [DIST] minified file
-		.pipe(cssnano({ autoprefixer: { add: true, browsers: ["> 1%"] }, zindex: true }))
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		.pipe(rev())
-		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
-
-		// rev manifest
-		.pipe(rev.manifest({ merge: true }))
-		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
-
-	util.log(util.colors.bgCyan.bold("CSS") + util.colors.cyan(" deployed"));
-}
-
-gulp.task("stage-css", stageCSS);
-gulp.task("watch-css", function() { gulp.watch(CONFIG.css.watch, stageCSS); });
-gulp.task("deploy-css", deployCSS);
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// js //////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var uglify = require("gulp-uglify");
-
-CONFIG.js = { };
-CONFIG.js.source = JSON.parse(fs.readFileSync("modules.json"));
-CONFIG.js.watch = CONFIG.js.source;
-
-function stageJS() {
-	gulp.src(CONFIG.js.source)
-		.pipe(plumber())
-		.pipe(sourcemaps.init())
-
-		.pipe(concat("lista.js"))
-
-		// source file
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		// minified file
-		.pipe(uglify())
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		// minified file with sourcemap
-		.pipe(sourcemaps.write())
-		.pipe(gulp.dest(CONFIG.paths.development.assets, { mode: "0644" }));
-
-	util.log(util.colors.bgBlue.bold("JS") + util.colors.blue(" compiled"));
-}
-
-function deployJS() {
-	CONFIG.server.remotePath = CONFIG.paths.production.assets;
-
-	gulp.src(CONFIG.js.source)
-		.pipe(plumber())
-
-		.pipe(concat("lista.js"))
-
-		// minified file
-		.pipe(uglify())
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
-
-		.pipe(rev())
-		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
-
-		// rev manifest
-		.pipe(rev.manifest({ merge: true }))
-		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
-
-	util.log(util.colors.bgBlue.bold("JS") + util.colors.blue(" compiled"));
-}
-
-gulp.task("stage-js", stageJS);
-gulp.task("watch-js", function() { gulp.watch(CONFIG.js.watch, stageJS); });
-gulp.task("deploy-js", deployJS);
-
+gulp.task("watch", ["watch-css", "watch-js", "watch-html", "watch-pwa"]);
+gulp.task("stage", ["stage-css", "stage-js", "stage-html", "stage-pwa"]);
+gulp.task("deploy-assets", ["deploy-css", "deploy-js", "deploy-pwa"]);
+gulp.task("deploy", ["deploy-assets"], deployHTML);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // html ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-var jade = require("gulp-jade");
+const pug = require("gulp-pug");
 
 CONFIG.html = { };
-CONFIG.html.source = ["./jade/app.jade"];
-CONFIG.html.watch = ["./jade/**/**.jade"];
+CONFIG.html.source = ["./pug/app.pug"];
+CONFIG.html.watch = ["**.*"];
 
 function stageHTML() {
-	var assets = JSON.parse(fs.readFileSync("./assets.json"));
+	let assets = JSON.parse(fs.readFileSync("./pug/assets.json"));
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
 		.pipe(rename({ basename: "lista" }))
 
-		.pipe(jade({
+		.pipe(pug({
 			"pretty": " ",
 			"locals": {
 				"env": "development",
+				"edicao": edicao,
 				"assets": assets
 			}
 		}))
@@ -211,34 +84,197 @@ function stageHTML() {
 		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
 		.pipe(gulp.dest(CONFIG.paths.development.staging, { mode: "0644" }));
 
-		util.log(util.colors.bgWhite.bold("HTML") + util.colors.white.underline(" compiled"));
+	util.log(util.colors.magenta("HTML !!"));
 }
 
 function deployHTML() {
 	CONFIG.server.remotePath = CONFIG.paths.production.app;
 
-	var manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
-	var assets = JSON.parse(fs.readFileSync("./assets.json"));
-	assets["lista-js"]["production"] = CONFIG.urls.assets + manifest["lista.min.js"];
-	assets["lista-css"]["production"] = CONFIG.urls.assets + manifest["lista.min.css"];
+	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
+	let assets = JSON.parse(fs.readFileSync("./pug/assets.json"));
+	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.js"];
+	assets["scripts"]["lista-css"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.css"];
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
 		.pipe(rename({ basename: "lista" }))
 
-		.pipe(jade({
+		.pipe(pug({
 			"pretty": false,
 			"locals": {
 				"env": "production",
+				"edicao": edicao,
 				"assets": assets
 			}
 		}))
 
-		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }));
+		.pipe(sftp({
+			host: CONFIG.server.host,
+			remotePath: CONFIG.paths.production.app,
+			auth: "laguinho"
+		}));
 
-	util.log(util.colors.bgWhite.bold("HTML") + util.colors.white.underline(" deployed"));
+	util.log(util.colors.magenta("HTML !!"));
 }
 
 gulp.task("stage-html", stageHTML);
-gulp.task("watch-html", function() { gulp.watch(CONFIG.html.watch, stageHTML); });
+gulp.task("watch-html", function() { gulp.watch(CONFIG.html.watch, { cwd: "./pug/" }, stageHTML); });
 gulp.task("deploy-html", deployHTML);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// css /////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const sass = require("gulp-sass");
+const groupMediaQueries = require("gulp-group-css-media-queries");
+const cssnano = require("gulp-cssnano");
+
+CONFIG.css = { };
+CONFIG.css.source = ["./scss/app.scss"];
+CONFIG.css.watch = ["**/**.scss", "**/**.sass"];
+
+function buildCSS() {
+	let css = gulp.src(CONFIG.css.source)
+		.pipe(plumber())
+		.pipe(sourcemaps.init())
+		.pipe(rename({ basename: "lista" }))
+		.pipe(sass({ outputStyle: "expanded" }));
+
+	return css;
+}
+
+function buildProductionCSS(css) {
+	let production = css.pipe(clone())
+		.pipe(groupMediaQueries())
+		.pipe(cssnano({ autoprefixer: { add: true, browsers: ["> 1%"] }, zindex: true }))
+		.pipe(rename({ suffix: ".min" }))
+		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
+
+	return production;
+}
+
+function stageCSS() {
+	let css = buildCSS();
+
+	let reference = css.pipe(clone())
+		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
+
+	let development = css.pipe(clone())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest(CONFIG.paths.development.staging + "/assets", { mode: "0644" }));
+
+	let production = buildProductionCSS(css);
+
+	util.log(util.colors.blue("CSS !!"));
+	return development.pipe(livereload( { quiet: true }));
+}
+
+function deployCSS() {
+	CONFIG.server.remotePath = CONFIG.paths.production.assets;
+
+	let css = buildCSS();
+
+	let production = buildProductionCSS(css)
+		.pipe(rev())
+		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
+		.pipe(rev.manifest({ merge: true }))
+		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
+
+	util.log(util.colors.blue("CSS !!"));
+}
+
+gulp.task("stage-css", stageCSS);
+gulp.task("watch-css", function() { livereload.listen(); gulp.watch(CONFIG.css.watch, { cwd: "./scss/" }, stageCSS); });
+gulp.task("deploy-css", deployCSS);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// js //////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const babel = require("gulp-babel");
+// const uglify = require("gulp-uglify");
+const closure = require("gulp-closure-compiler-service");
+
+CONFIG.js = { };
+CONFIG.js.source = JSON.parse(fs.readFileSync("./js/modules.json"));
+CONFIG.js.watch = ["**/**.js"];
+
+function buildJS() {
+	let js = gulp.src(CONFIG.js.source)
+		.pipe(plumber())
+		.pipe(sourcemaps.init())
+		.pipe(concat("lista.js"))
+
+	return js;
+}
+
+function buildProductionJS(js) {
+	let production = js.pipe(clone())
+		.pipe(babel())
+		// .pipe(uglify())
+		.pipe(rename({ suffix: ".min" }))
+		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
+
+	return production;
+}
+
+function stageJS() {
+	let js = buildJS();
+
+	let reference = js.pipe(clone())
+		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
+
+	let development = js.pipe(clone())
+		.pipe(babel())
+		.pipe(sourcemaps.write())
+		.pipe(gulp.dest(CONFIG.paths.development.staging + "/assets", { mode: "0644" }));
+
+	let production = buildProductionJS(js);
+
+	util.log(util.colors.yellow("JS !!"));
+}
+
+function deployJS() {
+	CONFIG.server.remotePath = CONFIG.paths.production.assets;
+
+	let js = buildJS();
+
+	let production = buildProductionJS(js)
+		.pipe(closure())
+		.pipe(rev())
+		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
+		.pipe(rev.manifest({ merge: true }))
+		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
+
+	util.log(util.colors.yellow("JS !!"));
+}
+
+gulp.task("stage-js", stageJS);
+gulp.task("watch-js", function() { gulp.watch(CONFIG.js.watch, { cwd: "./js/" }, stageJS); });
+gulp.task("deploy-js", deployJS);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// manifest & service worker ///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+CONFIG.pwa = { };
+CONFIG.pwa.source = ["./manifest.json", "./service-worker.js"];
+CONFIG.pwa.watch = CONFIG.pwa.source;
+
+function stagePWA() {
+	// gulp.src(CONFIG.pwa.source)
+	// 	.pipe(gulp.dest(CONFIG.paths.development.staging, { mode: "0644" }));
+
+	util.log(util.colors.gray("PWA !!"));
+}
+
+function deployPWA() {
+	// gulp.src(CONFIG.pwa.source)
+	// 	.pipe(gulp.dest(CONFIG.paths.development.staging, { mode: "0644" }));
+
+	util.log(util.colors.gray("PWA !!"));
+}
+
+gulp.task("stage-pwa", stagePWA);
+gulp.task("watch-pwa", function() { gulp.watch(CONFIG.pwa.watch, stagePWA); });
+gulp.task("deploy-pwa", deployPWA);

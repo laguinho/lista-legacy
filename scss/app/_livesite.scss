@@ -1,0 +1,62 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// live panel //////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// .app-livesite-placeholder {
+// 	// @include scaffolding(#666);
+// 	height: 150px;
+// 	margin-bottom: ($gutter * 1.5);
+// 	position: relative;
+//
+// 	@media ($--from-4columns) {
+// 		// height: $appbar-height-4columns + $livesite-height-4columns + ($gutter * 3);
+// 		height: $appbar-height-4columns;
+// 	}
+// }
+
+.app-livesite {
+	margin-bottom: $gutter * 2;
+	padding-top: $appbar-height;
+	position: relative;
+	// padding-bottom: $gutter * 1.5;
+
+	@media ($--from-4columns) {
+		height: $appbar-height-4columns * 2;
+		padding-top: $appbar-height-4columns;
+	}
+
+	// background-image: linear-gradient(-60deg, mix(#ff553b, #fff, 3%), mix(#fdbc41, #fff, 3%), mix(#9ed150, #fff, 3%), mix(#00eaff, #fff, 3%), mix(#3f8fff, #fff, 3%), mix(#ff85ff, #fff, 3%), mix(#ff553b, #fff, 3%));
+	background-color: #fff;
+	// box-shadow: 0 2px 4px 0 rgba(0,0,0,.12);
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
+	// position: relative;
+
+	.marquee-transitory {
+		// @include scaffolding;
+		// position: absolute;
+		// top: 0;
+		// left: 50%;
+		// width: 300px;
+		// margin-left: -150px;
+		font: 400 23px / 28px lato, sans-serif !important;
+		color: #000;
+		letter-spacing: 2px;
+		word-spacing: 2px;
+		text-align: center;
+		text-transform: uppercase;
+	}
+
+	// &::after {
+	// 	position: absolute;
+	// 	bottom: 0;
+	// 	left: 0;
+	// 	right: 0;
+	// 	height: 2px;
+	// 	background-image: linear-gradient(-45deg, #ff553b, #fdbc41, #9ed150, #00eaff, #3f8fff, #ff85ff, #ff553b);
+	// 	content: "";
+	// }
+	//
+	// &::after {
+	// 	bottom: 0;
+	// }
+}

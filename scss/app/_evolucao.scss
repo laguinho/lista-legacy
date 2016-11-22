@@ -1,0 +1,58 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// app evolução ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.app-evolucao {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	.timeline {
+		height: 4px;
+		border-radius: 1px;
+		box-shadow: inset 0 0 2px rgba(#000, 0.13725), 0 0 2px rgba(#000, 0.13725);
+		position: relative;
+	}
+
+	.elapsed-time {
+		width: 0;
+		max-width: 100%;
+		height: 4px;
+		border-radius: 0 2px 2px 0;
+		overflow: hidden;
+		z-index: 1;
+		position: relative;
+		transition: width $transition-timing-function 9s;
+
+		.bar {
+			height: 100%;
+			background-image: linear-gradient(-45deg, #ff553b, #fdbc41, #9ed150, #00eaff, #3f8fff, #ff85ff, #ff553b);
+		}
+	}
+
+	.day-labels {
+		display: table;
+		position: absolute;
+		top: -15px;
+		left: 0;
+		right: 0;
+		width: 100%;
+		font-size: 10px;
+		color: #ccc;
+		text-transform: uppercase;
+		z-index: 0;
+
+		li {
+			display: table-cell;
+			width: 1%;
+			height: 13px;
+			padding: 0 0 6px 4px;
+			padding-bottom: 6px;
+
+			+ li {
+				border-left: 1px solid #e2e2e2;
+			}
+		}
+	}
+}

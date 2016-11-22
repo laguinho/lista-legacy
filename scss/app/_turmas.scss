@@ -1,0 +1,27 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// turmas //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$turmas:
+	(ec1, #ed97cb),
+	(ec2, #68cafb),
+	(ec3, #e4c970);
+
+@each $turma, $color in $turmas {
+	.#{$turma} .turma-background,
+	.user-#{$turma} .user-background {
+		background-color: $color !important;
+		// background-image: linear-gradient(135deg, darken($common-color, 20%), mix($color, $common-color), $color, darken($color, 10%)) !important;
+	}
+
+	.#{$turma} .turma-text,
+	.user-#{$turma} .user-text {
+		color: $color !important;
+	}
+
+	.#{$turma} .turma-border,
+	.user-#{$turma} .user-border,
+	.user-#{$turma} .user-border-focus:focus {
+		border-color: $color !important;
+	}
+}

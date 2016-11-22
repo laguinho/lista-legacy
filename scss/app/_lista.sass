@@ -3,16 +3,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 main
 	display: block
-
-	.loading
-		position: fixed
-		top: 0
-		bottom: 0
-		left: 0
-		right: 0
-		background: $background-color url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQxNCAyNDE0IiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxzdHlsZT4jc2xpY2VzPip7ZmlsbDp0cmFuc3BhcmVudDthbmltYXRpb246Zmxhc2ggLjhzIGxpbmVhciBpbmZpbml0ZTt9QGtleWZyYW1lcyBmbGFzaHswJXtmaWxsOiNmYTA7fTc1JXtmaWxsOnRyYW5zcGFyZW50O30xMDAle2ZpbGw6dHJhbnNwYXJlbnQ7fX08L3N0eWxlPjxnIGlkPSJzbGljZXMiPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6MCIgZD0iTTEyMDcgMTIwN0w3MDcgMGgxMDAweiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjFzIiBkPSJNMTIwNyAxMjA3TDE3MDcgMGw3MDcgNzA3eiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjJzIiBkPSJNMTIwNyAxMjA3bDEyMDctNTAwdjEwMDB6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouM3MiIGQ9Ik0xMjA3IDEyMDdsMTIwNyA1MDAtNzA3IDcwN3oiLz48cGF0aCBzdHlsZT0iYW5pbWF0aW9uLWRlbGF5Oi40cyIgZD0iTTEyMDcgMTIwN2w1MDAgMTIwN0g3MDd6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouNXMiIGQ9Ik0xMjA3IDEyMDdMNzA3IDI0MTQgMCAxNzA3eiIvPjxwYXRoIHN0eWxlPSJhbmltYXRpb24tZGVsYXk6LjZzIiBkPSJNMTIwNyAxMjA3TDAgMTcwN1Y3MDd6Ii8+PHBhdGggc3R5bGU9ImFuaW1hdGlvbi1kZWxheTouN3MiIGQ9Ik0xMjA3IDEyMDdMMCA3MDcgNzA3IDB6Ii8+PC9nPjwvc3ZnPg==") no-repeat center
-		background-size: 36px
-		display: none
+	position: relative
+	z-index: $z-index-lista
 
 .app-lista
 	&::after

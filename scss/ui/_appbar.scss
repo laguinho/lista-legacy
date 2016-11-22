@@ -1,0 +1,166 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// appbar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.ui-appbar {
+	// opacity: .7; // XXX
+
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+
+	height: $appbar-height;
+
+	// background-color: #fff;
+	color: #666;
+	// box-shadow: 0 0 2px rgba(0, 0, 0, 0.12);
+	z-index: 1;
+	-webkit-user-select: none;
+
+	.ui-pointer & {
+		-webkit-user-select: inherit;
+	}
+
+	.container {
+		height: 100%;
+
+		@media ($--from-4columns) {
+			padding: 0 $appbar-height-4columns;
+		}
+	}
+
+	h1 {
+		margin: auto;
+		font-size: 20px;
+		// line-height: 56px
+	}
+
+	@media (min-width: $column-width * 4) {
+		height: 64px;
+
+		h1 {
+			font-size: 24px;
+			// line-height: 64px
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// lista appbar
+.lista-appbar {
+	background-color: #fff;
+	color: #444;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
+	transition: all $transition-timing-function .16s;
+	z-index: $z-index-appbar;
+
+	.scroll-top & {
+		box-shadow: none;
+	}
+
+	h1 {
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 400px;
+		height: 40px;
+		font: 400 16px / 40px lato, sans-serif !important;
+		letter-spacing: 2px;
+		word-spacing: 2px;
+		text-align: center;
+		text-transform: uppercase;
+		opacity: 0.7;
+		transform: translateX(-50%) translateY(-50%);
+
+		.marquee-face {
+			position: absolute;
+			top: 1px;
+			bottom: 0;
+			left: 0;
+			right: 0;
+		}
+
+		span {
+			display: inline-block;
+			padding-left: 2px;
+			background-image: linear-gradient(-45deg, #ff553b, #fdbc41, #9ed150, #00eaff, #3f8fff, #ff85ff, #ff553b);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			opacity: 1;
+			transform: translateY(0);
+			transition: all $transition-timing-function .32s;
+
+			.livesite-focus & {
+				opacity: 0;
+				transform: translateY(100%);
+			}
+		}
+
+		.laguinho {
+			width: 64px;
+			height: 64px;
+			margin: 0 auto;
+			opacity: 0;
+			transform: translateY(-100%);
+			transition: all $transition-timing-function .32s;
+
+			@media ($--from-4columns) {
+				width: $appbar-height-4columns * 0.6;
+				height: $appbar-height-4columns * 0.6;
+			}
+
+			.livesite-focus & {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// appbar button
+.appbar-button {
+	display: block;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: $appbar-height;
+	height: $appbar-height;
+	padding-top: $appbar-height * 0.1;
+	text-align: center;
+
+	@media ($--from-4columns) {
+		width: $appbar-height-4columns;
+		height: $appbar-height-4columns;
+		padding-top: $appbar-height-4columns * 0.15;
+	}
+
+	i {
+		width: $appbar-height * 0.8;
+		height: $appbar-height * 0.8;
+		border-radius: 50%;
+		line-height: $appbar-height * 0.8;
+
+		@media ($--from-4columns) {
+			width: $appbar-height-4columns * 0.7;
+			height: $appbar-height-4columns * 0.7;
+			line-height: $appbar-height-4columns * 0.7;
+		}
+	}
+
+	&:active {
+		i {
+			background-color: rgba(#000, 0.1);
+		}
+	}
+
+	&.appbar-left-button {
+		left: 0;
+	}
+
+	&.appbar-right-button {
+		right: 0;
+	}
+}

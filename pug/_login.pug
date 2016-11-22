@@ -1,0 +1,15 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- login
+
+aside#login.ui-view
+	header.appbar
+		.container.modal-container
+			a.back(href="/")
+				i.material-icons &#xE5C4;
+			h1 Login
+	.container.modal-container
+		form(method="post", action="/tarefas/login")
+			.form-group
+				input(type="email", name="email", placeholder="E-mail")
+				input(type="password", name="password", placeholder="Senha")
+			button.btn.btn-primary Login

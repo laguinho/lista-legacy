@@ -1,6 +1,10 @@
 node_modules
+bower_components
 public
 .gulp-scss-cache
 .sass-cache
 .ftppass
 *api-key*
+dev.app
+dev.scpt
+.imdone

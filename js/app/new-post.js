@@ -93,7 +93,7 @@ app.Post = (function() {
 		// NewPost.open()
 		open: function(type, numero) {
 			var data = {
-				"edicao": Lista.Regulamento["edicao"],
+				"edicao": Lista.Regulamento["titulo"],
 				"numero": (numero || tarefa_active),
 				"user": user["id"],
 				"turma": user["turma"],
@@ -103,7 +103,7 @@ app.Post = (function() {
 
 			// efeito de abertura
 			// _view.open($post, $newPostView);
-			$post.html($new_post_view).addClass("in").reflow().addClass("slide").one("transitionend", function() {
+			$post.html($new_post_view).addClass("in").reflow().addClass("slide-y").one("transitionend", function() {
 				var view_theme_color = $(".appbar", $post).css("background-color");
 				$("head meta[name='theme-color']").attr("content", view_theme_color);
 			});
@@ -150,7 +150,7 @@ app.Post = (function() {
 		//	tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
-			$post.removeClass("slide").one("transitionend", function() {
+			$post.removeClass("slide-y").one("transitionend", function() {
 				$post.removeClass("in").empty();
 			});
 
@@ -170,9 +170,9 @@ $(function() {
 		event.preventDefault();
 
 		var type = $(this).data("post-type");
-		bottomsheet.close();
+		UI.bottomsheet.close();
 		setTimeout(function() {
-			NewPost.open(type, tarefa_active);
+			app.Post.open(type, tarefa_active);
 		}, 600);
 	});
 

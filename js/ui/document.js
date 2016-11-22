@@ -1,0 +1,58 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui //////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+let UI = { }
+let $ui = [ ];
+
+UI.data = [ ];
+
+// UI.body.lock()
+// UI.body.unlock()
+// UI.loadbar.show()
+// UI.loadbar.hide()
+// UI.backdrop.show()
+// UI.backdrop.hide()
+
+// $ui["window"]
+// $ui["title"]
+// $ui["body"]
+// $ui["appbar"]
+// $ui["loadbar"]
+// $ui["sidenav"]
+// $ui["bottomsheet"]
+// $ui["toast"]
+// $ui["backdrop"]
+// $ui["footer"]
+
+// UI.data["window"]["width"]
+// UI.data["window"]["height"]
+// UI.data["column-width"]
+// UI.data["columns"]
+// UI.data["interaction-type"]
+// UI.data["scroll-position"]["top"]
+// UI.data["scroll-position"]["bottom"]
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / window /////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+$ui["window"] = $(window);
+
+$(function() {
+	$ui["title"] = $("head title");
+	UI.data["title"] = $ui["title"].html();
+
+	$ui["theme-color"] = $("meta[name='theme-color']");
+	UI.data["original-theme-color"] = $ui["theme-color"].attr("content");
+});
+
+// tipo de interação (touch ou pointer)
+UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// reflow
+$.fn.reflow = function() {
+	var offset = $ui["body"].offset().left;
+	return $(this);
+};

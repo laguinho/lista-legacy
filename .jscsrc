@@ -1,12 +1,24 @@
 {
-  "fileExtensions": [".js"],
+	"fileExtensions": [".js"],
 
-  "esnext": true,
+	"esnext": true,
 
-  "validateQuoteMarks": "\"",
-  "requireDotNotation": false,
+	"validateQuoteMarks": "\"",
+	"validateIndentation": "\t",
+	"requireDotNotation": false,
 
-  "requireSemicolons": true,
-  "requireParenthesesAroundIIFE": true,
-  "maximumLineLength": 140
+	"requireSemicolons": true,
+	"requireParenthesesAroundIIFE": true,
+	"maximumLineLength": 140,
+
+	"disallowQuotedKeysInObjects": false,
+	"requireTrailingComma": false,
+
+	"requireSpacesInAnonymousFunctionExpression": {
+		"beforeOpeningCurlyBrace": true
+	},
+
+	"requirePaddingNewLinesBeforeLineComments": false,
+	"requirePaddingNewLinesAfterBlocks": false,
+	"requireCamelCaseOrUpperCaseIdentifiers": false
 }

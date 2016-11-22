@@ -1,33 +1,60 @@
-var edicao = "xcii";
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// lista de tarefas ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var Lista = [ ];
-Lista.Regulamento = [ ];
+let Lista = [ ];
+Lista.Edicao = [ ];
+Lista.Placar = [ ];
 Lista.Tarefas = [ ];
 
-var app = [ ];
+let app = [ ];
+var $app = [ ]; // TODO existe??
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+let cue = [ ];
+let worker = [ ];
+let timeout = [ ];
+
+let logging = true;
+let log = function(message, type) {
+	if (logging) {
+		if (!type) {
+			console.log(message);
+		} else {
+			console[type](message);
+		}
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// daqui pra baixo não é pra ter nada!!
+
+var ui = [ ];
+
+Lista.Regulamento = [ ]; // TODO deprecated
+// var edicao = "xciii";
+
+
 
 // laguinho.org/tarefas
 var tarefas = { };
-$(function() {
-
-});
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // elements & helpers //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var timeout = [ ];
-var $theme_color, theme_color = { };
+// var $theme_color, theme_color = { };
 var tarefa_active;
-
-function rand(min, max) { return Math.random() * (max - min) + min; }
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
-var ui  = { };
+// var ui  = { };
 
 
 /*
@@ -64,9 +91,16 @@ $(function() {
 });
 */
 
-var api_key;
+// var api_key;
 
-api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// utilities ///////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// rand
+function rand(min, max) {
+	return Math.random() * (max - min) + min;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // template engine /////////////////////////////////////////////////////////////////////////////////
@@ -103,11 +137,11 @@ function __render(template, data) {
 			var value = data[source];
 
 			source = source.split("/");
-			if (source.length > 1) {
+			if (source.length > 1 && typeof value !== "undefined") {
 				value = data[source[0]];
 
 				for (var j = 1; j < source.length; j++) {
-					value = value[source[j]];
+					value = (value[source[j]])? value[source[j]] : null;
 				}
 			}
 
@@ -250,8 +284,54 @@ window.addEventListener("popstate", function(event) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var UI = { }, $ui = [ ];
+let UI = { }
+let $ui = [ ];
+
+UI.data = [ ];
+
+// UI.body.lock()
+// UI.body.unlock()
+// UI.loadbar.show()
+// UI.loadbar.hide()
+// UI.backdrop.show()
+// UI.backdrop.hide()
+
+// $ui["window"]
+// $ui["title"]
+// $ui["body"]
+// $ui["appbar"]
+// $ui["loadbar"]
+// $ui["sidenav"]
+// $ui["bottomsheet"]
+// $ui["toast"]
+// $ui["backdrop"]
+// $ui["footer"]
+
+// UI.data["window"]["width"]
+// UI.data["window"]["height"]
+// UI.data["column-width"]
+// UI.data["columns"]
+// UI.data["interaction-type"]
+// UI.data["scroll-position"]["top"]
+// UI.data["scroll-position"]["bottom"]
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / window /////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 $ui["window"] = $(window);
+
+$(function() {
+	$ui["title"] = $("head title");
+	UI.data["title"] = $ui["title"].html();
+
+	$ui["theme-color"] = $("meta[name='theme-color']");
+	UI.data["original-theme-color"] = $ui["theme-color"].attr("content");
+});
+
+// tipo de interação (touch ou pointer)
+UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // reflow
@@ -261,156 +341,148 @@ $.fn.reflow = function() {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / body ///////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// legacy
 
-var $window, $body;
-
-$(function() {
-
-	$window = $ui["window"];
-	$body = $ui["body"];
-	$theme_color = $("meta[name='theme-color']");
-	theme_color["original"] = $theme_color.attr("content");
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// body
 UI.body = (function() {
+	$(function() {
+		$ui["body"] = $(document.body);
+		$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
+		scrollStatus();
+	});
+
+	$(window).on("scroll", scrollStatus);
+
+	function scrollStatus() {
+		var y = $(window).scrollTop();
+
+		if (y > 1) {
+			$ui["body"].removeClass("scroll-top");
+		} else {
+			$ui["body"].addClass("scroll-top");
+		}
+
+		if (y > 56) {
+			$ui["body"].addClass("livesite-blur").removeClass("livesite-focus");
+		} else {
+			$ui["body"].addClass("livesite-focus").removeClass("livesite-blur");
+		}
+	}
+
 	return {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// UI.body.lock()
 		lock: function() {
 			$ui["body"].addClass("no-scroll");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// UI.body.unlock()
 		unlock: function() {
 			$ui["body"].removeClass("no-scroll");
 		}
 	};
 })();
 
-$(function() {
-	$ui["body"] = $(document.body);
-});
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / loadbar ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-UI.data = [ ];
+UI.loadbar = (function() {
+	$(function() {
+		$ui["loadbar"] = $(".ui-loadbar");
+	});
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// confere se a interação é por toque ou mouse
-UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
-$(function() {
-	$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// calcula dimensões da janela e do layout
-function setLayoutProperties() {
-	// largura da coluna, incluindo margem
-	UI.data["column-width"] = 316;
-
-	// guarda dimensão da janela
-	UI.data["window"] = [ ];
-	UI.data["window"]["width"] = $ui["window"].width();
-	UI.data["window"]["height"] = $ui["window"].height();
-
-	// calcula número de colunas
-	UI.data["columns"] = Math.floor(UI.data["window"]["width"] / UI.data["column-width"]);
-
-	// adiciona classe no <body> de acordo com a quantidade de colunas
-	var layout_class;
-	if (UI.data["columns"] === 1) {
-		layout_class = "ui-single-column";
-	} else if (UI.data["columns"] === 2) {
-		layout_class = "ui-dual-column";
-	} else {
-		layout_class = "ui-multi-column";
-	}
-
-	$ui["body"].removeClass("ui-single-column ui-dual-column ui-multi-column").addClass(layout_class);
-}
-
-$(document).on("ready", setLayoutProperties);
-$ui["window"].on("resize", setLayoutProperties);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// scroll
-UI.data["scroll-position"] = [ ];
-
-function setScrollPosition() {
-	UI.data["scroll-position"]["top"] = $ui["window"].scrollTop();
-	UI.data["scroll-position"]["bottom"] = UI.data["scroll-position"]["top"] + UI.data["window"]["height"];
-}
-
-$(document).on("ready", setScrollPosition);
-$ui["window"].on("scroll", setScrollPosition);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
+	return {
+		show: function() {
+			$ui["loadbar"].addClass("in");
+		},
+		hide: function() {
+			timeout["hide-loadbar"] = setTimeout(function() {
+				$ui["loadbar"]
+					.removeClass("fade-in")
+					.one("transitionend", function() {
+						$ui["loadbar"].removeClass("in");
+					});
+			}, 800);
+		}
+	};
+})();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // backdrop
+
+$ui["backdrop"] = [ ];
+
 UI.backdrop = (function() {
 	return {
-		show: function($screen) {
+		show: function($screen, events) {
+			var screen = $screen["selector"];
 			var zindex = $screen.css("z-index") - 1;
-			$ui["backdrop"].css("z-index", zindex).addClass("in");
+
+			$ui["backdrop"][screen] = __render("backdrop");
+
+			$.each(events, function(event, handler) {
+				$ui["backdrop"][screen].on(event, handler)
+			});
+
+			$ui["backdrop"][screen].css("z-index", zindex)
+				.on("click", function() { $(this).trigger("hide"); })
+				.appendTo($ui["body"])
+				.addClass("in");
 		},
-		hide: function() {
-			$ui["backdrop"].removeClass("in").css("z-index", "").off("hide");
+		hide: function($screen) {
+			var screen = $screen["selector"];
+			$ui["backdrop"][screen].removeClass("in").off("hide").remove();
 		}
 	};
 })();
 
 $(function() {
-	$ui["backdrop"] = $(".js-ui-backdrop");
-	$ui["backdrop"].on("click", function() {
-		$ui["backdrop"].trigger("hide");
-	});
+	// $ui["backdrop"] = $(".js-ui-backdrop");
+	// $ui["backdrop"].on("click", function() {
+	// 	$ui["backdrop"].trigger("hide");
+	// });
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// sidenav
+// ui sidenav //////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 UI.sidenav = (function() {
+	$(function() {
+		$ui["sidenav"] = $(".js-ui-sidenav");
+
+		$(".js-sidenav-trigger").on("click", function(event) {
+			event.preventDefault();
+			UI.sidenav.open();
+		});
+	});
+
 	return {
 		open: function() {
 			UI.body.lock();
-			UI.backdrop.show($ui["sidenav"]);
+			UI.backdrop.show($ui["sidenav"], { "hide": UI.sidenav.close });
 			$ui["sidenav"].addClass("in");
-
-			$ui["backdrop"].on("hide", UI.sidenav.close);
 		},
 		close: function() {
 			$ui["sidenav"].removeClass("in");
-			UI.backdrop.hide();
+			UI.backdrop.hide($ui["sidenav"]);
 			UI.body.unlock();
 		}
 	};
 })();
-
-$(function() {
-	$ui["sidenav"] = $(".js-ui-sidenav");
-
-	$(".js-sidenav-trigger").on("click", function(event) {
-		event.preventDefault();
-		UI.sidenav.open();
-	});
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // bottomsheet
 UI.bottomsheet = (function() {
 	return {
 		open: function($content, addClass) {
-			UI.backdrop.show($ui["bottomsheet"]);
+			UI.backdrop.show($ui["bottomsheet"], { "hide": UI.bottomsheet.close });
 			$ui["bottomsheet"].html($content).addClass((addClass? addClass + " " : "") + "in").reflow().addClass("slide");
 
 			theme_color["buffer"] = $theme_color.attr("content");
 			$theme_color.attr("content", "#000");
-
-			$ui["backdrop"].on("hide", UI.bottomsheet.close);
 
 			router["view-manager"].add("bottomsheet");
 			history.pushState({ "view": "bottomsheet" }, null, null);
@@ -422,7 +494,7 @@ UI.bottomsheet = (function() {
 
 			$theme_color.attr("content", theme_color["buffer"]);
 
-			UI.backdrop.hide();
+			UI.backdrop.hide($ui["bottomsheet"]);
 
 			router["view-manager"].remove("bottomsheet");
 		}
@@ -517,46 +589,215 @@ $(function() {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / utilities //////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// layout properties
+UI.data["window"] = [ ];
+UI.data["column-width"] = 316; // largura da coluna, incluindo margem
+
+function setLayoutProperties() {
+	// dimensões da janela
+	UI.data["window"]["width"] = $ui["window"].width();
+	UI.data["window"]["height"] = $ui["window"].height();
+
+	// calcula número de colunas
+	UI.data["columns"] = Math.floor(UI.data["window"]["width"] / UI.data["column-width"]);
+
+	// adiciona classe no <body> de acordo com a quantidade de colunas
+	let layout_class;
+	if (UI.data["columns"] === 1) {
+		layout_class = "ui-single-column";
+	} else if (UI.data["columns"] === 2) {
+		layout_class = "ui-dual-column";
+	} else {
+		layout_class = "ui-multi-column";
+	}
+
+	$ui["body"].removeClass("ui-single-column ui-dual-column ui-multi-column").addClass(layout_class);
+}
+
+$(function() { setLayoutProperties(); });
+$ui["window"].on("resize", setLayoutProperties);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// scroll
+UI.data["scroll-position"] = [ ];
+
+function setScrollPosition() {
+	UI.data["scroll-position"]["top"] = $ui["window"].scrollTop();
+	UI.data["scroll-position"]["bottom"] = UI.data["scroll-position"]["top"] + UI.data["window"]["height"];
+}
+
+$(function() { setScrollPosition(); });
+$ui["window"].on("scroll resize", setScrollPosition);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// api /////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// TODO legacy
+let api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
+
+const ListaAPI = function(endpoint) {
+	log("API Request: " + endpoint, "info");
+	let api_url = "https://api.laguinho.org/lista/" + edicao;
+	let api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
+
+	let request = $.getJSON(api_url + endpoint + "?key=" + api_key + "&callback=?");
+	return request;
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // placar //////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.Placar = function(turmas) {
-	// soma a pontuação de cada turma para obter o total de pontos
-	var total_de_pontos = turmas.reduce(function(total, turma) { total + turma["pontos"], 0 });
-	total_de_pontos = (total_de_pontos? total_de_pontos : 0);
-
-	// limpa o placar
-	$placar.empty();
-
-	// adiciona cada turma no placar
-	$.each(turmas, function(index, turma) {
-		// calcula % da turma em relação ao total de pontos
-		var percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / total_de_pontos : 0);
-
-		// formata os dados
-		turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
-		turma["turma-formatada"] = turma["turma"].toUpperCase();
-		turma["pontos"] = turma["pontos"];
-		turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-		// renderiza e coloca na página
-		var $turma = __render("placar-turma", turma);
-		$placar.append($turma);
+app.Placar = (function() {
+	$(function() {
+		$ui["placar"] = $(".js-app-placar > ul");
 	});
 
-	if (total_de_pontos === 0) {
-		$placar.parent().addClass("zeroed");
-	} else {
-		$placar.parent().removeClass("zeroed");
+	return {
+		update: function(turmas) {
+			// confere qual a turma com maior pontuação
+			// e soma a pontuação de cada turma para obter o total de pontos
+			var maior_pontuacao = 0;
+			var total_de_pontos = 0;
+
+			for (var turma in turmas) {
+				var pontuacao_da_turma = turmas[turma]["pontos"];
+
+				if (pontuacao_da_turma > maior_pontuacao) {
+					maior_pontuacao = pontuacao_da_turma;
+				}
+
+				total_de_pontos += pontuacao_da_turma;
+			}
+
+			// limpa o placar
+			$ui["placar"].empty();
+
+			// adiciona cada turma no placar
+			$.each(turmas, function(index, turma) {
+				// calcula % da turma em relação ao total de pontos
+				var percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / maior_pontuacao : 0);
+
+				// formata os dados
+				turma["largura-da-barra"] = "width: " + (percentual_da_turma * 100).toFixed(3) + "%;";
+				turma["turma-formatada"] = turma["turma"].toUpperCase();
+				turma["pontos"] = turma["pontos"];
+				turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+				// renderiza e coloca na página
+				var $turma = __render("placar-turma", turma);
+				$ui["placar"].append($turma);
+			});
+
+			if (total_de_pontos === 0) {
+				$ui["placar"].parent().addClass("zeroed");
+			} else {
+				$ui["placar"].parent().removeClass("zeroed");
+			}
+		}
 	}
-};
+})();
 
-// jQuery
-var $placar;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// app evolução ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// app.Evolucao.start()
+// app.Evolucao.update()
 
-$(function() {
-	$placar = $(".js-placar ul");
-});
+// TODO
+// - mostrar contador nas últimas 48 horas
+// - o que acontece depois do encerramento?
+//   - barra fica da cor da turma e aparece mensagem em cima "EC1 campeã"
+
+app.Evolucao = (function() {
+	$(function() {
+		$ui["evolucao"] = $(".app-evolucao");
+	});
+
+	return {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Evolucao.start()
+		start: function() {
+			log("app.Evolucao.start", "info");
+
+			// pega data de início e data de encerramento
+			let dia_inicial = Lista.Edicao["inicio"] = moment(Lista.Edicao["inicio"]);
+			let dia_final = Lista.Edicao["fim"] = moment(Lista.Edicao["fim"]);
+
+			// let dia_inicial = Lista.Edicao["inicio"];
+			// let dia_final = Lista.Edicao["fim"];
+
+			// calcula o tempo total (em minutos)
+			let duracao_total = Lista.Edicao["duracao-em-minutos"] = dia_final.diff(dia_inicial, "minutes");
+
+			// insere os dias na barra, indo de dia em dia até chegar ao encerramento
+			for (let dia = dia_inicial.clone(); dia.isBefore(dia_final); dia.add(1, "days")) {
+				// define início e final do dia.
+				// se final for após a data de encerramento, usa ela como final
+				let inicio_do_dia = dia;
+				let final_do_dia = dia.clone().endOf("day");
+				if (final_do_dia.isAfter(dia_final)) {
+					final_do_dia = dia_final;
+				}
+
+				// calcula a duração do dia em minutos
+				let duracao_do_dia = final_do_dia.diff(inicio_do_dia, "minutes");
+
+				// define a duração percentual do dia em relação ao total
+				let percentual_do_dia = duracao_do_dia / duracao_total;
+
+				// calcula a largura do dia (de acordo com duração percentual)
+				// e insere dia na barra de evolução
+				let largura_do_dia = (percentual_do_dia * 100).toFixed(3);
+				let $dia = __render("evolucao-dia", {
+					dia: dia.format("ddd")
+				}).css("width", largura_do_dia + "%");
+
+				$(".day-labels", $ui["evolucao"]).append($dia);
+			}
+
+			// com os dias inseridos na barra de evolução,
+			// desenha a barra de tempo transcorrido
+			setTimeout(app.Evolucao.update, 1000);
+
+			// atualiza a linha de evolução a cada X minutos
+			timeout["evolucao"] = setInterval(app.Evolucao.update, 60 * 1000);
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Evolucao.update()
+		update: function() {
+			log("app.Evolucao.update", "info");
+
+			// pega as datas e calcula o tempo (em minutos) e percentual transcorridos
+			let agora = moment();
+			let dia_inicial = Lista.Edicao["inicio"];
+			let dia_final = Lista.Edicao["fim"];
+			let duracao_total = Lista.Edicao["duracao-em-minutos"];
+
+			let tempo_transcorrido = agora.diff(dia_inicial, "minutes");
+			let percentual_transcorrido = (tempo_transcorrido < duracao_total ? tempo_transcorrido / duracao_total : 1);
+
+			// define a largura da barra de evolução completa igual à largura da tela
+			// depois, mostra apenas o percentual transcorrido
+			$(".elapsed-time .bar", $ui["evolucao"]).css("width", UI.data["window"]["width"]);
+
+			let largura_da_barra = (percentual_transcorrido * 100).toFixed(3);
+			$(".elapsed-time", $ui["evolucao"]).css("width", largura_da_barra + "%");
+		}
+	}
+})();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // lista ///////////////////////////////////////////////////////////////////////////////////////////
@@ -567,6 +808,33 @@ $(function() {
 
 app.Lista = (function() {
 	return {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.start()
+		start: function() {
+			log("app.Lista.start", "info");
+
+			// se tiver título especificado, insere ele
+			if (Lista.Edicao["mensagem"]["titulo"]) {
+				let titulo_da_pagina = Lista.Edicao["mensagem"]["titulo"];
+				$ui["title"].html(titulo_da_pagina);
+			}
+
+			// de tiver mensagem especificada, insere ela
+			if (Lista.Edicao["mensagem"]["rodape"]) {
+				$(".js-mensagem-final").html(Lista.Edicao["mensagem"]["rodape"]);
+			}
+
+			// de prazo de postagem estiver encerrado, insere classe no <body>
+			if (moment().isAfter(Lista.Edicao["fim"])) {
+				$ui["body"].addClass("postagens-encerradas");
+			}
+
+			// tira a tela de loading
+			UI.loadbar.hide();
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.load()
 		load: function() {
 			// mostra a tela de loading e limpa o stream
 			$stream.loading.addClass("fade-in in");
@@ -575,29 +843,29 @@ app.Lista = (function() {
 			$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
 				// "DIRETOR"
 				// TODO O load deve ficar separado do Stream (ver issue #7)
-				Lista.Regulamento = data["meta"];
+				Lista.Regulamento = data["edicao"];
 				Lista.Tarefas = data["tarefas"];
 
 				// Se tiver título especificado, insere ele
-				if (data["meta"]["titulo"]) {
-					page_title = data["meta"]["titulo"];
+				if (data["edicao"]["mensagem"]["titulo"]) {
+					page_title = data["edicao"]["mensagem"]["titulo"];
 					$("head title").html(page_title);
 				}
 
 				// Se tiver mensagem especificada, insere ela
-				if (data["meta"]["mensagem"]) {
-					$(".js-mensagem-final").html(data["meta"]["mensagem"]);
+				if (data["edicao"]["mensagem"]["rodape"]) {
+					$(".js-mensagem-final").html(data["edicao"]["mensagem"]["rodape"]);
 				}
 
 				// Se prazo de postagem estiver encerrado, insere classe no <body>
 				if (moment().isAfter(Lista.Regulamento["fim"])) {
-					$body.addClass("postagens-encerradas");
+					$ui["body"].addClass("postagens-encerradas");
 				}
 
 				// Se a Edição estiver encerrada...
 				if (Lista.Regulamento["encerrada"] === true) {
 					// ...insere classe no <body>
-					$body.addClass("edicao-encerrada");
+					$ui["body"].addClass("edicao-encerrada");
 
 					// ...para de atualizar automaticamente
 					clearInterval(update_interval);
@@ -609,7 +877,7 @@ app.Lista = (function() {
 				$stream.empty();
 
 				// Monta placar
-				app.Placar(data["placar"]);
+				app.Placar.update(data["placar"]);
 
 				// Insere os cards de tarefas
 				$.each(data["tarefas"], function(index, tarefa) {
@@ -719,7 +987,7 @@ app.Lista = (function() {
 				}, 1200);
 
 				// guarda a data da última atualização e zera o contador de novidades
-				last_updated = moment(data["meta"]["ultima-atualizacao"]);
+				last_updated = moment(data["edicao"]["ultima-atualizacao"]);
 				updated["tarefas"] = 0; updated["posts"] = 0;
 			});
 		},
@@ -737,15 +1005,13 @@ app.Lista = (function() {
 	};
 })();
 
-// var stream = app.Lista;
-// var Stream = stream;
-
 // jQuery
 var $stream;
 
 $(function() {
-	$stream = $("#stream");
-	$stream.loading = $("main .loading");
+	$stream = $(".js-app-lista");
+	// $stream.loading = $("main .loading");
+
 	$stream.isotope({
 		"itemSelector": ".card-tarefa",
 		"transitionDuration": ".8s",
@@ -774,7 +1040,7 @@ $(function() {
 		}
 	});
 
-	app.Lista.load();
+	// app.Lista.load();
 
 	// ordenação
 	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {
@@ -811,7 +1077,7 @@ app.Tarefa = (function() {
 
 			// avaliação
 			if (post["avaliacao"]) {
-				if (post["avaliacao"]["status"] == 200) {
+				if (post["avaliacao"]["status"] === 200) {
 					post["status-class"] = post["turma"];
 					post["status-icon"] = "<i class=\"material-icons\">&#xE87D;</i>"; // coração
 					post["status"] = post["avaliacao"]["pontos"] + " ponto" + (post["avaliacao"]["pontos"] > 1? "s": "");
@@ -837,7 +1103,7 @@ app.Tarefa = (function() {
 
 			// renderiza o post
 			var $post_card = __render("view-tarefa-post-card", post);
-			var $media = $(".media", $post_card);
+			var $media = $(".post-media > ul", $post_card);
 
 			// adiciona mídias
 			if (post["midia"]) {
@@ -874,7 +1140,11 @@ app.Tarefa = (function() {
 
 			// tira legenda se não tiver
 			if (!post["legenda"]) {
-				$(".caption", $post_card).remove();
+				$post_card.addClass("no-caption");
+			}
+
+			if (!post["media"]) {
+				$post_card.addClass("no-media");
 			}
 
 			// tira mensagem de avaliação se não tiver
@@ -884,7 +1154,8 @@ app.Tarefa = (function() {
 
 
 			// adiciona o post à tarefa
-			$posts.append($post_card).isotope("appended", $post_card);
+			// $posts.append($post_card).isotope("appended", $post_card);
+			$posts.append($post_card);
 		});
 	}
 
@@ -893,19 +1164,19 @@ app.Tarefa = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Tarefa.open()
 		open: function(numero, pushState) {
-			var DATA = tarefas[numero];
+			var tarefa = tarefas[numero];
 			tarefa_active = numero;
 
 			if (UI.data["columns"] >= 3) {
-				UI.backdrop.show($tarefa);
-				$ui["backdrop"].on("hide", app.Tarefa.close);
+				// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
+				// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
 			}
 
-			$tarefa.addClass("in");
-			app.Tarefa.render(DATA);
+			$app["tarefa"].addClass("in");
+			app.Tarefa.render(tarefa);
 
-			$tarefa.reflow().addClass("slide-x").one("transitionend", function() {
-			//	var view_theme_color = $(".appbar", $tarefa).css("background-color");
+			$app["tarefa"].reflow().addClass("slide-x").one("transitionend", function() {
+			//	var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
@@ -913,57 +1184,78 @@ app.Tarefa = (function() {
 
 			// router
 			router["view-manager"].replace("tarefa");
-			if (pushState) { router.go("/tarefas/" + DATA["numero"], { "view": "tarefa", "id": DATA["numero"] }, DATA["titulo"]); }
+			if (pushState) { router.go("/tarefas/" + tarefa["numero"], { "view": "tarefa", "id": tarefa["numero"] }, tarefa["titulo"]); }
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		// app.Tarefa.render()
-		render: function(DATA) {
-			var $tarefa_view = __render("view-tarefa", DATA);
+		// app.Tarefa.render() /////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
+		render: function(tarefa) {
+			var $tarefa = __render("view-tarefa", tarefa);
 
+			////////////////////////////////////////////////////////////////////////////////////////
 			// card da tarefa
-			var $meta = $(".painel .meta", $tarefa_view);
-
-			if (DATA["imagem"]) {
-				tarefa["imagem-url"] = DATA["imagem"]["url"];
-				tarefa["imagem-aspecto"] = "padding-top: " + (DATA["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+			if (tarefa["imagem"]) {
+				tarefa["imagem"]["aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 			}
 
-			var $meta_card = __render("card-tarefa", DATA);
+			var $tarefa_card = __render("card-tarefa", tarefa);
 
-			if (!DATA["imagem"]) {
-				$(".media", $meta_card).remove();
+			if (!tarefa["imagem"]) {
+				$(".media", $tarefa_card).remove();
 			}
-			$(".grid", $meta_card).remove();
+			$(".grid", $tarefa_card).remove();
+			$("a", $tarefa_card).removeAttr("href");
 
-			$meta.append($meta_card);
+			$(".tarefa-meta .tarefa-card", $tarefa).append($tarefa_card);
 
+			////////////////////////////////////////////////////////////////////////////////////////
 			// posts
-			var $posts = $tarefa_view.find(".posts ul");
+			var $posts = $(".tarefa-posts > ul", $tarefa);
 
-			if (DATA["posts"].length) {
+			if (tarefa["posts"].length) {
+				renderPosts(tarefa["posts"], $posts);
+
 				$posts.isotope({
-					"itemSelector": ".card",
+					"itemSelector": ".post-card",
 					"transitionDuration": 0,
 					"masonry": {
-						"gutter": (ui["columns"] === 1? 8 : 16),
+						"isFitWidth": true,
+						"gutter": (ui["columns"] === 1? 8 : 24),
 					//	"columnWidth": (ui["columns"] < 1? 300 : 450)
 					}
+				// }).on("layoutComplete", function(event, posts) {
+				// 	var previous_position;
+				//
+				// 	for (var post in posts) {
+				// 		var $this = $(posts[post].element);
+				// 		var offset = posts[post].position;
+				// 		var side = (offset["x"] === 0? "left" : "right");
+				//
+				// 		$this.addClass("timeline-" + side);
+				//
+				// 		if (offset["y"] - previous_position < 10) {
+				// 			$this.addClass("extra-offset");
+				// 		}
+				//
+				// 		previous_position = offset["y"];
+				// 	}
 				});
 
-				renderPosts(DATA["posts"], $posts);
 			} else {
 				$("<li />").addClass("empty").text("Nenhum post").appendTo($posts);
 			}
 
-			$tarefa.html($tarefa_view);
+			////////////////////////////////////////////////////////////////////////////////////////
+			// layout
+			$app["tarefa"].html($tarefa);
 
-			if (DATA["posts"].length) {
+			if (tarefa["posts"].length) {
 				$posts.isotope("layout");
 			}
 
 			// placar da tarefa
-			var $placar_da_tarefa = $(".painel .placar ul", $tarefa_view);
+			var $placar_da_tarefa = $(".painel .placar ul", $tarefa);
 
 			$.each(Lista.Regulamento["turmas"], function(index, turma) {
 				var pontuacao_da_turma = [ ];
@@ -988,12 +1280,12 @@ app.Tarefa = (function() {
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
 			$ui["body"].removeClass("no-scroll tarefa-active");
-			$tarefa.removeClass("slide-x").one("transitionend", function() {
-				$tarefa.removeClass("in").empty();
+			$app["tarefa"].removeClass("slide-x").one("transitionend", function() {
+				$app["tarefa"].removeClass("in").empty();
 			});
 
 			if (UI.data["columns"] >= 3) {
-				UI.backdrop.hide();
+				// UI.backdrop.hide($app["tarefa"]);
 			}
 
 			// router
@@ -1003,19 +1295,13 @@ app.Tarefa = (function() {
 	};
 })();
 
-// var tarefa = app.Tarefa;
-// var Tarefa = tarefa;
-
-// jQuery
-var $tarefa;
-
 $(function() {
-	$tarefa = $("#tarefa");
-	$tarefa.on("click", ".back", function(event) {
+	$app["tarefa"] = $(".js-app-tarefa");
+	$app["tarefa"].on("click", ".js-tarefa-close", function(event) {
 		event.preventDefault();
 		app.Tarefa.close(true);
 	}).on("click", ".js-new-post-trigger", function() {
-		UI.bottomsheet.open($(".new-post-sheet", $tarefa).clone().show());
+		UI.bottomsheet.open($(".new-post-sheet", $app["tarefa"]).clone().show());
 	}).on("click", ".card-tarefa a", function(event) {
 		if (event.which === 1) {
 			event.preventDefault();
@@ -1118,7 +1404,7 @@ app.Post = (function() {
 		// NewPost.open()
 		open: function(type, numero) {
 			var data = {
-				"edicao": Lista.Regulamento["edicao"],
+				"edicao": Lista.Regulamento["titulo"],
 				"numero": (numero || tarefa_active),
 				"user": user["id"],
 				"turma": user["turma"],
@@ -1128,7 +1414,7 @@ app.Post = (function() {
 
 			// efeito de abertura
 			// _view.open($post, $newPostView);
-			$post.html($new_post_view).addClass("in").reflow().addClass("slide").one("transitionend", function() {
+			$post.html($new_post_view).addClass("in").reflow().addClass("slide-y").one("transitionend", function() {
 				var view_theme_color = $(".appbar", $post).css("background-color");
 				$("head meta[name='theme-color']").attr("content", view_theme_color);
 			});
@@ -1175,7 +1461,7 @@ app.Post = (function() {
 		//	tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
 
-			$post.removeClass("slide").one("transitionend", function() {
+			$post.removeClass("slide-y").one("transitionend", function() {
 				$post.removeClass("in").empty();
 			});
 
@@ -1195,9 +1481,9 @@ $(function() {
 		event.preventDefault();
 
 		var type = $(this).data("post-type");
-		bottomsheet.close();
+		UI.bottomsheet.close();
 		setTimeout(function() {
-			NewPost.open(type, tarefa_active);
+			app.Post.open(type, tarefa_active);
 		}, 600);
 	});
 
@@ -1253,11 +1539,11 @@ var login = (function() {
 		show: function() {
 		//	backdrop.show();
 			$login.addClass("in").reflow().addClass("slide");
-			$body.addClass("no-scroll");
+			$ui["body"].addClass("no-scroll");
 			setTimeout(function() { $("input[name='email']", $login).focus(); }, 300);
 		},
 		hide: function() {
-			$body.removeClass("no-scroll");
+			$ui["body"].removeClass("no-scroll");
 			$login.removeClass("slide").one("transitionend", function() {
 				$login.removeClass("in");
 			});
@@ -1285,7 +1571,7 @@ $(function() {
 				user["signed-in"] = true;
 				localStorage.setItem("user", JSON.stringify(user));
 
-				$body.addClass("signed-in user-" + user["turma"]);
+				$ui["body"].addClass("signed-in user-" + user["turma"]);
 				login.hide();
 				setTimeout(function() {
 					UI.toast.show("Olá " + user["name"] + "!");
@@ -1299,7 +1585,7 @@ $(function() {
 
 	$(".js-logout-trigger", $ui["sidenav"]).on("click", function(event) {
 		event.preventDefault();
-		$body.removeClass("signed-in user-" + user["turma"]);
+		$ui["body"].removeClass("signed-in user-" + user["turma"]);
 
 		user = {
 			"id": null,
@@ -1410,7 +1696,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: Lista.Regulamento["edicao"],
+						edition: Lista.Regulamento["titulo"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -1445,7 +1731,7 @@ function upload(files) {
 					url: "/-/lista/novo",
 					data: {
 						action: "upload",
-						edition: Lista.Regulamento["edicao"],
+						edition: Lista.Regulamento["titulo"],
 						tarefa: tarefa_active,
 						turma: user["turma"],
 						user: user["id"]
@@ -1524,67 +1810,116 @@ $.fn.dropzone = function() {
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// auto update /////////////////////////////////////////////////////////////////////////////////////
+// workers /////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-var update_interval = setInterval(checkUpdates, 30000);
-var page_title = $("head title").html();
-var last_updated;
-var updated = { "tarefas": 0, "posts": 0 };
 
-function checkUpdates() {
-	var update_count = 0;
+// start
+worker.Start = (function() {
+	timeout["delay-start"] = setTimeout(function() {
+		log("worker.Start", "info");
 
-	$.getJSON("https://api.laguinho.org/lista/" + edicao + "/atividade?key=" + api_key + "&callback=?").done(function(data) {
-		$.each(data, function(index, value) {
-			if (moment(value["ts"]).isAfter(last_updated) && value["autor"] != user["id"]) {
-				update_count++;
-				if (value["acao"] == "novo-post") {
-					updated["posts"]++;
-				} else if (value["acao"] == "nova-tarefa") {
-					updated["tarefas"]++;
-				}
-			}
+		cue["load-edicao"] = $.Deferred();
+		worker.Load();
+
+		cue["load-edicao"].done(function() {
+			timeout["delay-evolucao"] = setTimeout(app.Evolucao.start, 200);
 		});
 
-		// Se tiver atualização, mostra toast
-		if (update_count) {
-			var message;
-			var total_updates = updated["tarefas"] + updated["posts"];
+	}, 300);
+})();
 
-			// FIXME
-			if (updated["tarefas"] > 0 && updated["posts"] > 0) {
-				message = updated["tarefas"] +
-					(updated["tarefas"] > 1? " novas tarefas" : " nova tarefa") +
-					" e " + updated["posts"] +
-					(updated["posts"] > 1? " novos posts" : " novo post");
-			} else if (updated["tarefas"] > 0) {
-				message = updated["tarefas"] +
-				(updated["tarefas"] > 1? " novas tarefas" : " nova tarefa");
-			} else if (updated["posts"] > 0) {
-				message = updated["posts"] +
-					(updated["posts"] > 1? " novos posts" : " novo post");
+
+// load
+worker.Load = (function() {
+	timeout["delay-load"] = setTimeout(function() {
+		log("worker.Load", "info");
+
+		ListaAPI("/tudo").done(function(response) {
+			log("cue[\"load-edicao\"] triggered");
+			Lista.Edicao = response["edicao"];
+			Lista.Placar = response["placar"];
+			Lista.Tarefas = response["tarefas"];
+			cue["load-edicao"].resolve();
+
+			timeout["delay-lista"] = setTimeout(app.Lista.start, 1);
+			// timeout["delay-placar"] = setTimeout(app.Placar.start, 400);
+
+			// var data = response["data"];
+			// Lista.Identificacao = data;
+
+		});
+
+		worker.Update();
+	}, 300);
+});
+
+
+// update
+worker.Update = (function() {
+	let updates = {
+		"tarefas": 0,
+		"posts": 0,
+		"total": 0,
+		"last-updated": null
+	};
+
+	timeout["atividade"] = setInterval(function() {
+		log("worker.Update", "info");
+
+		ListaAPI("/atividade").done(function(response) {
+			// confere data de cada atividade e vê se é posterior à última atualização.
+			// se for, adiciona à contagem de nova atividade
+			for (let atividade of response) {
+				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != user["id"]) {
+					updates["total"]++;
+					if (value["acao"] === "novo-tarefa") {
+						updates["tarefas"]++;
+					} else if (value["acao"] === "novo-post") {
+						updates["posts"]++;
+					}
+				}
 			}
 
-			$("head title").html("(" + total_updates + ") " + page_title);
+			// se houver nova atividade
+			if (updates["total"] > 0) {
+				// monta o texto do toast
+				let texto = {
+					"tarefas": updates["tarefas"] + " " + (updates["tarefas"] > 1? "novas tarefas" : "nova tarefa"),
+					"posts": updates["posts"] + " " + (updates["posts"] > 1? "novos posts" : "novo post"),
+					"final": ""
+				};
 
-			// toast.open("6 novos posts", "Atualizar", Stream.load, true);
-			UI.toast.open(
-				message,
-				// "Novo conteúdo",
-				"Atualizar",
-				function() {
-					Stream.load();
-					updated = { "tarefas": 0, "posts": 0 };
-					$("head title").html(page_title);
-				},
-				true,
-				"stream-only"
-			);
-		}
+				if (updates["tarefas"] > 0) {
+					texto["final"] += texto["tarefas"];
+				}
+				if ((updates["tarefas"] > 0) && (updates["posts"] > 0)) {
+					texto["final"] += " e ";
+				}
+				if (updates["posts"] > 0) {
+					texto["final"] += texto["posts"];
+				}
 
-		last_updated = (data[0]? moment(data[0]["ts"]) : moment());
-	});
-}
+				UI.toast.show({
+					"persistent": true,
+					"message": texto["final"],
+					"label": "Atualizar",
+					"action": function() {
+						worker.Load();
+						updates["tarefas"] = 0;
+						updates["posts"] = 0;
+						updates["total"] = 0;
+						$ui["page-title"].html(UI.data["page-title"]);
+					}
+				});
+
+				// mostra número de novas atividades no título
+				$ui["title"].html("(" + updates["total"] + ") " + UI.data["page-title"]);
+			}
+
+			updates["last-updated"] = (response[0]? moment(response[0]["ts"]) : moment());
+		});
+	}, 30 * 1000);
+});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fonts ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1592,10 +1927,25 @@ function checkUpdates() {
 
 WebFont.load({
 	timeout: 10000,
-	google: { families: ["Material Icons", "Roboto:400,400italic,500:latin", "Montserrat::latin"] },
-	custom: { families: ["FontAwesome"], urls: ["https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css"] },
+	google: {
+		families: [
+			"Material Icons",
+			"Roboto:400,400italic,500:latin",
+			"Roboto+Mono:700:latin",
+			"Lato:400:latin"
+		]
+	},
+	// custom: {
+	// 	families: [
+	// 		"FontAwesome"
+	// 	], urls: [
+	// 		"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"
+	// 	]
+	// },
 	active: function() {
-		$(function() { app.Lista.layout(); });
+		$(function() {
+			app.Lista.layout();
+		});
 	}
 });
 
@@ -1603,43 +1953,43 @@ WebFont.load({
 // momentjs ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-moment.locale('pt-br', {
-		months : 'janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro'.split('_'),
-		monthsShort : 'jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez'.split('_'),
-		weekdays : 'domingo_segunda-feira_terça-feira_quarta-feira_quinta-feira_sexta-feira_sábado'.split('_'),
-		weekdaysShort : 'dom_seg_ter_qua_qui_sex_sáb'.split('_'),
-		weekdaysMin : 'dom_2ª_3ª_4ª_5ª_6ª_sáb'.split('_'),
-		longDateFormat : {
-			LT : 'HH:mm',
-			LTS : 'HH:mm:ss',
-			L : 'DD/MM/YYYY',
-			LL : 'D [de] MMMM [de] YYYY',
-			LLL : 'D [de] MMMM [de] YYYY [às] HH:mm',
-			LLLL : 'dddd, D [de] MMMM [de] YYYY [às] HH:mm'
+moment.locale("pt-br", {
+		"months": "janeiro_fevereiro_março_abril_maio_junho_julho_agosto_setembro_outubro_novembro_dezembro".split("_"),
+		"monthsShort": "jan_fev_mar_abr_mai_jun_jul_ago_set_out_nov_dez".split("_"),
+		"weekdays": "domingo_segunda-feira_terça-feira_quarta-feira_quinta-feira_sexta-feira_sábado".split("_"),
+		"weekdaysShort": "dom_seg_ter_qua_qui_sex_sáb".split("_"),
+		"weekdaysMin": "dom_2ª_3ª_4ª_5ª_6ª_sáb".split("_"),
+		"longDateFormat": {
+			"LT": "HH:mm",
+			"LTS": "HH:mm:ss",
+			"L": "DD/MM/YYYY",
+			"LL": "D [de] MMMM [de] YYYY",
+			"LLL": "D [de] MMMM [de] YYYY [às] HH:mm",
+			"LLLL": "dddd, D [de] MMMM [de] YYYY [às] HH:mm"
 		},
-		calendar : {
-			sameDay: '[hoje às] LT',
-			nextDay: '[amanhã às] LT',
-			nextWeek: 'dddd [às] LT',
-			lastDay: '[ontem às] LT',
-			lastWeek: 'dddd [às] LT',
-			sameElse: 'L'
+		"calendar": {
+			"sameDay": "[hoje] LT",
+			"nextDay": "[amanhã] LT",
+			"nextWeek": "dddd LT",
+			"lastDay": "[ontem] LT",
+			"lastWeek": "dddd LT",
+			"sameElse": "L"
 		},
-		relativeTime : {
-			future : 'daqui %s',
-			past : '%s atrás',
-			s : 'poucos segundos',
-			m : 'um minuto',
-			mm : '%d minutos',
-			h : 'uma hora',
-			hh : '%d horas',
-			d : 'um dia',
-			dd : '%d dias',
-			M : 'um mês',
-			MM : '%d meses',
-			y : 'um ano',
-			yy : '%d anos'
+		"relativeTime": {
+			"future": "daqui %s",
+			"past": "%s atrás",
+			"s": "poucos segundos",
+			"m": "um minuto",
+			"mm": "%d minutos",
+			"h": "uma hora",
+			"hh": "%d horas",
+			"d": "um dia",
+			"dd": "%d dias",
+			"M": "um mês",
+			"MM": "%d meses",
+			"y": "um ano",
+			"yy": "%d anos"
 		},
-		ordinalParse: /\d{1,2}º/,
-		ordinal : '%dº'
+		"ordinalParse": /\d{1,2}º/,
+		"ordinal": "%dº"
 	});

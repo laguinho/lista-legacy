@@ -1,20 +1,35 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // backdrop
+
+$ui["backdrop"] = [ ];
+
 UI.backdrop = (function() {
 	return {
-		show: function($screen) {
+		show: function($screen, events) {
+			var screen = $screen["selector"];
 			var zindex = $screen.css("z-index") - 1;
-			$ui["backdrop"].css("z-index", zindex).addClass("in");
+
+			$ui["backdrop"][screen] = __render("backdrop");
+
+			$.each(events, function(event, handler) {
+				$ui["backdrop"][screen].on(event, handler)
+			});
+
+			$ui["backdrop"][screen].css("z-index", zindex)
+				.on("click", function() { $(this).trigger("hide"); })
+				.appendTo($ui["body"])
+				.addClass("in");
 		},
-		hide: function() {
-			$ui["backdrop"].removeClass("in").css("z-index", "").off("hide");
+		hide: function($screen) {
+			var screen = $screen["selector"];
+			$ui["backdrop"][screen].removeClass("in").off("hide").remove();
 		}
 	};
 })();
 
 $(function() {
-	$ui["backdrop"] = $(".js-ui-backdrop");
-	$ui["backdrop"].on("click", function() {
-		$ui["backdrop"].trigger("hide");
-	});
+	// $ui["backdrop"] = $(".js-ui-backdrop");
+	// $ui["backdrop"].on("click", function() {
+	// 	$ui["backdrop"].trigger("hide");
+	// });
 });
