@@ -807,30 +807,57 @@ app.Evolucao = (function() {
 // app.Lista.sort()
 
 app.Lista = (function() {
+	$(function() {
+		$app["lista"] = $(".app-lista");
+	});
+
 	return {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Lista.start()
 		start: function() {
 			log("app.Lista.start", "info");
 
-			// se tiver título especificado, insere ele
-			if (Lista.Edicao["mensagem"]["titulo"]) {
-				let titulo_da_pagina = Lista.Edicao["mensagem"]["titulo"];
-				$ui["title"].html(titulo_da_pagina);
-			}
+			// faz as alterações de acordo com o status
+			// insere as mensagens
+			app.Lista.status();
+			app.Lista.messages();
 
-			// de tiver mensagem especificada, insere ela
-			if (Lista.Edicao["mensagem"]["rodape"]) {
-				$(".js-mensagem-final").html(Lista.Edicao["mensagem"]["rodape"]);
-			}
 
-			// de prazo de postagem estiver encerrado, insere classe no <body>
+
+			// tira a tela de loading
+			UI.loadbar.hide();
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.status()
+		status: function() {
+			// se prazo de postagem estiver encerrado, insere classe no <body>
 			if (moment().isAfter(Lista.Edicao["fim"])) {
 				$ui["body"].addClass("postagens-encerradas");
 			}
 
-			// tira a tela de loading
-			UI.loadbar.hide();
+			// se a edição estiver encerrada, insere classe no <body>
+			// e para de atualizar automaticamente
+			if (Lista.Regulamento["encerrada"] === true) {
+				$ui["body"].addClass("edicao-encerrada");
+				clearInterval(update_interval);
+			}
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.messages()
+		messages: function() {
+			// se tiver título especificado, insere ele
+			if (Lista.Edicao["mensagem"]["titulo"]) {
+				let page_title = Lista.Edicao["mensagem"]["titulo"];
+				$ui["title"].html(page_title);
+			}
+
+			// de tiver mensagem de rodapé especificada, insere ela
+			if (Lista.Edicao["mensagem"]["rodape"]) {
+				let closing_message = Lista.Edicao["mensagem"]["rodape"];
+				$(".js-mensagem-final").html(closing_message);
+			}
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -846,30 +873,8 @@ app.Lista = (function() {
 				Lista.Regulamento = data["edicao"];
 				Lista.Tarefas = data["tarefas"];
 
-				// Se tiver título especificado, insere ele
-				if (data["edicao"]["mensagem"]["titulo"]) {
-					page_title = data["edicao"]["mensagem"]["titulo"];
-					$("head title").html(page_title);
-				}
-
-				// Se tiver mensagem especificada, insere ela
-				if (data["edicao"]["mensagem"]["rodape"]) {
-					$(".js-mensagem-final").html(data["edicao"]["mensagem"]["rodape"]);
-				}
-
-				// Se prazo de postagem estiver encerrado, insere classe no <body>
-				if (moment().isAfter(Lista.Regulamento["fim"])) {
-					$ui["body"].addClass("postagens-encerradas");
-				}
-
 				// Se a Edição estiver encerrada...
-				if (Lista.Regulamento["encerrada"] === true) {
-					// ...insere classe no <body>
-					$ui["body"].addClass("edicao-encerrada");
 
-					// ...para de atualizar automaticamente
-					clearInterval(update_interval);
-				}
 
 				// FIM DO "DIRETOR"
 
