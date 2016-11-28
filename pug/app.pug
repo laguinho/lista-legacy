@@ -26,7 +26,7 @@ html
 					i.material-icons &#xE5D2;
 
 		//- sidenav
-		include _sidenav.pug
+		include ui/_sidenav.pug
 
 		//- livesite
 		.app-livesite.js-app-livesite
@@ -48,7 +48,7 @@ html
 
 		//- tarefa
 		article.app-tarefa.js-app-tarefa.ui-view
-		aside#new-post.app-post.ui-view
+		aside#new-post.app-post.ui-view.app-new-post
 
 		//- screens
 		include _placar.pug
@@ -64,4 +64,4 @@ html
 		include ui/_toast.pug
 
 		//- scripts
-		include _scripts.pug
+		include base/_scripts.pug

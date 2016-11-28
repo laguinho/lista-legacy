@@ -66,7 +66,7 @@ CONFIG.html.source = ["./pug/app.pug"];
 CONFIG.html.watch = ["**.*"];
 
 function stageHTML() {
-	let assets = JSON.parse(fs.readFileSync("./pug/assets.json"));
+	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
@@ -91,7 +91,7 @@ function deployHTML() {
 	CONFIG.server.remotePath = CONFIG.paths.production.app;
 
 	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
-	let assets = JSON.parse(fs.readFileSync("./pug/assets.json"));
+	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
 	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.js"];
 	assets["scripts"]["lista-css"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.css"];
 
