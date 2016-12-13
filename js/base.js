@@ -8,7 +8,10 @@ Lista.Placar = [ ];
 Lista.Tarefas = [ ];
 
 let app = [ ];
-var $app = [ ]; // TODO existe??
+let $app = [ ];
+
+let cache = [ ];
+cache["tarefas"] = [ ];
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -16,7 +19,7 @@ let cue = [ ];
 let worker = [ ];
 let timeout = [ ];
 
-let logging = true;
+let logging = false;
 let log = function(message, type) {
 	if (logging) {
 		if (!type) {

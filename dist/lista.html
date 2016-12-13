@@ -6,7 +6,7 @@
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#455a64">
-  <link rel="stylesheet" href="./dist/lista.css">
+  <link rel="stylesheet" href="./assets/lista.css">
   <link rel="shortcut icon" href="./dist/favicon.png">
   <link rel="manifest" href="/manifest.json">
  </head>
@@ -284,7 +284,7 @@
       <div class="titulo fill" data-fill="titulo"></div>
       <time class="last-modified fill" data-fill="ultima-postagem"></time>
      </div>
-     <div class="media media-wrapper fill" data-fill="style: imagem/aspecto"><img class="fill" data-fill="src: imagem/url"></div>
+     <div class="media media-wrapper fill" data-fill="style: imagem/aspecto" data-fill-null="remove"><img class="fill" data-fill="src: imagem/url"></div>
      <div class="body">
       <div class="descricao fill" data-fill="descricao"></div>
       <div class="pontuacao fill" data-fill="pontuacao"></div>
@@ -308,6 +308,6 @@
   <script src="./bower_components/fileapi/dist/FileAPI.min.js"></script>
   <script src="./bower_components/FileAPI.exif/index.js"></script>
   <script src="./bower_components/slip/slip.js"></script>
-  <script src="./dist/lista.js"></script>
+  <script src="./assets/lista.js"></script>
  </body>
 </html>

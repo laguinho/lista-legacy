@@ -25,8 +25,8 @@
 	.container {
 		height: 100%;
 
-		@media ($--from-4columns) {
-			padding: 0 $appbar-height-4columns;
+		@media ($--widebody) {
+			padding: 0 $appbar-height-widebody;
 		}
 	}
 
@@ -106,9 +106,9 @@
 			transform: translateY(-100%);
 			transition: all $transition-timing-function .32s;
 
-			@media ($--from-4columns) {
-				width: $appbar-height-4columns * 0.6;
-				height: $appbar-height-4columns * 0.6;
+			@media ($--widebody) {
+				width: $appbar-height-widebody * 0.6;
+				height: $appbar-height-widebody * 0.6;
 			}
 
 			.livesite-focus & {
@@ -131,10 +131,10 @@
 	padding-top: $appbar-height * 0.1;
 	text-align: center;
 
-	@media ($--from-4columns) {
-		width: $appbar-height-4columns;
-		height: $appbar-height-4columns;
-		padding-top: $appbar-height-4columns * 0.15;
+	@media ($--widebody) {
+		width: $appbar-height-widebody;
+		height: $appbar-height-widebody;
+		padding-top: $appbar-height-widebody * 0.15;
 	}
 
 	i {
@@ -143,10 +143,10 @@
 		border-radius: 50%;
 		line-height: $appbar-height * 0.8;
 
-		@media ($--from-4columns) {
-			width: $appbar-height-4columns * 0.7;
-			height: $appbar-height-4columns * 0.7;
-			line-height: $appbar-height-4columns * 0.7;
+		@media ($--widebody) {
+			width: $appbar-height-widebody * 0.7;
+			height: $appbar-height-widebody * 0.7;
+			line-height: $appbar-height-widebody * 0.7;
 		}
 	}
 

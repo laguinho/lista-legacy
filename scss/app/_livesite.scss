@@ -8,9 +8,9 @@
 // 	margin-bottom: ($gutter * 1.5);
 // 	position: relative;
 //
-// 	@media ($--from-4columns) {
-// 		// height: $appbar-height-4columns + $livesite-height-4columns + ($gutter * 3);
-// 		height: $appbar-height-4columns;
+// 	@media ($--widebody) {
+// 		// height: $appbar-height-widebody + $livesite-height-widebody + ($gutter * 3);
+// 		height: $appbar-height-widebody;
 // 	}
 // }
 
@@ -20,9 +20,9 @@
 	position: relative;
 	// padding-bottom: $gutter * 1.5;
 
-	@media ($--from-4columns) {
-		height: $appbar-height-4columns * 2;
-		padding-top: $appbar-height-4columns;
+	@media ($--widebody) {
+		height: $appbar-height-widebody * 2;
+		padding-top: $appbar-height-widebody;
 	}
 
 	// background-image: linear-gradient(-60deg, mix(#ff553b, #fff, 3%), mix(#fdbc41, #fff, 3%), mix(#9ed150, #fff, 3%), mix(#00eaff, #fff, 3%), mix(#3f8fff, #fff, 3%), mix(#ff85ff, #fff, 3%), mix(#ff553b, #fff, 3%));

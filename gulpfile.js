@@ -93,7 +93,7 @@ function deployHTML() {
 	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
 	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
 	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.js"];
-	assets["scripts"]["lista-css"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.css"];
+	assets["scripts"]["lista"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.css"];
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())

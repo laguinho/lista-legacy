@@ -8,6 +8,35 @@
 app.Lista = (function() {
 	$(function() {
 		$app["lista"] = $(".app-lista");
+
+		$app["lista"].isotope({
+			"itemSelector": ".card-tarefa",
+			"transitionDuration": ".8s",
+			"getSortData": {
+				"date": ".last-modified",
+				"tarefa": function(element) {
+					return parseInt($(element).data("tarefa"), 10);
+				}
+			},
+			"sortAscending": {
+				"date": false,
+				"tarefa": true
+			},
+			"sortBy": ["date", "tarefa"],
+			"masonry": {
+				"gutter": (ui["columns"] === 1? 8 : 16)
+			}
+		});
+
+		$app["lista"].on("click", ".card-tarefa:not(.ghost)", function(event) {
+			if (event.which === 1) {
+				event.preventDefault();
+
+				let $card = $(this);
+				let numero = $card.data("tarefa");
+				app.Tarefa.open(numero, $card, true);
+			}
+		});
 	});
 
 	return {
@@ -20,6 +49,7 @@ app.Lista = (function() {
 			// insere as mensagens
 			app.Lista.status();
 			app.Lista.messages();
+			app.Lista.tarefas();
 
 
 
@@ -57,6 +87,38 @@ app.Lista = (function() {
 				let closing_message = Lista.Edicao["mensagem"]["rodape"];
 				$(".js-mensagem-final").html(closing_message);
 			}
+		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.tarefas()
+		tarefas: function() {
+			// mostra o loading e limpa a lista para começar do zero
+			// UI.loading.show();
+			$app["lista"].empty();
+
+			// insere as tarefas
+			for (let tarefa of Lista.Tarefas) {
+				// insere no cache
+				cache["tarefas"][tarefa["numero"]] = tarefa;
+
+				// cria o link para a tarefa
+				tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
+
+				// se tiver imagem, ajusta as dimensoes
+				if (tarefa["imagem"]) {
+					tarefa["imagem-url"] = tarefa["imagem"]["url"];
+					tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+				}
+
+				let $tarefa = __render("card-tarefa", tarefa).data({
+					"tarefa": tarefa["numero"],
+					"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
+				});
+
+				$app["lista"].append($tarefa).isotope("appended", $tarefa);
+			}
+
+			app.Lista.layout();
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,13 +258,17 @@ app.Lista = (function() {
 			});
 		},
 
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.layout()
 		layout: function() {
-			$stream.isotope("reloadItems");
-			$stream.isotope("layout");
+			$app["lista"].isotope("reloadItems");
+			$app["lista"].isotope("layout");
 		},
 
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.sort()
 		sort: function(criteria) {
-			$stream.isotope({
+			$app["lista"].isotope({
 				"sortBy": criteria
 			});
 		}
@@ -235,14 +301,14 @@ $(function() {
 		}
 	});
 
-	$stream.on("click", ".card-tarefa:not(.fantasma)", function(event) {
-		if (event.which === 1) {
-			event.preventDefault();
-
-			var numero = $(this).data("tarefa");
-			app.Tarefa.open(numero, true);
-		}
-	});
+	// $stream.on("click", ".card-tarefa:not(.fantasma)", function(event) {
+	// 	if (event.which === 1) {
+	// 		event.preventDefault();
+	//
+	// 		var numero = $(this).data("tarefa");
+	// 		app.Tarefa.open(numero, true);
+	// 	}
+	// });
 
 	// app.Lista.load();
 

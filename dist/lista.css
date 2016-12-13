@@ -160,43 +160,43 @@ template {
   max-width: 480px;
 }
 
-@media (min-width: 664px) {
+@media (min-width: 632px) {
   .lista-container {
     width: 632px;
   }
 }
 
-@media (min-width: 996px) {
+@media (min-width: 948px) {
   .lista-container {
     width: 948px;
   }
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 1264px) {
   .lista-container {
     width: 1264px;
   }
 }
 
-@media (min-width: 1660px) {
+@media (min-width: 1580px) {
   .lista-container {
     width: 1580px;
   }
 }
 
-@media (min-width: 1992px) {
+@media (min-width: 1896px) {
   .lista-container {
     width: 1896px;
   }
 }
 
-@media (min-width: 2324px) {
+@media (min-width: 2212px) {
   .lista-container {
     width: 2212px;
   }
 }
 
-@media (min-width: 2656px) {
+@media (min-width: 2528px) {
   .lista-container {
     width: 2528px;
   }
@@ -861,7 +861,7 @@ colunas
   box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .app-livesite {
     height: 128px;
     padding-top: 64px;
@@ -1158,7 +1158,7 @@ main {
   height: 100%;
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .ui-appbar .container {
     padding: 0 64px;
   }
@@ -1239,7 +1239,7 @@ main {
   transition: all cubic-bezier(0.4, 0, 0.2, 1) 0.32s;
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .lista-appbar h1 .laguinho {
     width: 38.4px;
     height: 38.4px;
@@ -1262,7 +1262,7 @@ main {
   text-align: center;
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .appbar-button {
     width: 64px;
     height: 64px;
@@ -1277,7 +1277,7 @@ main {
   line-height: 44.8px;
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .appbar-button i {
     width: 44.8px;
     height: 44.8px;

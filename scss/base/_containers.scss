@@ -31,7 +31,7 @@
 $columns: 2;
 
 @while $columns <= 8 {
-	@media (min-width: ($column-width + $gutter) * $columns) {
+	@media (min-width: $column-width * $columns) {
 		.lista-container {
 			width: $column-width * $columns;
 		}

@@ -106,8 +106,10 @@ app.Tarefa = (function() {
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Tarefa.open()
-		open: function(numero, pushState) {
-			var tarefa = tarefas[numero];
+		open: function(numero, $card, pushState) {
+			// console.log($card[0].getBoundingClientRect());
+
+			let tarefa = cache["tarefas"][numero];
 			tarefa_active = numero;
 
 			if (UI.data["columns"] >= 3) {

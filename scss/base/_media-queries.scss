@@ -5,4 +5,7 @@
 $--only-1column: "max-width: (#{$column-width} * 2)";
 
 $--from-2columns: "min-width: (#{$column-width} + #{$gutter}) * 2";
+$--from-3columns: "min-width: (#{$column-width} + #{$gutter}) * 3";
 $--from-4columns: "min-width: (#{$column-width} + #{$gutter}) * 4";
+
+$--widebody: $--from-2columns;
