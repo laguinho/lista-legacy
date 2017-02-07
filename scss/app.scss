@@ -45,8 +45,10 @@ body, input, button, textarea, select {
 @import "app/lista";
 @import "app/tarefa";
 @import "app/post";
+@import "app/login";
 
 // ui
+@import "ui/typography";
 @import "ui/appbar";
 @import "ui/loadbar";
 @import "ui/sidenav";

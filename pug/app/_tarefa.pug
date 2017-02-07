@@ -3,22 +3,22 @@
 
 template#view-tarefa
 	.tarefa-container
-	
+
 		//- header
 		header.ui-appbar.tarefa-appbar
 			a.appbar-button.appbar-left-button.back.js-tarefa-close(href="/tarefas")
 				i.material-icons &#xE5C4;
 			h1.fill(data-fill="titulo")
-		
+
 		//- ////////////////////////////////////////////////////////////////////////////////////////////
 		//- body
 		.tarefa-body
-		
+
 			//- meta
 			.tarefa-meta
 				.tarefa-card
 				.tarefa-placar
-			
+
 			//- posts
 			.tarefa-posts
 				ul
@@ -35,13 +35,13 @@ template#view-tarefa
 		//- 		.posts
 		//- 			ul
 		//- 			.tarefa-end
-					
+
 		.tarefa-close.js-tarefa-close.material-icons(title="Voltar à Lista") &#xE5C4;
 
 		//- new post
 		button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
 			i.material-icons &#xE145;
-			
+
 		aside.new-post-sheet(style="display: none;")
 			h1 Postar
 
@@ -56,7 +56,6 @@ template#view-tarefa
 			ul
 				+new-post-link("Foto", "photo", "&#xE251;")
 				+new-post-link("Vídeo", "video", "&#xE02C;")
-				+new-post-link("Vine", "vine", "fa-vine", "font-awesome")
 				+new-post-link("Texto", "text", "&#xE165;")
 
 //- ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +75,7 @@ template#view-tarefa-post-card
 		.post-rating
 			.post-review.fill(data-fill="avaliacao/mensagem")
 			.post-points.fill(data-fill="avaliacao/pontos")
-			
+
 		//- .body
 		//- 	.result
 		//- 		.status-indicator.fill(data-fill="class: status-class")

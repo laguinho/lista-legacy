@@ -13,6 +13,7 @@ const livereload = require("gulp-livereload");
 const clone = require("gulp-clone");
 
 const edicao = "xciii";
+const url = "cinquenta";
 
 let CONFIG = { };
 
@@ -33,7 +34,7 @@ CONFIG.paths.development.staging = "./";
 
 CONFIG.paths.production = { };
 CONFIG.paths.production.assets = "/home/laguinho/assets.laguinho.org/lista/" + edicao + "/";
-CONFIG.paths.production.app = "/home/laguinho/" + edicao + ".laguinho.org/";
+CONFIG.paths.production.app = "/home/laguinho/" + url + ".laguinho.org/";
 
 // urls
 CONFIG.urls = { };
@@ -70,7 +71,6 @@ function stageHTML() {
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
-		.pipe(rename({ basename: "lista" }))
 
 		.pipe(pug({
 			"pretty": " ",
@@ -81,6 +81,7 @@ function stageHTML() {
 			}
 		}))
 
+		.pipe(rename({ basename: "lista" }))
 		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }))
 		.pipe(gulp.dest(CONFIG.paths.development.staging, { mode: "0644" }));
 
@@ -92,12 +93,11 @@ function deployHTML() {
 
 	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
 	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
-	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.js"];
-	assets["scripts"]["lista"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.css"];
+	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.css"];
+	assets["scripts"]["lista"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.js"];
 
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
-		.pipe(rename({ basename: "lista" }))
 
 		.pipe(pug({
 			"pretty": false,
@@ -108,6 +108,7 @@ function deployHTML() {
 			}
 		}))
 
+		.pipe(rename({ basename: "lista", extname: ".php" }))
 		.pipe(sftp({
 			host: CONFIG.server.host,
 			remotePath: CONFIG.paths.production.app,

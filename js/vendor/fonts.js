@@ -3,7 +3,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 WebFont.load({
-	timeout: 10000,
+	timeout: 15000,
 	google: {
 		families: [
 			"Material Icons",
@@ -12,13 +12,13 @@ WebFont.load({
 			"Lato:400:latin"
 		]
 	},
-	// custom: {
-	// 	families: [
-	// 		"FontAwesome"
-	// 	], urls: [
-	// 		"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"
-	// 	]
-	// },
+	custom: {
+		families: [
+			"FontAwesome"
+		], urls: [
+			"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		]
+	},
 	active: function() {
 		$(function() {
 			app.Lista.layout();

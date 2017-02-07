@@ -222,7 +222,7 @@ app.Tarefa = (function() {
 		// app.Tarefa.close()
 		close: function(pushState) {
 			tarefa_active = null;
-			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
+			$("head meta[name='theme-color']").attr("content", UI.data["theme-color"]["original"]);
 
 			$ui["body"].removeClass("no-scroll tarefa-active");
 			$app["tarefa"].removeClass("slide-x").one("transitionend", function() {

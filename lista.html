@@ -6,7 +6,7 @@
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#455a64">
-  <link rel="stylesheet" href="./assets/lista.css">
+  <link rel="stylesheet" href="./dist/lista.css">
   <link rel="shortcut icon" href="./dist/favicon.png">
   <link rel="manifest" href="/manifest.json">
  </head>
@@ -60,7 +60,7 @@
    </div>
   </main>
   <article class="app-tarefa js-app-tarefa ui-view"></article>
-  <aside class="app-post ui-view" id="new-post"></aside>
+  <aside class="app-post ui-view app-new-post"></aside>
   <template id="placar-turma">
    <li class="fill" data-fill="class: turma">
     <div class="label turma-text fill" data-fill="turma-formatada"></div>
@@ -109,7 +109,6 @@
      <ul>
            <li><a href="#" data-post-type="photo"><i class="material-icons">&#xE251;</i>Foto</a></li>
            <li><a href="#" data-post-type="video"><i class="material-icons">&#xE02C;</i>Vídeo</a></li>
-           <li><a href="#" data-post-type="vine"><i class="fa fa-vine"></i>Vine</a></li>
            <li><a href="#" data-post-type="text"><i class="material-icons">&#xE165;</i>Texto</a></li>
      </ul>
     </aside>
@@ -261,7 +260,7 @@
     </div>
    </div>
   </template>
-  <aside class="ui-view" id="login">
+  <aside class="app-login ui-view">
    <header class="appbar">
     <div class="container modal-container"><a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
      <h1>Login</h1>
@@ -278,18 +277,20 @@
    </div>
   </aside>
   <template id="card-tarefa">
-   <li class="ui-card card-tarefa"><a class="fill" href="#" data-fill="href: url">
-     <div class="header">
-      <div class="numero">Tarefa&nbsp;<span class="fill" data-fill="numero"></span></div>
-      <div class="titulo fill" data-fill="titulo"></div>
-      <time class="last-modified fill" data-fill="ultima-postagem"></time>
-     </div>
-     <div class="media media-wrapper fill" data-fill="style: imagem/aspecto" data-fill-null="remove"><img class="fill" data-fill="src: imagem/url"></div>
-     <div class="body">
-      <div class="descricao fill" data-fill="descricao"></div>
-      <div class="pontuacao fill" data-fill="pontuacao"></div>
-     </div>
-     <ul class="grid"></ul></a></li>
+   <li class="ui-card card-tarefa"><a class="card-container fill" href="#" data-fill="href: url">
+     <div class="ui-tarefa">
+      <div class="tarefa-designacao">
+       <div class="tarefa-numero">Tarefa&nbsp;<span class="fill" data-fill="numero"></span></div>
+       <div class="tarefa-titulo fill" data-fill="titulo"></div>
+       <time class="last-modified fill" data-fill="ultima-postagem"></time>
+      </div>
+      <div class="tarefa-midia media-wrapper fill" data-fill="style: imagem/aspecto" data-fill-null="remove"><img class="fill" data-fill="src: imagem/url"></div>
+      <div class="tarefa-corpo">
+       <div class="tarefa-descricao fill" data-fill="descricao"></div>
+       <div class="tarefa-pontuacao fill" data-fill="pontuacao"></div>
+      </div>
+      <ul class="grid"></ul>
+     </div></a></li>
   </template>
   <template id="backdrop">
    <div class="ui-backdrop"></div>
@@ -308,6 +309,6 @@
   <script src="./bower_components/fileapi/dist/FileAPI.min.js"></script>
   <script src="./bower_components/FileAPI.exif/index.js"></script>
   <script src="./bower_components/slip/slip.js"></script>
-  <script src="./assets/lista.js"></script>
+  <script src="./dist/lista.js"></script>
  </body>
 </html>

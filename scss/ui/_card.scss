@@ -2,83 +2,94 @@
 // card ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.ui-card
-	margin-bottom: 8px
-	border-radius: 2px
-	background-color: #fff
-	box-shadow: 0 2px 4px 0 rgba(0,0,0,.12)
-	position: relative
-	transition: box-shadow cubic-bezier(.4,0,.2,1) .2s
+.ui-card {
+	margin-bottom: 8px;
+	border-radius: 2px;
+	background-color: #fff;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.12);
+	position: relative;
+	transition: box-shadow cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
 
-	@media (min-width: $column-width * 2)
-		margin-bottom: 16px
+	@media (min-width: $column-width * 2) {
+		margin-bottom: 16px;
+	}
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-.card-tarefa
-	@media (min-width: $column-width * 2)
-		width: 300px
+.card-tarefa {
+	.tarefa-designacao {
+		padding: 24px 16px 16px;
+	}
 
-	> a
-		display: block
+	.tarefa-numero {
+		margin-bottom: 4px;
+	}
 
-	&.fantasma
-		opacity: .5
+	.tarefa-titulo {
 
-		.titulo
-			opacity: .5
+	}
 
-	.app-lista &:hover
-		box-shadow: 0 2px 6px rgba(0,0,0,.24)
+	.tarefa-midia {
+		margin-bottom: 16px;
+	}
 
-	// header
-	.header
-		padding: 24px 16px 16px
+	.tarefa-corpo {
+		padding: 5px 24px 24px 16px;
+	}
 
-		.numero
-			margin-bottom: 4px
-			font-size: 13px
-			color: rgba(0,0,0,.35)
+	.tarefa-descricao {
 
-		.titulo
-			font-size: 22px
-			font-family: lato, sans-serif
-			color: rgba(0,0,0,.9)
+	}
 
-		.last-modified
-			display: none
-
-	// media
-	.media
-		margin-bottom: 16px
-
-	// body
-	.body
-		padding: 5px 24px 24px 16px
-
-		.descricao
-			color: rgba(0,0,0,.7)
-			line-height: 1.5
-
-		.pontuacao
-			margin-top: 12px
-			font-size: 13px
-			color: rgba(0,0,0,.42)
+	.tarefa-pontuacao {
+		margin-top: 12px;
+		font-size: 13px;
+		color: rgba(0, 0, 0, 0.42);
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 
-	.grid
-		padding: 2px
+	.last-modified {
+		display: none;
+	}
 
-		&::after
-			@extend %clear
+	@media (min-width: $column-width * 2) {
+		width: 300px;
+	}
 
-		li
-			float: left
-			width: 33.3%
-			padding: 1px
+	> a {
+		display: block;
+	}
 
+	&.fantasma {
+		opacity: 0.5;
 
+		.titulo {
+			opacity: 0.5;
+		}
+	}
+
+	.app-lista &:hover {
+		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.24);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.grid {
+		padding: 2px;
+
+		&::after {
+			@extend %clear;
+		}
+
+		li {
+			float: left;
+			width: 33.3%;
+			padding: 1px;
+		}
+	}
+}
 
 // .card.tarefa .grid .media-placeholder { padding-top: 100%; position: relative; }
 // 	.card.tarefa .grid .tile { position: absolute; top: 0; bottom: 0; left: 0; right: 0; padding: 4px 6px; overflow: hidden; }

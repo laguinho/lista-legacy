@@ -20,8 +20,8 @@
 	"js/app/lista.js",
 	"js/app/tarefa.js",
 	"js/app/new-post.js",
+	"js/app/login.js",
 
-	"js/helper-user.js",
 	"js/helper-image-upload.js",
 
 	"js/workers.js",

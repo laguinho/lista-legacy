@@ -1,9 +1,19 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// backdrop
-
-$ui["backdrop"] = [ ];
+// ui / backdrop ///////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// UI.backdrop.show()
+// UI.backdrop.hide()
 
 UI.backdrop = (function() {
+	$ui["backdrop"] = [ ];
+
+	$(function() {
+		// $ui["backdrop"] = $(".js-ui-backdrop");
+		// $ui["backdrop"].on("click", function() {
+		// 	$ui["backdrop"].trigger("hide");
+		// });
+	});
+
 	return {
 		show: function($screen, events) {
 			var screen = $screen["selector"];
@@ -26,10 +36,3 @@ UI.backdrop = (function() {
 		}
 	};
 })();
-
-$(function() {
-	// $ui["backdrop"] = $(".js-ui-backdrop");
-	// $ui["backdrop"].on("click", function() {
-	// 	$ui["backdrop"].trigger("hide");
-	// });
-});
