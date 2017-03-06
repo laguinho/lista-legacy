@@ -2,6 +2,17 @@
 // containers //////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Define tamanho de fonte default de telas maiores
+body,
+input,
+button,
+textarea,
+select {
+	@media ($--widebody) {
+		font-size: $default-font-size-widebody;
+	}
+}
+
 // o "container" define apenas as propriedades comuns dos containers:
 // margin, padding e position
 .container {

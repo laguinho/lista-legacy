@@ -6,7 +6,7 @@ html
 
 		meta(name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui")
 		meta(name="mobile-web-app-capable" content="yes")
-		meta(name="theme-color" content="#455a64")
+		meta(name="theme-color" content="#000")
 
 		//- Inclusão dos assets listados no assets.json
 		each properties, asset in assets["assets"]
@@ -16,14 +16,15 @@ html
 
 		//- appbar
 		header.lista-appbar.ui-appbar.js-ui-appbar
-			.lista-container.container
+			.lista-container.appbar-container.container
 				h1
 					.marquee-face
 						span Lista de Tarefas
 					.marquee-face
 						img.laguinho(src="https://assets.laguinho.org/laguinho.svg", alt="Laguinho")
-				a.appbar-button.appbar-left-button.sidenav-trigger.js-sidenav-trigger(href="#")
-					i.material-icons &#xE5D2;
+				.appbar-actions.appbar-actions-left
+					a.appbar-button.sidenav-trigger.js-sidenav-trigger(href="#")
+						i.material-icons &#xE5D2;
 
 		//- sidenav
 		include ui/_sidenav.pug
@@ -46,15 +47,23 @@ html
 				ul.app-lista.js-app-lista
 				.mensagem-final.js-mensagem-final
 
-		//- tarefa
-		article.app-tarefa.js-app-tarefa.ui-view
 		aside.app-post.ui-view.app-new-post
 
-		//- screens
+
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+		//- screens ////////////////////////////////////////////////////////////////////////////////////
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+
+		//- lista
 		include app/_placar.pug
 		include app/_lista.pug
+
+		//- tarefa
 		include app/_tarefa.pug
+		include app/_content.pug
 		include app/_post.pug
+
+		//- helpers
 		include app/_login.pug
 		include _common.pug
 

@@ -1,42 +1,39 @@
 //- ////////////////////////////////////////////////////////////////////////////////////////////////
 //- tarefa
 
+article.app-tarefa.ui-view
+
 template#view-tarefa
-	.tarefa-container
-
+	.tarefa-wrapper
 		//- header
-		header.ui-appbar.tarefa-appbar
-			a.appbar-button.appbar-left-button.back.js-tarefa-close(href="/tarefas")
-				i.material-icons &#xE5C4;
-			h1.fill(data-fill="titulo")
+		//- Fixo, mostrado só no mobile
+		header.tarefa-appbar.ui-appbar
+			.appbar-container.container
+				h1.fill(data-fill="titulo")
+				.appbar-actions.appbar-actions-left
+					a.appbar-button.back-button.js-tarefa-close(href="/tarefas")
+						i.material-icons &#xE5C4;
 
-		//- ////////////////////////////////////////////////////////////////////////////////////////////
-		//- body
-		.tarefa-body
+		.tarefa-outer-container
+			.tarefa-container
 
-			//- meta
-			.tarefa-meta
-				.tarefa-card
-				.tarefa-placar
+				//- ////////////////////////////////////////////////////////////////////////////////////////////
+				//- body
+				.tarefa-body
 
-			//- posts
-			.tarefa-posts
-				ul
-				.eot
+					//- meta
+					.tarefa-meta
+						.tarefa-texto
+						.tarefa-placar
 
-		//- ////////////////////////////////////////////////////////////////////////////////////////////
+					//- posts
+					.tarefa-content
+						ul
+						.eot
 
-		//- .tarefa-body.view-body
-		//- 	.tarefa-container.container
-		//- 		.painel
-		//- 			.meta
-		//- 			.placar
-		//- 				ul
-		//- 		.posts
-		//- 			ul
-		//- 			.tarefa-end
+			//- ////////////////////////////////////////////////////////////////////////////////////////////
 
-		.tarefa-close.js-tarefa-close.material-icons(title="Voltar à Lista") &#xE5C4;
+		.tarefa-close.js-tarefa-close.material-icons(title="Voltar à Lista") &#xE5CD;
 
 		//- new post
 		button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
@@ -57,41 +54,3 @@ template#view-tarefa
 				+new-post-link("Foto", "photo", "&#xE251;")
 				+new-post-link("Vídeo", "video", "&#xE02C;")
 				+new-post-link("Texto", "text", "&#xE165;")
-
-//- ////////////////////////////////////////////////////////////////////////////////////////////////
-//- post cards
-template#view-tarefa-post-card
-	//- li.ui-card.card.card-l.post
-	li.post-card
-		.post-body.ui-card
-			.post-media
-				ul
-			.post-caption.fill(data-fill="legenda", data-fill-null="remove")
-		.post-label
-			.post-turma.fill(data-fill="class: turma")
-				.post-bullet.turma-background.turma-border
-				span.turma-text.fill(data-fill="turma-formatada")
-				span.post-date.fill(data-fill="data-de-postagem-formatada")
-		.post-rating
-			.post-review.fill(data-fill="avaliacao/mensagem")
-			.post-points.fill(data-fill="avaliacao/pontos")
-
-		//- .body
-		//- 	.result
-		//- 		.status-indicator.fill(data-fill="class: status-class")
-		//- 			.status-icon.turma-text.fill(data-fill="status-icon")
-		//- 			.status-text.turma-text.fill(data-fill="status")
-		//- 		.message.fill(data-fill="message")
-
-//- ////////////////////////////////////////////////////////////////////////////////////////////////
-//- post media
-template#media-photo
-	li
-		.media-wrapper.fill(data-fill="style: padding-aspecto")
-			a.fill(href="#", target="_blank", data-fill="href: link-original")
-				img.fill(data-fill="src: default")
-
-template#media-video
-	li
-		.media-wrapper.fill(data-fill="style: padding-aspecto")
-			iframe.fill(href="#", target="_blank", data-fill="src: embed", frameborder="0", allowfullscreen)

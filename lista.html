@@ -5,18 +5,19 @@
   <title>Lista de Tarefas</title>
   <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#455a64">
+  <meta name="theme-color" content="#000">
   <link rel="stylesheet" href="./dist/lista.css">
   <link rel="shortcut icon" href="./dist/favicon.png">
   <link rel="manifest" href="/manifest.json">
  </head>
  <body>
   <header class="lista-appbar ui-appbar js-ui-appbar">
-   <div class="lista-container container">
+   <div class="lista-container appbar-container container">
     <h1>
      <div class="marquee-face"><span>Lista de Tarefas</span></div>
      <div class="marquee-face"><img class="laguinho" src="https://assets.laguinho.org/laguinho.svg" alt="Laguinho"></div>
-    </h1><a class="appbar-button appbar-left-button sidenav-trigger js-sidenav-trigger" href="#"><i class="material-icons">&#xE5D2;</i></a>
+    </h1>
+    <div class="appbar-actions appbar-actions-left"><a class="appbar-button sidenav-trigger js-sidenav-trigger" href="#"><i class="material-icons">&#xE5D2;</i></a></div>
    </div>
   </header>
   <nav class="ui-sidenav js-ui-sidenav" id="sidenav">
@@ -30,7 +31,7 @@
    </section>
    <section class="secondary-navigation">
     <ul class="level-1">
-     <li><a href="https://twitter.com/listadetarefas" target="_blank">Twitter<i class="material-icons">&#xE879;</i></a></li>
+     <li><a href="https://twitter.com/listadetarefas" target="_blank"><i class="fa fa-twitter"></i>@listadetarefas</a></li>
      <li><a class="login-button js-login-trigger" href="#">Login</a></li>
      <li><a class="logout-button js-logout-trigger" href="#">Logout</a></li>
     </ul>
@@ -59,7 +60,6 @@
     <div class="mensagem-final js-mensagem-final"></div>
    </div>
   </main>
-  <article class="app-tarefa js-app-tarefa ui-view"></article>
   <aside class="app-post ui-view app-new-post"></aside>
   <template id="placar-turma">
    <li class="fill" data-fill="class: turma">
@@ -87,22 +87,30 @@
     </div>
    </li>
   </template>
+  <article class="app-tarefa ui-view"></article>
   <template id="view-tarefa">
-   <div class="tarefa-container">
-    <header class="ui-appbar tarefa-appbar"><a class="appbar-button appbar-left-button back js-tarefa-close" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a>
-     <h1 class="fill" data-fill="titulo"></h1>
-    </header>
-    <div class="tarefa-body">
-     <div class="tarefa-meta">
-      <div class="tarefa-card"></div>
-      <div class="tarefa-placar"></div>
+   <div class="tarefa-wrapper">
+    <header class="tarefa-appbar ui-appbar">
+     <div class="appbar-container container">
+      <h1 class="fill" data-fill="titulo"></h1>
+      <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button js-tarefa-close" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a></div>
      </div>
-     <div class="tarefa-posts">
-      <ul></ul>
-      <div class="eot"></div>
+    </header>
+    <div class="tarefa-outer-container">
+     <div class="tarefa-container">
+      <div class="tarefa-body">
+       <div class="tarefa-meta">
+        <div class="tarefa-texto"></div>
+        <div class="tarefa-placar"></div>
+       </div>
+       <div class="tarefa-content">
+        <ul></ul>
+        <div class="eot"></div>
+       </div>
+      </div>
      </div>
     </div>
-    <div class="tarefa-close js-tarefa-close material-icons" title="Voltar à Lista">&#xE5C4;</div>
+    <div class="tarefa-close js-tarefa-close material-icons" title="Voltar à Lista">&#xE5CD;</div>
     <button class="fab fab-bottom user-background new-post js-new-post-trigger" title="Novo post"><i class="material-icons">&#xE145;</i></button>
     <aside class="new-post-sheet" style="display: none">
      <h1>Postar</h1>
@@ -114,22 +122,23 @@
     </aside>
    </div>
   </template>
-  <template id="view-tarefa-post-card">
-   <li class="post-card">
-    <div class="post-body ui-card">
-     <div class="post-media">
+  <template id="content-card">
+   <li class="content-card ui-card fill" data-fill="class: turma">
+    <div class="content-body">
+     <div class="content-media">
       <ul></ul>
      </div>
-     <div class="post-caption fill" data-fill="legenda" data-fill-null="remove"></div>
-    </div>
-    <div class="post-label">
-     <div class="post-turma fill" data-fill="class: turma">
-      <div class="post-bullet turma-background turma-border"></div><span class="turma-text fill" data-fill="turma-formatada"></span><span class="post-date fill" data-fill="data-de-postagem-formatada"></span>
+     <div class="content-caption fill" data-fill="legenda" data-fill-null="remove"></div>
+     <div class="content-label">
+      <div class="content-turma fill" data-fill="class: turma">
+       <div class="content-bullet turma-background turma-border"></div><span class="turma-text fill" data-fill="turma-formatada"></span>
+      </div>
+      <div class="content-date fill" data-fill="data-de-postagem-formatada"></div>
      </div>
     </div>
-    <div class="post-rating">
-     <div class="post-review fill" data-fill="avaliacao/mensagem"></div>
-     <div class="post-points fill" data-fill="avaliacao/pontos"></div>
+    <div class="content-rating"><i class="material-icons">&#xE5DA;</i>
+     <div class="content-points fill" data-fill="class: avaliacao/class, html: avaliacao/status"></div>
+     <div class="content-review fill" data-fill="avaliacao/mensagem"></div>
     </div>
    </li>
   </template>
@@ -146,9 +155,11 @@
    </li>
   </template>
   <template id="new-post-photo">
-     <header class="appbar user-background">
-      <div class="container modal-container"><a class="appbar-btn appbar-left-btn back" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a><a class="submit disabled" href="/tarefas">Enviar</a>
+     <header class="post-appbar ui-appbar user-background">
+      <div class="appbar-container container">
        <h1>Postar foto</h1>
+       <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a></div>
+       <div class="appbar-actions appbar-actions-right"><a class="submit-button disabled" href="/tarefas">Enviar</a></div>
       </div>
      </header>
    <div class="body">
@@ -166,7 +177,7 @@
        <ul id="board"></ul>
        <label class="file-placeholder" for="form-file"><i class="material-icons">&#xE413;</i>Selecionar imagens&hellip;</label>
       </div>
-      <p class="form-field" style="margin-bottom: 16px; font-size: 12px; text-align: center"></p>(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)
+      <p class="drag-tip">(segure e arraste as imagens&nbsp;para&nbsp;reordená-las)</p>
       <div class="form-field">
        <label for="form-caption">Legenda</label>
        <textarea class="text-field user-border-focus js-caption-input" id="form-caption" name="caption" placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)"></textarea>
@@ -176,9 +187,11 @@
    </div>
   </template>
   <template id="new-post-video">
-     <header class="appbar user-background">
-      <div class="container modal-container"><a class="appbar-btn appbar-left-btn back" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a><a class="submit disabled" href="/tarefas">Enviar</a>
+     <header class="post-appbar ui-appbar user-background">
+      <div class="appbar-container container">
        <h1>Postar vídeo</h1>
+       <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a></div>
+       <div class="appbar-actions appbar-actions-right"><a class="submit-button disabled" href="/tarefas">Enviar</a></div>
       </div>
      </header>
    <div class="body">
@@ -192,7 +205,7 @@
         <input class="fill" type="hidden" name="token" value="" data-fill="value: token">
         <input type="hidden" name="type" value="media">
       <div class="form-field">
-       <label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo e cole o link aqui</label>
+       <label for="form-media-url">Faça upload no vídeo no YouTube ou no Vimeo <br>e cole o link aqui</label>
        <label class="media-preview js-media-preview" for="form-media-url"></label>
        <input class="text-field user-border-focus js-media-url-input" id="form-media-url" type="text" name="url" value="" placeholder="https://" autocomplete="off">
        <input class="js-media-provider" type="hidden" name="media-provider">
@@ -208,9 +221,11 @@
    </div>
   </template>
   <template id="new-post-vine">
-     <header class="appbar user-background">
-      <div class="container modal-container"><a class="appbar-btn appbar-left-btn back" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a><a class="submit disabled" href="/tarefas">Enviar</a>
+     <header class="post-appbar ui-appbar user-background">
+      <div class="appbar-container container">
        <h1>Postar Vine</h1>
+       <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a></div>
+       <div class="appbar-actions appbar-actions-right"><a class="submit-button disabled" href="/tarefas">Enviar</a></div>
       </div>
      </header>
    <div class="body">
@@ -240,9 +255,11 @@
    </div>
   </template>
   <template id="new-post-text">
-     <header class="appbar user-background">
-      <div class="container modal-container"><a class="appbar-btn appbar-left-btn back" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a><a class="submit disabled" href="/tarefas">Enviar</a>
+     <header class="post-appbar ui-appbar user-background">
+      <div class="appbar-container container">
        <h1>Postar texto</h1>
+       <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button" href="/tarefas"><i class="material-icons">&#xE5C4;</i></a></div>
+       <div class="appbar-actions appbar-actions-right"><a class="submit-button disabled" href="/tarefas">Enviar</a></div>
       </div>
      </header>
    <div class="body">
@@ -261,9 +278,11 @@
    </div>
   </template>
   <aside class="app-login ui-view">
-   <header class="appbar">
-    <div class="container modal-container"><a class="back" href="/"><i class="material-icons">&#xE5C4;</i></a>
+   <header class="login-appbar ui-appbar">
+    <div class="appbar-container container">
      <h1>Login</h1>
+     <div class="appbar-actions appbar-actions-left"><a class="appbar-button back-button" href="/"><i class="material-icons">&#xE5C4;</i></a></div>
+     <div class="appbar-actions appbar-actions-right"><a class="appbar-button back-button" href="/" title="Fechar"><i class="material-icons">&#xE5CD;</i></a></div>
     </div>
    </header>
    <div class="container modal-container">
@@ -277,7 +296,7 @@
    </div>
   </aside>
   <template id="card-tarefa">
-   <li class="ui-card card-tarefa"><a class="card-container fill" href="#" data-fill="href: url">
+   <li class="card-tarefa ui-card"><a class="card-container fill" href="#" data-fill="href: url">
      <div class="ui-tarefa">
       <div class="tarefa-designacao">
        <div class="tarefa-numero">Tarefa&nbsp;<span class="fill" data-fill="numero"></span></div>
@@ -289,7 +308,9 @@
        <div class="tarefa-descricao fill" data-fill="descricao"></div>
        <div class="tarefa-pontuacao fill" data-fill="pontuacao"></div>
       </div>
-      <ul class="grid"></ul>
+      <div class="tarefa-conteudo">
+       <ul class="grid"></ul>
+      </div>
      </div></a></li>
   </template>
   <template id="backdrop">

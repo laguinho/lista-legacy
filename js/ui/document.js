@@ -2,9 +2,12 @@
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 let UI = { }
-let $ui = [ ];
-
 UI.data = [ ];
+
+let $ui = [ ];
+$ui["window"] = $(window);
+$ui["body"] = $(document.body);
+
 
 // $ui["window"]
 // $ui["title"]
@@ -17,6 +20,9 @@ UI.data = [ ];
 // $ui["backdrop"]
 // $ui["footer"]
 
+// Dados definidos:
+// UI.data["column-width"]
+
 // Dados consultáveis:
 // UI.data["window"]["width"]
 // UI.data["window"]["height"]
@@ -26,9 +32,7 @@ UI.data = [ ];
 // UI.data["interaction-type"]
 // UI.data["theme-color"]["original"]
 // UI.data["title"]
-
-// Dados definidos:
-// UI.data["column-width"]
+// UI.data["scrollbar-size"]
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,6 +40,6 @@ UI.data = [ ];
 
 // Função para forçar reflow
 $.fn.reflow = function() {
-	var offset = $ui["body"].offset().left;
+	let offset = $ui["body"].offset().left;
 	return $(this);
 };

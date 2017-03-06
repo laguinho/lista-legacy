@@ -12,9 +12,18 @@ worker.Start = (function() {
 
 		cue["load-edicao"].done(function() {
 			timeout["delay-evolucao"] = setTimeout(app.Evolucao.start, 200);
-		});
 
-	}, 300);
+			// Se tiver número de tarefa especificado na URL, abre ela
+			if (router["path"] && router["path"][2]) {
+				// Antes, testa se o valor é um número
+				// e dentro do número de tarefas dessa Edição
+				let numero = router["path"][2];
+				if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["numero-de-tarefas"]) {
+					app.Tarefa.open(numero, false, false);
+				}
+			}
+		});
+	}, 0);
 })();
 
 
@@ -28,9 +37,11 @@ worker.Load = (function() {
 			Lista.Edicao = response["edicao"];
 			Lista.Placar = response["placar"];
 			Lista.Tarefas = response["tarefas"];
-			cue["load-edicao"].resolve();
 
-			timeout["delay-lista"] = setTimeout(app.Lista.start, 1);
+			timeout["delay-lista"] = setTimeout(function() {
+				app.Lista.start();
+				cue["load-edicao"].resolve();
+			}, 1);
 			// timeout["delay-placar"] = setTimeout(app.Placar.start, 400);
 
 			// var data = response["data"];
@@ -56,10 +67,10 @@ worker.Update = (function() {
 		log("worker.Update", "info");
 
 		ListaAPI("/atividade").done(function(response) {
-			// confere data de cada atividade e vê se é posterior à última atualização.
-			// se for, adiciona à contagem de nova atividade
+			// Confere data de cada atividade e vê se é posterior à última atualização.
+			// Se for, adiciona à contagem de nova atividade
 			for (let atividade of response) {
-				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != user["id"]) {
+				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
 					if (value["acao"] === "novo-tarefa") {
 						updates["tarefas"]++;
@@ -69,9 +80,9 @@ worker.Update = (function() {
 				}
 			}
 
-			// se houver nova atividade
+			// Se houver nova atividade
 			if (updates["total"] > 0) {
-				// monta o texto do toast
+				// Monta o texto do toast
 				let texto = {
 					"tarefas": updates["tarefas"] + " " + (updates["tarefas"] > 1? "novas tarefas" : "nova tarefa"),
 					"posts": updates["posts"] + " " + (updates["posts"] > 1? "novos posts" : "novo post"),
@@ -101,7 +112,7 @@ worker.Update = (function() {
 					}
 				});
 
-				// mostra número de novas atividades no título
+				// Mostra número de novas atividades no título
 				$ui["title"].html("(" + updates["total"] + ") " + UI.data["page-title"]);
 			}
 

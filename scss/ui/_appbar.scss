@@ -3,18 +3,15 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .ui-appbar {
-	// opacity: .7; // XXX
-
 	position: fixed;
 	top: 0;
 	left: 0;
 	right: 0;
-
 	height: $appbar-height;
-
-	// background-color: #fff;
+	background-color: #fff;
 	color: #666;
-	// box-shadow: 0 0 2px rgba(0, 0, 0, 0.12);
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
+
 	z-index: 1;
 	-webkit-user-select: none;
 
@@ -22,21 +19,30 @@
 		-webkit-user-select: inherit;
 	}
 
-	.container {
+	.appbar-container {
 		height: 100%;
+		padding: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 
 		@media ($--widebody) {
-			padding: 0 $appbar-height-widebody;
+			padding: 0 8px;
 		}
 	}
 
 	h1 {
 		margin: auto;
 		font-size: 20px;
-		// line-height: 56px
+		// line-height: 56px;
+		text-align: left;
+
+		flex-grow: 2;
+		order: 2;
 	}
 
-	@media (min-width: $column-width * 4) {
+	@media ($--widebody) {
 		height: 64px;
 
 		h1 {
@@ -44,78 +50,25 @@
 			// line-height: 64px
 		}
 	}
-}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// lista appbar
-.lista-appbar {
-	background-color: #fff;
-	color: #444;
-	box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
-	transition: all $transition-timing-function .16s;
-	z-index: $z-index-appbar;
 
-	.scroll-top & {
-		box-shadow: none;
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// actions
+	.appbar-actions {
+		min-width: $appbar-height;
+		z-index: 1;
+
+		@media ($--widebody) {
+			min-width: $appbar-height-widebody;
+		}
 	}
 
-	h1 {
-		display: block;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		width: 400px;
-		height: 40px;
-		font: 400 16px / 40px lato, sans-serif !important;
-		letter-spacing: 2px;
-		word-spacing: 2px;
-		text-align: center;
-		text-transform: uppercase;
-		opacity: 0.7;
-		transform: translateX(-50%) translateY(-50%);
+	.appbar-actions-left {
+		order: 1;
+	}
 
-		.marquee-face {
-			position: absolute;
-			top: 1px;
-			bottom: 0;
-			left: 0;
-			right: 0;
-		}
-
-		span {
-			display: inline-block;
-			padding-left: 2px;
-			background-image: linear-gradient(-45deg, #ff553b, #fdbc41, #9ed150, #00eaff, #3f8fff, #ff85ff, #ff553b);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			opacity: 1;
-			transform: translateY(0);
-			transition: all $transition-timing-function .32s;
-
-			.livesite-focus & {
-				opacity: 0;
-				transform: translateY(100%);
-			}
-		}
-
-		.laguinho {
-			width: 64px;
-			height: 64px;
-			margin: 0 auto;
-			opacity: 0;
-			transform: translateY(-100%);
-			transition: all $transition-timing-function .32s;
-
-			@media ($--widebody) {
-				width: $appbar-height-widebody * 0.6;
-				height: $appbar-height-widebody * 0.6;
-			}
-
-			.livesite-focus & {
-				opacity: 1;
-				transform: translateY(0);
-			}
-		}
+	.appbar-actions-right {
+		order: 3;
 	}
 }
 
@@ -123,9 +76,9 @@
 // appbar button
 .appbar-button {
 	display: block;
-	position: absolute;
-	top: 0;
-	bottom: 0;
+	// position: absolute;
+	// top: 0;
+	// bottom: 0;
 	width: $appbar-height;
 	height: $appbar-height;
 	padding-top: $appbar-height * 0.1;
@@ -156,11 +109,13 @@
 		}
 	}
 
-	&.appbar-left-button {
-		left: 0;
-	}
-
-	&.appbar-right-button {
-		right: 0;
-	}
+	// &.appbar-left-button {
+	// 	left: 0;
+	// 	order: 1;
+	// }
+	//
+	// &.appbar-right-button {
+	// 	right: 0;
+	// 	order: 3;
+	// }
 }

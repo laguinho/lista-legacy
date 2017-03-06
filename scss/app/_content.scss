@@ -1,0 +1,169 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// content /////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.content-card {
+	width: 100%;
+	margin-bottom: $gutter / 2;
+
+	@media ($--widebody) {
+		width: 370px;
+		margin-bottom: $gutter * 2;
+		box-shadow: 0 0 0;
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// body //////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.content-body {
+		// margin-bottom: 8px;
+
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// label /////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.content-label {
+		padding: 0 12px 6px 12px;
+
+		@media ($--widebody) {
+			padding: 0 0 6px 0;
+		}
+
+		&::after {
+			@include pseudo-clearfix;
+		}
+
+		.content-turma {
+			display: inline-block;
+			// float: left;
+		}
+
+		.content-bullet {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			margin-right: 4px;
+			border: 1px solid;
+			border-radius: 50%;
+		}
+
+		.content-date {
+			display: inline-block;
+			// float: right;
+			margin-left: 4px;
+			font-size: 0.8em;
+			color: rgba(#000, 0.25);
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// rating ////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.content-rating {
+		padding: 6px 12px 12px 36px;
+		position: relative;
+
+		@media ($--widebody) {
+			padding: 6px 0 6px 24px;
+		}
+	}
+
+	i {
+		position: absolute;
+		top: 0;
+		left: 12px;
+		color: rgba(#000, 0.2);
+
+		@media ($--widebody) {
+			left: 0;
+		}
+	}
+
+	.content-points {
+		text-transform: uppercase;
+
+		&:not(.turma-text) {
+			padding-top: 2px;
+			font-size: 11px;
+		}
+	}
+
+	.content-review {
+		color: rgba(#000, 0.7);
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// media /////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	.content-media {
+		padding-bottom: 9px;
+		$content-media-border-radius: 4px;
+
+		li {
+			&:first-child {
+					.media-wrapper, img {
+					border-top-left-radius: 2px;
+					border-top-right-radius: 2px;
+				}
+			}
+
+			@media ($--widebody) {
+				&:first-child {
+						.media-wrapper, img {
+						border-top-left-radius: $content-media-border-radius;
+						border-top-right-radius: $content-media-border-radius;
+					}
+				}
+
+				&:last-child {
+					.media-wrapper, img {
+						border-bottom-left-radius: $content-media-border-radius;
+						border-bottom-right-radius: $content-media-border-radius;
+					}
+				}
+			}
+
+			& + li {
+				margin-top: 1px;
+			}
+		}
+	}
+
+	.content-caption {
+		padding: 0 12px 9px;
+		color: rgba(#000, 0.7);
+
+		@media ($--widebody) {
+			padding: 0 0 9px 0;
+		}
+	}
+
+	// Se não tiver mídia,
+	// aumenta o padding superior
+	&.no-media .content-caption {
+		// padding-top: 24px;
+	}
+}
+
+.media-wrapper {
+	background: #f7f7f7;
+	position: relative;
+	overflow: hidden;
+
+	img, iframe {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+	}
+}

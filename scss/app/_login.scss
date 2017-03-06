@@ -4,7 +4,38 @@
 
 .app-login {
 	z-index: $z-index-login;
-	display: none;
+	// display: none;
+
+	@media ($--narrowbody) {
+		.appbar-actions-right {
+			display: none;
+		}
+	}
+
+	@media ($--widebody) {
+		top: 50%;
+		bottom: auto;
+		left: 50%;
+		right: auto;
+		width: 400px;
+		height: 400px;
+
+		&.in {
+			transform: translate(-50%,-50%) !important;
+		}
+
+		.modal-container {
+			padding-top: 64px;
+		}
+
+		header h1 {
+			padding-left: 20px;
+		}
+
+		.appbar-actions-left {
+			display: none;
+		}
+	}
 
 	header {
 
@@ -40,6 +71,7 @@
 	}
 
 	.btn {
+		border: 0;
 		border-radius: 2px;
 		padding: 0 8px;
 		background-color: #607d8b;
@@ -48,6 +80,10 @@
 		color: #fff;
 		line-height: 36px;
 		text-transform: uppercase;
-		box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+		box-shadow:
+			0 2px 2px 0 rgba(#000, 0.14),
+			0 3px 1px -2px rgba(#000, 0.2),
+			0 1px 5px 0 rgba(#000, 0.12);
+		cursor: pointer;
 	}
 }

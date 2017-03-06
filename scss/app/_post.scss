@@ -1,95 +1,108 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// post card ///////////////////////////////////////////////////////////////////////////////////////
+// post ////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-.post-card {
-	// @include scaffolding(#0fa);
-	margin-bottom: $gutter * 1.5;
 
-	@media ($--from-4columns) {
-		width: 500px;
-	}
+.app-post {
+	z-index: $z-index-post;
 
+	@media ($--widebody) {
+		top: 20%;
+		bottom: 0;
+		left: 50%;
+		right: auto;
+		width: 610px;
+		min-height: 400px;
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// body //////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	.post-body {
-		margin-bottom: 8px;
-
-	}
-
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// label /////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	.post-label {
-		// @include scaffolding;
-		// padding: 0 16px;
-
-		&::after {
-			@include pseudo-clearfix;
-		}
-
-		.post-turma {
-			float: left;
-		}
-
-		.post-bullet {
-			display: inline-block;
-			width: 10px;
-			height: 10px;
-			margin-right: 4px;
-			border: 1px solid;
-			border-radius: 50%;
-		}
-
-		.post-date {
-			margin-left: 4px;
-			font-size: 0.8em;
-			color: rgba(#000, .3);
+		&.in {
+			transform: translate(-50%, 0) !important;
 		}
 	}
 
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// rating ////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-
-	.post-rating {
-		// @include scaffolding;
-
-
+	.post-appbar {
+		color: #fff;
 	}
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	// media /////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////
-	.post-media {
-		li {
-			&:first-child img {
-				border-top-left-radius: 2px;
-				border-top-right-radius: 2px;
-			}
-
-			&:last-child img {
-				border-bottom-left-radius: 2px;
-				border-bottom-right-radius: 2px;
-			}
-
-			& + li {
-				margin-top: 1px;
-			}
+	.body {
+		@media ($--widebody) {
+			// padding-top: 24px;
 		}
 	}
 
-	.post-caption {
-		padding: 16px 24px 24px 16px;
+	.submit-button {
+		display: block;
+		padding: 15px 12px;
+		text-transform: uppercase;
+
+		&.disabled {
+			opacity: 0.4;
+		}
 	}
 
-	// se não tiver mídia, aumenta o padding superior
-	&.no-media .post-caption {
+	.file-placeholder {
+		display: block;
+		border: 1px solid rgba(#000, 0.5);
+		padding: 12px;
+		border-radius: 3px;
+		text-align: center;
+		cursor: pointer;
+
+		i {
+			margin-right: 9px;
+			vertical-align: middle;
+		}
+	}
+
+	.text-field {
+		display: block;
+		width: 100%;
+		padding: 6px 0;
+		outline: 0;
+	}
+
+	textarea.text-field {
+		min-height: 200px;
+	}
+
+	.drag-tip {
+		padding: 4px 0 24px;
+		font-size: 12px;
+		text-align: center;
+	}
+
+	.form-field label {
+		display: block;
+		padding: 0 0 6px;
+	}
+
+	.form-field + .form-field {
 		padding-top: 24px;
+	}
+
+	// imagens
+	#board {
+		li {
+			position: relative;
+		}
+
+		canvas {
+			width: 100%;
+			height: auto;
+		}
+
+		.progress {
+			position: absolute;
+			top: 4px;
+			left: 4px;
+			padding: 4px;
+			background-color: rgba(#000, 0.75);
+			font-size: 12px;
+			color: #fff;
+		}
+	}
+
+	.media-preview {
+		img {
+			width: 100%;
+		}
 	}
 }

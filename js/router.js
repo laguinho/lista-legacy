@@ -68,23 +68,23 @@ window.addEventListener("popstate", function(event) {
 	var state = event.state;
 
 	if (state && state["view"] === "tarefa") {
-		if (router["current-view"].indexOf("bottomsheet") > -1) { bottomsheet.close(); }
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("bottomsheet") > -1) { UI.bottomsheet.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 		app.Tarefa.open(state["id"]);
 	}
 
 	else if (state && state["view"] === "new-post") {
-		post.open(state["type"], state["id"]);
+		// app.Post.open(state["type"], state["id"]);
 	}
 
 	else if (state && state["view"] === "bottomsheet") {
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 	}
 
 //	if (state["view"] === "home") {
 	else {
-		if (router["current-view"].indexOf("bottomsheet") > -1) { bottomsheet.close(); }
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("bottomsheet") > -1) { UI.bottomsheet.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 		app.Tarefa.close();
 	}
 

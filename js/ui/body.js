@@ -6,12 +6,12 @@
 
 UI.body = (function() {
 	$(function() {
-		$ui["body"] = $(document.body);
+		// ui["body"] é definido no document.js
 		$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
 		scrollStatus();
 	});
 
-	$(window).on("scroll", scrollStatus);
+	$ui["window"].on("scroll", scrollStatus);
 
 	function scrollStatus() {
 		var y = $(window).scrollTop();
@@ -33,13 +33,13 @@ UI.body = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// UI.body.lock()
 		lock: function() {
-			$ui["body"].addClass("no-scroll");
+			$ui["body"].addClass("no-scroll").css("margin-right", UI.data["scrollbar-size"]);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// UI.body.unlock()
 		unlock: function() {
-			$ui["body"].removeClass("no-scroll");
+			$ui["body"].removeClass("no-scroll").css("margin-right", 0);
 		}
 	};
 })();

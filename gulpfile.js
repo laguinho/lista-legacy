@@ -34,7 +34,7 @@ CONFIG.paths.development.staging = "./";
 
 CONFIG.paths.production = { };
 CONFIG.paths.production.assets = "/home/laguinho/assets.laguinho.org/lista/" + edicao + "/";
-CONFIG.paths.production.app = "/home/laguinho/" + url + ".laguinho.org/";
+CONFIG.paths.production.app = "/home/laguinho/assets/lista/";
 
 // urls
 CONFIG.urls = { };
@@ -64,7 +64,7 @@ const pug = require("gulp-pug");
 
 CONFIG.html = { };
 CONFIG.html.source = ["./pug/app.pug"];
-CONFIG.html.watch = ["**.*"];
+CONFIG.html.watch = ["**/**.*"];
 
 function stageHTML() {
 	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
@@ -108,7 +108,7 @@ function deployHTML() {
 			}
 		}))
 
-		.pipe(rename({ basename: "lista", extname: ".php" }))
+		.pipe(rename({ basename: "app", extname: ".php" }))
 		.pipe(sftp({
 			host: CONFIG.server.host,
 			remotePath: CONFIG.paths.production.app,

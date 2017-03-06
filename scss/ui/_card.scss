@@ -1,8 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// card ////////////////////////////////////////////////////////////////////////////////////////////
+// ui card /////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .ui-card {
+	width: 100%;
 	margin-bottom: 8px;
 	border-radius: 2px;
 	background-color: #fff;
@@ -10,7 +11,7 @@
 	position: relative;
 	transition: box-shadow cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
 
-	@media (min-width: $column-width * 2) {
+	@media ($--widebody) {
 		margin-bottom: 16px;
 	}
 }
@@ -65,8 +66,8 @@
 	&.fantasma {
 		opacity: 0.5;
 
-		.titulo {
-			opacity: 0.5;
+		.tarefa-titulo {
+			opacity: 0.3;
 		}
 	}
 
@@ -85,8 +86,15 @@
 
 		li {
 			float: left;
-			width: 33.3%;
+			width: 25%;
 			padding: 1px;
+		}
+	}
+
+	.more {
+		.tile-image {
+			border: 1px solid rgba(#000, 0.2);
+			background: transparent;
 		}
 	}
 }

@@ -24,39 +24,49 @@ app.Post = (function() {
 
 		$app["post"].on("submit", "form", function(event) {
 			event.preventDefault();
-		}).on("click", ".submit", function(event) {
+		}).on("click", ".submit-button", function(event) {
 			event.preventDefault();
 
-			if (moment().isAfter(Lista.Regulamento["fim"])) {
-				toast.open("Postagens encerradas!");
+			if (moment().isAfter(Lista.Edicao["fim"])) {
+				UI.toast.open("Postagens encerradas!");
 			}
 
 			if ($(this).hasClass("disabled")) {
 				// TODO melhorar mensagem
-				toast.open("Espere o fim do upload&hellip;");
+				UI.toast.open("Espere o fim do upload&hellip;");
 				return;
 			}
 
-			var data = $("form", $app["post"]).serialize();
+			let data = $("form", $app["post"]).serialize();
+			// Exemplo de dados:
+			// action=post
+			// edicao=xciii
+			// tarefa=2
+			// user=744
+			// turma=ec1
+			// token=0ebe22be731dbd942ecb3e097a5ac2ae9d3185249f313eaec3a855ef2957594d
+			// type=imagem
+			// image-order[]=2-744-1488097013-578
+			// caption=
 
-			$(".submit", $app["post"]).addClass("disabled").html("Enviando&hellip;");
+			$(".submit-button", $app["post"]).addClass("disabled").html("Enviando&hellip;");
 
-			$.post("/-/lista/novo", data).done(function(response) {
+			$.post("/tarefas/" + tarefa_active + "/postar", data).done(function(response) {
 				if (response["meta"]["status"] === 200) {
 					app.Post.close();
 					app.Tarefa.render(response["data"]);
 					UI.toast.open(response["meta"]["message"]);
 					navigator.vibrate(800);
 
-					tarefas[response["data"]["numero"]] = response["data"];
+					Lista.Tarefas[response["data"]["numero"]] = response["data"];
 				} else {
 					UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
 				}
 			}).fail(function() {
-				UI.toast.open("Ocorreu um erro. Tente novamente");
+				UI.toast.open("Ocorreu um erro. Tente novamente", null, null, false);
 			});
 
-		}).on("click", ".back", function(event) {
+		}).on("click", ".back-button", function(event) {
 			event.preventDefault();
 			app.Post.close();
 		});
@@ -68,14 +78,14 @@ app.Post = (function() {
 		// app.Post.authorize()
 		authorize: function() {
 			// habilita o botão enviar
-			$(".submit", $app["post"]).removeClass("disabled");
+			$(".submit-button", $app["post"]).removeClass("disabled");
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Post.deauthorize()
 		deauthorize: function() {
 			// desabilita o botão "enviar"
-			$(".submit", $app["post"]).addClass("disabled");
+			$(".submit-button", $app["post"]).addClass("disabled");
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +138,7 @@ app.Post = (function() {
 		// app.Post.open()
 		open: function(type, numero) {
 			var data = {
-				"edicao": Lista.Regulamento["titulo"],
+				"edicao": Lista.Edicao["titulo"],
 				"numero": (numero || tarefa_active),
 				"user": Lista.Usuario["id"],
 				"turma": Lista.Usuario["turma"],
@@ -170,6 +180,8 @@ app.Post = (function() {
 				});
 			}
 
+			UI.backdrop.show($app["post"]);
+
 			// view manager
 			router["view-manager"].replace("new-post");
 			history.replaceState({ "view": "new-post", "type": type, "id": data["numero"] }, null, null);
@@ -183,10 +195,11 @@ app.Post = (function() {
 		// app.Post.close()
 		close: function() {
 		//	tarefa_active = null;
-			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
+			$("head meta[name='theme-color']").attr("content", UI.data["theme-color"]["original"]);
 
 			$app["post"].removeClass("slide-y").one("transitionend", function() {
 				$app["post"].removeClass("in").empty();
+				UI.backdrop.hide($app["post"]);
 			});
 
 			router["view-manager"].replace("tarefa");

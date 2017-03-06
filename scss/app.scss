@@ -10,44 +10,13 @@
 @import "base/helpers";
 @import "base/containers";
 
-// body {
-// 	// padding-top: $appbar-height;
-// 	background-color: $background-color;
-// 	// background: lighten($background-color, 1%) top center
-// 	// background-image: url("data:image/png;base64,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")
-// 	// http://www.transparenttextures.com/patterns/green-gobbler.png
-// 	// http://www.transparenttextures.com/patterns/inspiration-geometry.png
-// }
-
-body, input, button, textarea, select {
-	// font: 17px roboto, arial, helvetica, sans-serif;
-	// color: #666;
-
-	@media (min-width: $column-width * 2) {
-		font-size: 14px;
-	}
-}
-
-@media (min-width: $column-width * 4) {
-	body {
-		// padding-top: $appbar-height-bigger;
-	}
-}
-
 @import "DEPRECATED";
 
 
-// app
-@import "app/turmas";
-@import "app/evolucao";
-@import "app/livesite";
-@import "app/placar";
-@import "app/lista";
-@import "app/tarefa";
-@import "app/post";
-@import "app/login";
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui //////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ui
 @import "ui/typography";
 @import "ui/appbar";
 @import "ui/loadbar";
@@ -56,3 +25,25 @@ body, input, button, textarea, select {
 @import "ui/backdrop";
 @import "ui/bottomsheet";
 @import "ui/toast";
+@import "ui/buttons";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// app /////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@import "app/turmas";
+
+// lista
+@import "app/evolucao";
+@import "app/livesite";
+@import "app/placar";
+@import "app/lista";
+
+// tarefa
+@import "app/tarefa";
+@import "app/content";
+@import "app/post";
+
+// helpers
+@import "app/login";

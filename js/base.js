@@ -2,11 +2,16 @@
 // lista de tarefas ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Todas as informações ficam guardadas dentro do objeto "Lista",
+// em um dos seus 4 nós
 let Lista = [ ];
-Lista.Edicao = [ ];
+Lista.Edicao = { };
 Lista.Placar = [ ];
 Lista.Tarefas = [ ];
+Lista.Usuario = { };
 
+// "app" guarda os métodos específicos do funcionamento da Lista,
+// "$app" guarda as referências jQuery ao DOM usadas nesses métodos
 let app = [ ];
 let $app = [ ];
 
@@ -19,6 +24,8 @@ let cue = [ ];
 let worker = [ ];
 let timeout = [ ];
 
+// Se o logging estiver ligado, relata cada passo no Console
+// Obs: nem todos os métodos estão com logs criados ou detalhados!
 let logging = false;
 let log = function(message, type) {
 	if (logging) {
@@ -36,62 +43,4 @@ let log = function(message, type) {
 
 // daqui pra baixo não é pra ter nada!!
 
-var ui = [ ];
-
-Lista.Regulamento = [ ]; // TODO deprecated
-// var edicao = "xciii";
-
-
-
-// laguinho.org/tarefas
-var tarefas = { };
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// elements & helpers //////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// var $theme_color, theme_color = { };
 var tarefa_active;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// ui //////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
-// var ui  = { };
-
-
-/*
-
-variações da interface:
-
-1 coluna: tela única, 1 coluna na tarefa
-2 colunas: tela única, 2 colunas na tarefa
-3 colunas: tela dividida, 1 coluna larga na tarefa
-4 colunas: tela dividida, 2 colunas largas na tarefa
-
-
-
-
-*/
-
-
-// loading
-/*
-var loading = (function() {
-	return {
-		show: function() {
-			backdrop.show();
-			$loading.addClass("in");
-		},
-		hide: function() {
-			$loading.removeClass("in");
-			backdrop.hide();
-		}
-	}
-})();
-$(function() {
-	$loading = $("#loading");
-});
-*/
-
-// var api_key;

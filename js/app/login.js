@@ -47,7 +47,7 @@ app.Login = (function() {
 		});
 
 		// Ação de login
-		$ui["login"].on("click", ".back", function(event) {
+		$ui["login"].on("click", ".back-button", function(event) {
 			event.preventDefault();
 			app.Login.hide();
 		}).on("submit", "form", function(event) {
@@ -65,6 +65,7 @@ app.Login = (function() {
 			// Abre a tela de login e coloca o foco no campo e-mail
 			$ui["login"].addClass("in").reflow().addClass("slide").one("transitionend", function() {
 				UI.body.lock();
+				UI.backdrop.show($ui["login"]);
 				$("input[name='email']", $ui["login"]).focus();
 			});
 		},
@@ -74,6 +75,7 @@ app.Login = (function() {
 		hide: function() {
 			$ui["login"].removeClass("slide").one("transitionend", function() {
 				$ui["login"].removeClass("in");
+				UI.backdrop.hide($ui["login"]);
 				UI.body.unlock();
 			});
 		},
@@ -117,7 +119,8 @@ app.Login = (function() {
 
 			localStorage.setItem("Lista.Usuario", JSON.stringify(Lista.Usuario));
 
-			// Depois de 0,5 segundo, mostra toast confirmando logout
+			// Depois de 0,5 segundo,
+			// mostra toast confirmando logout
 			setTimeout(function() {
 				UI.toast.show("Sessão encerrada!");
 			}, 500);

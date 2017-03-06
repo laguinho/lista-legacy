@@ -2,6 +2,10 @@
 // fonts ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Cria uma promise que será resolvida
+// quando as fontes forem carregadas
+cue["load-fonts"] = $.Deferred();
+
 WebFont.load({
 	timeout: 15000,
 	google: {
@@ -15,11 +19,14 @@ WebFont.load({
 	custom: {
 		families: [
 			"FontAwesome"
-		], urls: [
+		],
+		urls: [
 			"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 		]
 	},
 	active: function() {
+		cue["load-fonts"].resolve();
+
 		$(function() {
 			app.Lista.layout();
 		});

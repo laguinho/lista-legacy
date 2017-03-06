@@ -5,13 +5,13 @@
 	"js/router.js",
 
 	"js/ui/document.js",
+	"js/ui/utilities.js",
 	"js/ui/body.js",
 	"js/ui/loadbar.js",
 	"js/ui/backdrop.js",
 	"js/ui/sidenav.js",
 	"js/ui/bottomsheet.js",
 	"js/ui/toast.js",
-	"js/ui/utilities.js",
 
 	"js/api.js",
 
@@ -19,10 +19,9 @@
 	"js/app/evolucao.js",
 	"js/app/lista.js",
 	"js/app/tarefa.js",
-	"js/app/new-post.js",
+	"js/app/post.js",
+	"js/app/upload.js",
 	"js/app/login.js",
-
-	"js/helper-image-upload.js",
 
 	"js/workers.js",
 

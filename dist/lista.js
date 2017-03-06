@@ -2,11 +2,16 @@
 // lista de tarefas ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Todas as informações ficam guardadas dentro do objeto "Lista",
+// em um dos seus 4 nós
 let Lista = [ ];
-Lista.Edicao = [ ];
+Lista.Edicao = { };
 Lista.Placar = [ ];
 Lista.Tarefas = [ ];
+Lista.Usuario = { };
 
+// "app" guarda os métodos específicos do funcionamento da Lista,
+// "$app" guarda as referências jQuery ao DOM usadas nesses métodos
 let app = [ ];
 let $app = [ ];
 
@@ -19,6 +24,8 @@ let cue = [ ];
 let worker = [ ];
 let timeout = [ ];
 
+// Se o logging estiver ligado, relata cada passo no Console
+// Obs: nem todos os métodos estão com logs criados ou detalhados!
 let logging = false;
 let log = function(message, type) {
 	if (logging) {
@@ -36,86 +43,31 @@ let log = function(message, type) {
 
 // daqui pra baixo não é pra ter nada!!
 
-var ui = [ ];
-
-Lista.Regulamento = [ ]; // TODO deprecated
-// var edicao = "xciii";
-
-
-
-// laguinho.org/tarefas
-var tarefas = { };
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// elements & helpers //////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// var $theme_color, theme_color = { };
 var tarefa_active;
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// ui //////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// o objeto "ui" guarda informações sobre a interface, como dimensões e tipo de interação
-// var ui  = { };
-
-
-/*
-
-variações da interface:
-
-1 coluna: tela única, 1 coluna na tarefa
-2 colunas: tela única, 2 colunas na tarefa
-3 colunas: tela dividida, 1 coluna larga na tarefa
-4 colunas: tela dividida, 2 colunas largas na tarefa
-
-
-
-
-*/
-
-
-// loading
-/*
-var loading = (function() {
-	return {
-		show: function() {
-			backdrop.show();
-			$loading.addClass("in");
-		},
-		hide: function() {
-			$loading.removeClass("in");
-			backdrop.hide();
-		}
-	}
-})();
-$(function() {
-	$loading = $("#loading");
-});
-*/
-
-// var api_key;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // utilities ///////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // rand
-function rand(min, max) {
+const rand = (min, max) => {
 	return Math.random() * (max - min) + min;
-}
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // template engine /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var $templates = { };
+let $templates = { };
 
 $(function() {
+	// Pega os templates do HTML,
+	// guarda em $templates
+	// e remove eles do código-fonte
 	$("template").each(function() {
-		var $this = $(this);
-		var name = $this.attr("id");
-		var html = $this.html();
+		let $this = $(this);
+		let name = $this.attr("id");
+		let html = $this.html();
 
 		$templates[name] = $(html);
 		$this.remove();
@@ -123,7 +75,11 @@ $(function() {
 });
 
 function __render(template, data) {
-	if (!$templates[template]) { return false; }
+	// Se template não existir, aborta
+	if (!$templates[template]) {
+		return false;
+	}
+
 	var $render = $templates[template].clone();
 
 	$render.data(data);
@@ -139,14 +95,22 @@ function __render(template, data) {
 			var source = (pair[1]? pair[1].trim() : pair[0]);
 			var value = data[source];
 
-			source = source.split("/");
-			if (source.length > 1 && typeof value !== "undefined") {
-				value = data[source[0]];
-
-				for (var j = 1; j < source.length; j++) {
-					value = (value[source[j]])? value[source[j]] : null;
-				}
-			}
+			// TODO
+			// source = source.split("/");
+			// if (source.length > 1) {
+			// 	// value = data[source[0]];
+			// 	// console.log(source, source, value);
+			// 	// if (typeof value !== "undefined") {
+			// 		for (var j = 0; j <= source.length; j++) {
+			// 			console.log(value, source, data[source[0]]);
+			// 			if (value && value[source] && source[j] && value[source[j]]) {
+			// 				value = (value[source[j]])? value[source[j]] : null;
+			// 			} else {
+			// 				value = null;
+			// 			}
+			// 		}
+			// 	// }
+			// }
 
 			if (typeof value !== "undefined" && value !== null) {
 				if (dest === "class") {
@@ -255,23 +219,23 @@ window.addEventListener("popstate", function(event) {
 	var state = event.state;
 
 	if (state && state["view"] === "tarefa") {
-		if (router["current-view"].indexOf("bottomsheet") > -1) { bottomsheet.close(); }
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("bottomsheet") > -1) { UI.bottomsheet.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 		app.Tarefa.open(state["id"]);
 	}
 
 	else if (state && state["view"] === "new-post") {
-		post.open(state["type"], state["id"]);
+		// app.Post.open(state["type"], state["id"]);
 	}
 
 	else if (state && state["view"] === "bottomsheet") {
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 	}
 
 //	if (state["view"] === "home") {
 	else {
-		if (router["current-view"].indexOf("bottomsheet") > -1) { bottomsheet.close(); }
-		if (router["current-view"].indexOf("new-post") > -1) { post.close(); }
+		if (router["current-view"].indexOf("bottomsheet") > -1) { UI.bottomsheet.close(); }
+		if (router["current-view"].indexOf("new-post") > -1) { app.Post.close(); }
 		app.Tarefa.close();
 	}
 
@@ -288,9 +252,12 @@ window.addEventListener("popstate", function(event) {
 // ui //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 let UI = { }
-let $ui = [ ];
-
 UI.data = [ ];
+
+let $ui = [ ];
+$ui["window"] = $(window);
+$ui["body"] = $(document.body);
+
 
 // $ui["window"]
 // $ui["title"]
@@ -303,6 +270,9 @@ UI.data = [ ];
 // $ui["backdrop"]
 // $ui["footer"]
 
+// Dados definidos:
+// UI.data["column-width"]
+
 // Dados consultáveis:
 // UI.data["window"]["width"]
 // UI.data["window"]["height"]
@@ -312,9 +282,7 @@ UI.data = [ ];
 // UI.data["interaction-type"]
 // UI.data["theme-color"]["original"]
 // UI.data["title"]
-
-// Dados definidos:
-// UI.data["column-width"]
+// UI.data["scrollbar-size"]
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -322,9 +290,91 @@ UI.data = [ ];
 
 // Função para forçar reflow
 $.fn.reflow = function() {
-	var offset = $ui["body"].offset().left;
+	let offset = $ui["body"].offset().left;
 	return $(this);
 };
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// ui / utilities //////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Título e cor do tema
+UI.data["theme-color"] = [ ];
+
+$(function() {
+	$ui["title"] = $("head title");
+	UI.data["title"] = $ui["title"].html();
+
+	$ui["theme-color"] = $("meta[name='theme-color']");
+	UI.data["theme-color"]["original"] = $ui["theme-color"].attr("content");
+});
+
+// Tipo de interação (touch ou pointer)
+UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Propriedades da janela e do layout
+UI.data["column-width"] = 316; // Largura da coluna, incluindo margem
+UI.data["window"] = [ ];
+
+function setLayoutProperties() {
+	// Dimensões (largura e altura) da janela
+	UI.data["window"]["width"] = $ui["window"].width();
+	UI.data["window"]["height"] = $ui["window"].height();
+
+	// Calcula número de colunas
+	UI.data["columns"] = Math.floor(UI.data["window"]["width"] / UI.data["column-width"]);
+
+	// Adiciona classe no <body> de acordo com a quantidade de colunas
+	let layout_class;
+	if (UI.data["columns"] === 1) {
+		layout_class = "ui-single-column";
+	} else if (UI.data["columns"] === 2) {
+		layout_class = "ui-dual-column";
+	} else {
+		layout_class = "ui-multi-column";
+	}
+
+	$ui["body"].removeClass("ui-single-column ui-dual-column ui-multi-column").addClass(layout_class);
+}
+
+function getScrollbarSize() {
+	// Descobre o tamanho da barra de rolagem
+	let $outerContainer = $("<div />").css({
+		"overflow": "scroll",
+		"display": "none"
+	}).appendTo($ui["body"]);
+	let $innerContainer = $("<div />").appendTo($outerContainer);
+
+	UI.data["scrollbar-size"] = $outerContainer.width() - $innerContainer.width();
+	$outerContainer.remove();
+}
+
+// As propriedades da janela e do layout são calculadas
+// quando a página é carregada e quando a janela é redimensionada.
+// O tamanho da barra de rolagem é calculado somente quando a página é carregada
+$(function() { setLayoutProperties(); getScrollbarSize(); });
+$ui["window"].on("resize", setLayoutProperties);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Propriedades (posição no topo e no fim da janela) do scroll
+UI.data["scroll-position"] = [ ];
+
+function setScrollPosition() {
+	UI.data["scroll-position"]["top"] = $ui["window"].scrollTop();
+	UI.data["scroll-position"]["bottom"] = UI.data["scroll-position"]["top"] + UI.data["window"]["height"];
+}
+
+// As propriedades do scroll são calculadas quando a página é carregada
+// e quando a janela é redimensionada ou "scrollada"
+$(function() { setScrollPosition(); });
+$ui["window"].on("scroll resize", setScrollPosition);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // ui / body ///////////////////////////////////////////////////////////////////////////////////////
@@ -334,12 +384,12 @@ $.fn.reflow = function() {
 
 UI.body = (function() {
 	$(function() {
-		$ui["body"] = $(document.body);
+		// ui["body"] é definido no document.js
 		$ui["body"].addClass("ui-" + UI.data["interaction-type"]);
 		scrollStatus();
 	});
 
-	$(window).on("scroll", scrollStatus);
+	$ui["window"].on("scroll", scrollStatus);
 
 	function scrollStatus() {
 		var y = $(window).scrollTop();
@@ -361,13 +411,13 @@ UI.body = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// UI.body.lock()
 		lock: function() {
-			$ui["body"].addClass("no-scroll");
+			$ui["body"].addClass("no-scroll").css("margin-right", UI.data["scrollbar-size"]);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// UI.body.unlock()
 		unlock: function() {
-			$ui["body"].removeClass("no-scroll");
+			$ui["body"].removeClass("no-scroll").css("margin-right", 0);
 		}
 	};
 })();
@@ -499,31 +549,39 @@ $(function() {
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// toast ///////////////////////////////////////////////////////////////////////////////////////////
+// ui toast ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 UI.toast = (function() {
+	$ui["toast"] = [ ];
+
+	$(function() {
+		$ui["toast"] = $(".js-ui-toast");
+		$ui["toast"]["message"] = $(".toast-message", $ui["toast"]);
+		$ui["toast"]["action"] = $(".toast-action", $ui["toast"]);
+	});
+
 	return {
 		// TODO nova sintaxe, usar template e __render
 		show: function(config) {
 			if (typeof config === "object") {
-				$ui.toast["message"].html(config["message"]);
-				$ui.toast["action"].html((config["action"]? config["action"] : ""));
-				$ui.toast.addClass("in").reflow().addClass("slide");
+				$ui["toast"]["message"].html(config["message"]);
+				$ui["toast"]["action"].html((config["action"]? config["action"] : ""));
+				$ui["toast"].addClass("in").reflow().addClass("slide");
 				$ui["body"].addClass("toast-active");
 
 				// TODO: .fab-bottom transform: translateY
 
-				$ui.toast.on("click", UI.toast.dismiss);
-				$ui.toast["action"].on("click", config["callback"]);
+				$ui["toast"].on("click", UI.toast.dismiss);
+				$ui["toast"]["action"].on("click", config["callback"]);
 
 				clearTimeout(timeout["toast"]);
 
 				if (!config["persistent"]) {
-					$ui.toast.removeClass("stream-only");
+					$ui["toast"].removeClass("stream-only");
 					timeout["toast"] = setTimeout(UI.toast.dismiss, (config["timeout"]? config["timeout"] : 6000));
 				} else {
-					$ui.toast.addClass("stream-only");
+					$ui["toast"].addClass("stream-only");
 				}
 			} else {
 				UI.toast.show({
@@ -533,12 +591,12 @@ UI.toast = (function() {
 		},
 
 		dismiss: function() {
-			$ui.toast.removeClass("slide").one("transitionend", function() {
+			$ui["toast"].removeClass("slide").one("transitionend", function() {
 				$ui["body"].removeClass("toast-active");
-				$ui.toast.removeClass("in stream-only");
+				$ui["toast"].removeClass("in stream-only");
 
-				$ui.toast["message"].empty();
-				$ui.toast["action"].empty();
+				$ui["toast"]["message"].empty();
+				$ui["toast"]["action"].empty();
 			});
 			clearTimeout(timeout["toast"]);
 		},
@@ -546,115 +604,41 @@ UI.toast = (function() {
 		// TODO DEPRECATED
 		open: function(message, action, callback, persistent) {
 		// open: function(message, addClass) {
-			$ui.toast.message.html(message);
-			$ui.toast.action.html((action? action : ""));
-			$ui.toast.addClass("in").reflow().addClass("slide");
+			$ui["toast"].message.html(message);
+			$ui["toast"].action.html((action? action : ""));
+			$ui["toast"].addClass("in").reflow().addClass("slide");
 			$ui["body"].addClass("toast-active");
 
 			// TODO: .fab-bottom transform: translateY
 
-			$ui.toast.on("click", toast.close);
-			$ui.toast.action.on("click", callback);
+			$ui["toast"].on("click", UI.toast.dismiss);
+			$ui["toast"].action.on("click", callback);
 
 			clearTimeout(timeout["toast"]);
+
 			if (!persistent) {
-				$ui.toast.removeClass("stream-only");
-				timeout["toast"] = setTimeout(toast.close, 6500);
+				$ui["toast"].removeClass("stream-only");
+				timeout["toast"] = setTimeout(UI.toast.dismiss, 6500);
 			} else {
-				$ui.toast.addClass("stream-only");
+				$ui["toast"].addClass("stream-only");
 			}
 		}
 	};
 })();
 
-var toast = UI.toast;
-toast.close = UI.toast.dismiss;
+// var toast = UI.toast;
+// toast.close = UI.toast.dismiss;
 
 // var snackbar = toast;
-
-// jQuery
-$ui.toast = [ ];
-
-$(function() {
-	$ui.toast = $(".js-ui-toast");
-	$ui.toast["message"] = $(".toast-message", $ui.toast);
-	$ui.toast["action"] = $(".toast-action", $ui.toast);
-});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// ui / utilities //////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Título e cor do tema
-$ui["window"] = $(window);
-UI.data["theme-color"] = [ ];
-
-$(function() {
-	$ui["title"] = $("head title");
-	UI.data["title"] = $ui["title"].html();
-
-	$ui["theme-color"] = $("meta[name='theme-color']");
-	UI.data["theme-color"]["original"] = $ui["theme-color"].attr("content");
-});
-
-// Tipo de interação (touch ou pointer)
-UI.data["interaction-type"] = ("ontouchstart" in window || navigator.msMaxTouchPoints)? "touch" : "pointer";
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Propriedades da janela e do layout
-UI.data["column-width"] = 316; // largura da coluna, incluindo margem
-UI.data["window"] = [ ];
-
-function setLayoutProperties() {
-	// dimensões da janela
-	UI.data["window"]["width"] = $ui["window"].width();
-	UI.data["window"]["height"] = $ui["window"].height();
-
-	// calcula número de colunas
-	UI.data["columns"] = Math.floor(UI.data["window"]["width"] / UI.data["column-width"]);
-
-	// adiciona classe no <body> de acordo com a quantidade de colunas
-	let layout_class;
-	if (UI.data["columns"] === 1) {
-		layout_class = "ui-single-column";
-	} else if (UI.data["columns"] === 2) {
-		layout_class = "ui-dual-column";
-	} else {
-		layout_class = "ui-multi-column";
-	}
-
-	$ui["body"].removeClass("ui-single-column ui-dual-column ui-multi-column").addClass(layout_class);
-}
-
-$(function() { setLayoutProperties(); });
-$ui["window"].on("resize", setLayoutProperties);
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Propriedades do scroll
-UI.data["scroll-position"] = [ ];
-
-function setScrollPosition() {
-	UI.data["scroll-position"]["top"] = $ui["window"].scrollTop();
-	UI.data["scroll-position"]["bottom"] = UI.data["scroll-position"]["top"] + UI.data["window"]["height"];
-}
-
-$(function() { setScrollPosition(); });
-$ui["window"].on("scroll resize", setScrollPosition);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // api /////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TODO legacy
+// TODO legacy (deve ficar só dentro da função abaixo)
 let api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
 
-const ListaAPI = function(endpoint, data) {
+const ListaAPI = (endpoint, data) => {
 	log("API Request: " + endpoint, "info");
 	let api_url = "https://api.laguinho.org/lista/" + edicao;
 	let api_key = "063c72b2afc5333f3b27b366bdac9eb81d64bc6a12cd7b3f4b6ade77a092b63a";
@@ -833,11 +817,11 @@ app.Lista = (function() {
 			},
 			"sortBy": ["date", "tarefa"],
 			"masonry": {
-				"gutter": (ui["columns"] === 1? 8 : 16)
+				"gutter": (UI.data["columns"] === 1? 8 : 16)
 			}
 		});
 
-		$app["lista"].on("click", ".card-tarefa:not(.ghost)", function(event) {
+		$app["lista"].on("click", ".card-tarefa:not(.fantasma)", function(event) {
 			if (event.which === 1) {
 				event.preventDefault();
 
@@ -876,7 +860,7 @@ app.Lista = (function() {
 
 			// se a edição estiver encerrada, insere classe no <body>
 			// e para de atualizar automaticamente
-			if (Lista.Regulamento["encerrada"] === true) {
+			if (Lista.Edicao["encerrada"] === true) {
 				$ui["body"].addClass("edicao-encerrada");
 				clearInterval(update_interval);
 			}
@@ -907,22 +891,89 @@ app.Lista = (function() {
 
 			// insere as tarefas
 			for (let tarefa of Lista.Tarefas) {
-				// insere no cache
+				// Insere no cache
 				cache["tarefas"][tarefa["numero"]] = tarefa;
 
-				// cria o link para a tarefa
+				// Cria o link para a tarefa
 				tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
 
-				// se tiver imagem, ajusta as dimensoes
+				// Se tiver imagem, ajusta as dimensoes
 				if (tarefa["imagem"]) {
-					tarefa["imagem-url"] = tarefa["imagem"]["url"];
-					tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+					tarefa["imagem/url"] = tarefa["imagem"]["url"];
+					tarefa["imagem/aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 				}
 
 				let $tarefa = __render("card-tarefa", tarefa).data({
 					"tarefa": tarefa["numero"],
 					"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 				});
+
+				// posts
+				let $grid = $(".tarefa-conteudo .grid", $tarefa);
+
+				if (tarefa["posts"] && tarefa["posts"].length) {
+					var total_posts = tarefa["posts"].length;
+					// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
+					// var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
+					var max_media_to_show = 8;
+					var shown_media_count = 0;
+
+					var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
+					var post_types_with_text_preview = ["texto"];
+
+					for (var i = 0; i < total_posts; i++) {
+						var post = tarefa["posts"][i];
+
+						if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
+							shown_media_count++;
+
+							var tile_type;
+							var media = { };
+
+							// imagem
+							if (post_types_with_image_preview.indexOf(post["tipo"]) > -1) {
+								tile_type = "tile-image";
+
+								media["count"] = shown_media_count;
+
+								if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
+									media["preview"] = "background-image: url('" + post["midia"][0]["thumbnail"] + "');";
+									media["modifier"] = "video";
+								} else if (post["midia"] && post["midia"][0]) {
+									media["preview"] = "background-image: url('" + post["midia"][0]["caminho"] +
+										post["midia"][0]["arquivos"][0] + "');";
+								}
+							} else
+
+							// texto
+							if (post_types_with_text_preview.indexOf(post["tipo"]) > -1) {
+								tile_type = "tile-text";
+								media = {
+									"preview": post["legenda"].substring(0, 120),
+									"count": shown_media_count
+								};
+							}
+
+							if ((shown_media_count === max_media_to_show) && ((total_posts - shown_media_count) > 0)) {
+								media["modifier"] = "more";
+								media["more"] = "+&thinsp;" + (total_posts - shown_media_count + 1);
+							}
+
+							var $tile = __render(tile_type, media).appendTo($grid);
+						}
+					}
+
+				} else {
+					// se não tiver nenhum post, remove o grid
+					$(".tarefa-conteudo", $tarefa).remove();
+				}
+
+				// Se for preview
+				if (tarefa["preview"]) {
+					$tarefa.addClass("fantasma");
+					$("a", $tarefa).removeAttr("href");
+					$(".tarefa-corpo", $tarefa).remove();
+				}
 
 				$app["lista"].append($tarefa).isotope("appended", $tarefa);
 			}
@@ -986,7 +1037,7 @@ app.Lista = (function() {
 					if (tarefa["posts"] && tarefa["posts"].length) {
 						var total_posts = tarefa["posts"].length;
 						// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
-						var max_media_to_show = (ui["columns"] < 2? 9 : 8);
+						var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
 						var shown_media_count = 0;
 
 						var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
@@ -1046,7 +1097,7 @@ app.Lista = (function() {
 				// Se a Edição estiver encerrada, ordena por número da tarefa.
 				// Se não, ordena por ordem de atualização
 				app.Lista.layout();
-				app.Lista.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
+				app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if (router["path"][2]) {
@@ -1106,7 +1157,7 @@ $(function() {
 		},
 		"sortBy": ["date", "tarefa"],
 		"masonry": {
-			"gutter": (ui["columns"] === 1? 8 : 16)
+			"gutter": (UI.data["columns"] === 1? 8 : 16)
 		}
 	});
 
@@ -1142,47 +1193,64 @@ $(function() {
 // app.Tarefa.close()
 
 app.Tarefa = (function() {
-	var placar_da_tarefa = [ ];
+	$(function() {
+		$app["tarefa"] = $(".app-tarefa");
+		$app["tarefa"].on("click", ".js-tarefa-close", function(event) {
+			event.preventDefault();
+			app.Tarefa.close(true);
+		}).on("click", ".js-new-post-trigger", function() {
+			UI.bottomsheet.open($(".new-post-sheet", $app["tarefa"]).clone().show());
+		}).on("click", ".card-tarefa a", function(event) {
+			if (event.which === 1) {
+				event.preventDefault();
+			}
+		});
+	});
+
+	let placar_da_tarefa = [ ];
 
 	function renderPosts(posts, $posts) {
 		placar_da_tarefa["total"] = 0;
-		for (var turma in Lista.Regulamento["turmas"]) {
-			placar_da_tarefa[Lista.Regulamento["turmas"][turma]] = 0;
+		for (var turma in Lista.Edicao["turmas"]) {
+			placar_da_tarefa[Lista.Edicao["turmas"][turma]] = 0;
 		}
 
 		$.each(posts, function(index, post) {
+			post["turma-background"] = post["turma"] + "-light-background";
 			post["data-de-postagem-formatada"] = moment(post["data-de-postagem"]).calendar();
 			post["turma-formatada"] = post["turma"].toUpperCase();
 
+			// legenda
+			if (post["legenda"] && post["legenda"].substring(0,3) !== "<p>") {
+				post["legenda"] = "<p>" + post["legenda"].replace(/(?:\r\n\r\n|\r\r|\n\n)/g, "</p><p>") + "</p>";
+			}
+
 			// avaliação
 			if (post["avaliacao"]) {
+				post["avaliacao/mensagem"] = post["avaliacao"]["mensagem"];
+
 				if (post["avaliacao"]["status"] === 200) {
 					post["status-class"] = post["turma"];
 					post["status-icon"] = "<i class=\"material-icons\">&#xE87D;</i>"; // coração
-					post["status"] = post["avaliacao"]["pontos"] + " ponto" + (post["avaliacao"]["pontos"] > 1? "s": "");
+					post["avaliacao/status"] = post["avaliacao"]["pontos"] + " ponto" + (post["avaliacao"]["pontos"] > 1? "s": "");
+					post["avaliacao/class"] = "turma-text";
 				} else {
 					post["status-class"] = "rejected";
 					post["status-icon"] = "<i class=\"material-icons\">&#xE888;</i>";
-					post["status"] = "Reprovado";
+					post["avaliacao/status"] = "Reprovado";
 				}
-				post["mensagem"] = post["avaliacao"]["mensagem"];
 
 				// soma pontos no placar
 				placar_da_tarefa["total"] += post["avaliacao"]["pontos"];
 				placar_da_tarefa[post["turma"]] += post["avaliacao"]["pontos"];
 			} else {
 				post["status-icon"] = "<i class=\"material-icons\">&#xE8B5;</i>"; // relógio
-				post["status"] = "Aguardando avaliação";
-			}
-
-			// legenda
-			if (post["legenda"] && post["legenda"].substring(0,3) != "<p>") {
-				post["legenda"] = "<p>" + post["legenda"].replace(/(?:\r\n\r\n|\r\r|\n\n)/g, "</p><p>") + "</p>";
+				post["avaliacao/status"] = "Aguardando avaliação";
 			}
 
 			// renderiza o post
-			var $post_card = __render("view-tarefa-post-card", post);
-			var $media = $(".post-media > ul", $post_card);
+			let $content_card = __render("content-card", post);
+			let $media = $(".content-media > ul", $content_card);
 
 			// adiciona mídias
 			if (post["midia"]) {
@@ -1219,22 +1287,22 @@ app.Tarefa = (function() {
 
 			// tira legenda se não tiver
 			if (!post["legenda"]) {
-				$post_card.addClass("no-caption");
+				$content_card.addClass("no-caption");
 			}
 
-			if (!post["media"]) {
-				$post_card.addClass("no-media");
+			if (!post["midia"]) {
+				$content_card.addClass("no-media");
 			}
 
 			// tira mensagem de avaliação se não tiver
 			if (!post["avaliacao"] || !post["mensagem"]) {
-				$(".result .message", $post_card).remove();
+				$(".result .message", $content_card).remove();
 			}
 
 
 			// adiciona o post à tarefa
-			// $posts.append($post_card).isotope("appended", $post_card);
-			$posts.append($post_card);
+			// $posts.append($content_card).isotope("appended", $content_card);
+			$posts.append($content_card);
 		});
 	}
 
@@ -1261,11 +1329,17 @@ app.Tarefa = (function() {
 				$("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
-			$ui["body"].addClass("no-scroll tarefa-active");
+			UI.body.lock();
+			$ui["body"].addClass("tarefa-active");
 
 			// router
 			router["view-manager"].replace("tarefa");
-			if (pushState) { router.go("/tarefas/" + tarefa["numero"], { "view": "tarefa", "id": tarefa["numero"] }, tarefa["titulo"]); }
+			if (pushState) {
+				router.go("/tarefas/" + tarefa["numero"], {
+					"view": "tarefa",
+					"id": tarefa["numero"]
+				}, tarefa["titulo"]);
+			}
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -1288,22 +1362,21 @@ app.Tarefa = (function() {
 			$(".grid", $tarefa_card).remove();
 			$("a", $tarefa_card).removeAttr("href");
 
-			$(".tarefa-meta .tarefa-card", $tarefa).append($tarefa_card);
+			$(".tarefa-meta .tarefa-texto", $tarefa).append($tarefa_card);
 
 			////////////////////////////////////////////////////////////////////////////////////////
-			// posts
-			var $posts = $(".tarefa-posts > ul", $tarefa);
+			// content
+			let $posts = $(".tarefa-content > ul", $tarefa);
 
 			if (tarefa["posts"].length) {
 				renderPosts(tarefa["posts"], $posts);
 
 				$posts.isotope({
-					"itemSelector": ".post-card",
+					"itemSelector": ".content-card",
 					"transitionDuration": 0,
 					"masonry": {
 						"isFitWidth": true,
-						"gutter": (ui["columns"] === 1? 8 : 24),
-					//	"columnWidth": (ui["columns"] < 1? 300 : 450)
+						"gutter": (UI.data["columns"] === 1? 8 : 24)
 					}
 				// }).on("layoutComplete", function(event, posts) {
 				// 	var previous_position;
@@ -1323,6 +1396,10 @@ app.Tarefa = (function() {
 				// 	}
 				});
 
+				setTimeout(function() {
+					$posts.isotope("layout");
+				}, 1);
+
 			} else {
 				$("<li />").addClass("empty").text("Nenhum post").appendTo($posts);
 			}
@@ -1338,7 +1415,7 @@ app.Tarefa = (function() {
 			// placar da tarefa
 			var $placar_da_tarefa = $(".painel .placar ul", $tarefa);
 
-			$.each(Lista.Regulamento["turmas"], function(index, turma) {
+			$.each(Lista.Edicao["turmas"], function(index, turma) {
 				var pontuacao_da_turma = [ ];
 
 				// calcula % da turma em relação ao total de pontos
@@ -1360,7 +1437,8 @@ app.Tarefa = (function() {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", UI.data["theme-color"]["original"]);
 
-			$ui["body"].removeClass("no-scroll tarefa-active");
+			UI.body.unlock();
+			$ui["body"].removeClass("tarefa-active");
 			$app["tarefa"].removeClass("slide-x").one("transitionend", function() {
 				$app["tarefa"].removeClass("in").empty();
 			});
@@ -1375,20 +1453,6 @@ app.Tarefa = (function() {
 		}
 	};
 })();
-
-$(function() {
-	$app["tarefa"] = $(".js-app-tarefa");
-	$app["tarefa"].on("click", ".js-tarefa-close", function(event) {
-		event.preventDefault();
-		app.Tarefa.close(true);
-	}).on("click", ".js-new-post-trigger", function() {
-		UI.bottomsheet.open($(".new-post-sheet", $app["tarefa"]).clone().show());
-	}).on("click", ".card-tarefa a", function(event) {
-		if (event.which === 1) {
-			event.preventDefault();
-		}
-	});
-});
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // new post ////////////////////////////////////////////////////////////////////////////////////////
@@ -1416,39 +1480,49 @@ app.Post = (function() {
 
 		$app["post"].on("submit", "form", function(event) {
 			event.preventDefault();
-		}).on("click", ".submit", function(event) {
+		}).on("click", ".submit-button", function(event) {
 			event.preventDefault();
 
-			if (moment().isAfter(Lista.Regulamento["fim"])) {
-				toast.open("Postagens encerradas!");
+			if (moment().isAfter(Lista.Edicao["fim"])) {
+				UI.toast.open("Postagens encerradas!");
 			}
 
 			if ($(this).hasClass("disabled")) {
 				// TODO melhorar mensagem
-				toast.open("Espere o fim do upload&hellip;");
+				UI.toast.open("Espere o fim do upload&hellip;");
 				return;
 			}
 
-			var data = $("form", $app["post"]).serialize();
+			let data = $("form", $app["post"]).serialize();
+			// Exemplo de dados:
+			// action=post
+			// edicao=xciii
+			// tarefa=2
+			// user=744
+			// turma=ec1
+			// token=0ebe22be731dbd942ecb3e097a5ac2ae9d3185249f313eaec3a855ef2957594d
+			// type=imagem
+			// image-order[]=2-744-1488097013-578
+			// caption=
 
-			$(".submit", $app["post"]).addClass("disabled").html("Enviando&hellip;");
+			$(".submit-button", $app["post"]).addClass("disabled").html("Enviando&hellip;");
 
-			$.post("/-/lista/novo", data).done(function(response) {
+			$.post("/tarefas/" + tarefa_active + "/postar", data).done(function(response) {
 				if (response["meta"]["status"] === 200) {
 					app.Post.close();
 					app.Tarefa.render(response["data"]);
 					UI.toast.open(response["meta"]["message"]);
 					navigator.vibrate(800);
 
-					tarefas[response["data"]["numero"]] = response["data"];
+					Lista.Tarefas[response["data"]["numero"]] = response["data"];
 				} else {
 					UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
 				}
 			}).fail(function() {
-				UI.toast.open("Ocorreu um erro. Tente novamente");
+				UI.toast.open("Ocorreu um erro. Tente novamente", null, null, false);
 			});
 
-		}).on("click", ".back", function(event) {
+		}).on("click", ".back-button", function(event) {
 			event.preventDefault();
 			app.Post.close();
 		});
@@ -1460,14 +1534,14 @@ app.Post = (function() {
 		// app.Post.authorize()
 		authorize: function() {
 			// habilita o botão enviar
-			$(".submit", $app["post"]).removeClass("disabled");
+			$(".submit-button", $app["post"]).removeClass("disabled");
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Post.deauthorize()
 		deauthorize: function() {
 			// desabilita o botão "enviar"
-			$(".submit", $app["post"]).addClass("disabled");
+			$(".submit-button", $app["post"]).addClass("disabled");
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -1520,7 +1594,7 @@ app.Post = (function() {
 		// app.Post.open()
 		open: function(type, numero) {
 			var data = {
-				"edicao": Lista.Regulamento["titulo"],
+				"edicao": Lista.Edicao["titulo"],
 				"numero": (numero || tarefa_active),
 				"user": Lista.Usuario["id"],
 				"turma": Lista.Usuario["turma"],
@@ -1562,6 +1636,8 @@ app.Post = (function() {
 				});
 			}
 
+			UI.backdrop.show($app["post"]);
+
 			// view manager
 			router["view-manager"].replace("new-post");
 			history.replaceState({ "view": "new-post", "type": type, "id": data["numero"] }, null, null);
@@ -1575,16 +1651,171 @@ app.Post = (function() {
 		// app.Post.close()
 		close: function() {
 		//	tarefa_active = null;
-			$("head meta[name='theme-color']").attr("content", theme_color["original"]);
+			$("head meta[name='theme-color']").attr("content", UI.data["theme-color"]["original"]);
 
 			$app["post"].removeClass("slide-y").one("transitionend", function() {
 				$app["post"].removeClass("in").empty();
+				UI.backdrop.hide($app["post"]);
 			});
 
 			router["view-manager"].replace("tarefa");
 		}
 	};
 })();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// image upload ////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+var file_stack = { };
+
+function upload(files) {
+	let exif_orientation_to_degrees = {
+		0: 0,
+		1: 0,
+		2: 0,
+		3: 180,
+		4: 0,
+		5: 0,
+		6: 90,
+		7: 0,
+		8: 270
+	};
+
+	FileAPI.filterFiles(files, function(file, info) {
+		if (/^image/.test(file.type)) {
+			file_stack[file["name"]] = info;
+			return true;
+		//	return info.width >= 320 && info.height >= 240;
+		}
+		return false;
+	}, function(files, rejected) {
+		if (files.length) {
+			$(".submit", $app["post"]).addClass("disabled");
+
+			// preview
+			FileAPI.each(files, function(file) {
+				var exif_orientation = file_stack[file["name"]]["exif"]["Orientation"];
+				file_stack[file["name"]]["ref"] = tarefa_active + "-" + Lista.Usuario["id"] + "-" +
+					moment().format("X") + "-" + rand(0, 999).toFixed(0);
+
+				if (file["type"] == "image/gif") {
+					var reader = new FileReader();
+					reader.onload = function(event) {
+						var img = $("<img />").attr("src", event.target.result);
+						var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
+
+						var $status = $("<div />").addClass("progress");
+						$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
+						$("<div />").addClass("bar").appendTo($status);
+
+						var $preview = $("<li />").attr("id", "file-" +
+								file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
+						$("#dropzone #board").append($preview);
+					};
+					reader.readAsDataURL(file);
+				} else {
+					FileAPI
+						.Image(file)
+						.rotate(exif_orientation_to_degrees[exif_orientation])
+						.resize(600, 300, "preview")
+						.get(function(err, img) {
+						//	$tracker = $("<input type=\"hidden\" name=\"image-order[]\" />")
+						//		.val(tarefa_active + "-" + Lista.Usuario["id"] + "-" + file["name"]);
+							var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
+
+							var $status = $("<div />").addClass("progress");
+							$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
+							$("<div />").addClass("bar").appendTo($status);
+
+							var $preview = $("<li />").attr("id", "file-" +
+									file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
+							$("#dropzone #board").append($preview);
+						});
+				}
+			});
+
+			// upload
+			FileAPI.upload({
+				url: "/tarefas/" + tarefa_active + "/postar",
+				data: {
+					"action": "upload",
+					"edicao": Lista.Edicao["titulo"],
+					"tarefa": tarefa_active,
+					"turma": Lista.Usuario["turma"],
+					"user": Lista.Usuario["id"]
+				},
+				prepare: function(file, options) {
+					options.data.ref = file_stack[file["name"]]["ref"];
+					file.ref = file_stack[file["name"]]["ref"];
+				},
+
+				imageAutoOrientation: (files[0]["type"] !== "image/gif"? true : null),
+				imageTransform: (files[0]["type"] !== "image/gif"? {
+					maxWidth: 1920,
+					maxHeight: 1920
+				} : null),
+
+				files: files,
+				fileprogress: function(event, file, xhr) {
+					var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0),
+						status = (percent < 100? "<strong>Enviando&hellip;</strong> " +
+								percent + "%" : "<strong>Processando&hellip;</strong>");
+
+					$("#file-" + file["ref"] + " .status", "#dropzone").html(status);
+				},
+				progress: function(event) {
+				//	var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0) + "%"
+				//	console.log(percent);
+				},
+				filecomplete: function(file, xhr, options) {
+				//	console.log(file, xhr, options);
+					$("#file-" + options["ref"] + " .status", "#dropzone").html("<i class=\"material-icons\">check</i>");
+				},
+				complete: function(err, xhr) {
+					app.Post.authorize();
+					// $(".submit-button", $app["post"]).removeClass("disabled");
+				}
+			});
+		}
+	});
+}
+
+$.fn.dropzone = function() {
+	// dropzone
+	var $dropzone = $("#dropzone", this);
+	FileAPI.event.dnd($dropzone[0], function(over) {
+		if (over) {
+			$dropzone.addClass("active");
+		} else {
+			$dropzone.removeClass("active");
+		}
+	}, function(files) {
+		upload(files);
+	});
+
+	// manual select
+	var $file_input = document.getElementById("form-file");
+	FileAPI.event.on($file_input, "change", function(event) {
+		var files = FileAPI.getFiles(event);
+		upload(files);
+	});
+
+	// reorder
+	var $board = $("#board", this);
+	$board.on("slip:beforewait", function(event) {
+		if (UI.data["interaction-type"] === "pointer") {
+			event.preventDefault();
+		}
+	}).on("slip:afterswipe", function(event) {
+		event.target.remove();
+	}).on("slip:reorder", function(event) {
+		event = event.originalEvent;
+		event.target.parentNode.insertBefore(event.target, event.detail.insertBefore);
+		return false;
+	});
+
+	new Slip($board[0]);
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // login ///////////////////////////////////////////////////////////////////////////////////////////
@@ -1635,7 +1866,7 @@ app.Login = (function() {
 		});
 
 		// Ação de login
-		$ui["login"].on("click", ".back", function(event) {
+		$ui["login"].on("click", ".back-button", function(event) {
 			event.preventDefault();
 			app.Login.hide();
 		}).on("submit", "form", function(event) {
@@ -1653,6 +1884,7 @@ app.Login = (function() {
 			// Abre a tela de login e coloca o foco no campo e-mail
 			$ui["login"].addClass("in").reflow().addClass("slide").one("transitionend", function() {
 				UI.body.lock();
+				UI.backdrop.show($ui["login"]);
 				$("input[name='email']", $ui["login"]).focus();
 			});
 		},
@@ -1662,6 +1894,7 @@ app.Login = (function() {
 		hide: function() {
 			$ui["login"].removeClass("slide").one("transitionend", function() {
 				$ui["login"].removeClass("in");
+				UI.backdrop.hide($ui["login"]);
 				UI.body.unlock();
 			});
 		},
@@ -1705,193 +1938,14 @@ app.Login = (function() {
 
 			localStorage.setItem("Lista.Usuario", JSON.stringify(Lista.Usuario));
 
-			// Depois de 0,5 segundo, mostra toast confirmando logout
+			// Depois de 0,5 segundo,
+			// mostra toast confirmando logout
 			setTimeout(function() {
 				UI.toast.show("Sessão encerrada!");
 			}, 500);
 		}
 	};
 })();
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// image upload ////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////
-var exif_orientation_to_degrees = { 0: 0, 1: 0, 2: 0, 3: 180, 4: 0, 5: 0, 6: 90, 7: 0, 8: 270 };
-var file_stack = {};
-
-function upload(files) {
-	FileAPI.filterFiles(files, function(file, info) {
-		if(/^image/.test(file.type)) {
-			file_stack[file["name"]] = info;
-			return true;
-		//	return info.width >= 320 && info.height >= 240;
-		}
-		return false;
-	}, function(files, rejected) {
-		if(files.length) {
-			$(".submit", $post).addClass("disabled");
-
-			// preview
-			FileAPI.each(files, function(file) {
-				var exif_orientation = file_stack[file["name"]]["exif"]["Orientation"];
-				file_stack[file["name"]]["ref"] = tarefa_active + "-" + user["id"] + "-" +
-					moment().format("X") + "-" + rand(0, 999).toFixed(0);
-
-				if(file["type"] == "image/gif") {
-					var reader = new FileReader();
-					reader.onload = function(event) {
-						var img = $("<img />").attr("src", event.target.result);
-						var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
-
-						var $status = $("<div />").addClass("progress");
-						$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
-						$("<div />").addClass("bar").appendTo($status);
-
-						var $preview = $("<li />").attr("id", "file-" +
-								file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
-						$("#dropzone #board").append($preview);
-					};
-					reader.readAsDataURL(file);
-				} else {
-					FileAPI
-						.Image(file)
-						.rotate(exif_orientation_to_degrees[exif_orientation])
-						.resize(600, 300, "preview")
-						.get(function(err, img) {
-						//	$tracker = $("<input type=\"hidden\" name=\"image-order[]\" />")
-						//		.val(tarefa_active + "-" + user["id"] + "-" + file["name"]);
-							var $tracker = $("<input type=\"hidden\" name=\"image-order[]\" />").val(file_stack[file["name"]]["ref"]);
-
-							var $status = $("<div />").addClass("progress");
-							$("<div />").addClass("status").html("<strong>Enviando&hellip;</strong>").appendTo($status);
-							$("<div />").addClass("bar").appendTo($status);
-
-							var $preview = $("<li />").attr("id", "file-" +
-									file_stack[file["name"]]["ref"]).append($tracker).append($status).append(img);
-							$("#dropzone #board").append($preview);
-						});
-				}
-			});
-
-			// upload
-			if(files[0]["type"] == "image/gif") {
-				console.log("gif");
-				FileAPI.upload({
-					url: "/-/lista/novo",
-					data: {
-						action: "upload",
-						edition: Lista.Regulamento["titulo"],
-						tarefa: tarefa_active,
-						turma: user["turma"],
-						user: user["id"]
-					},
-					prepare: function(file, options) {
-						options.data.ref = file_stack[file["name"]]["ref"];
-						file.ref = file_stack[file["name"]]["ref"];
-					},
-
-					files: files,
-					fileprogress: function(event, file, xhr) {
-						var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0),
-							status = (percent < 100? "<strong>Enviando&hellip;</strong> " +
-									percent + "%" : "<strong>Processando&hellip;</strong>");
-
-						$("#file-" + file["ref"] + " .status", "#dropzone").html(status);
-					},
-					progress: function(event) {
-					//	var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0) + "%"
-					//	console.log(percent);
-					},
-					filecomplete: function(file, xhr, options) {
-					//	console.log(file, xhr, options);
-						$("#file-" + options["ref"] + " .status", "#dropzone").html("<i class=\"material-icons\">check</i>");
-					},
-					complete: function(err, xhr) {
-						$(".submit", $post).removeClass("disabled");
-					}
-				});
-			} else {
-				FileAPI.upload({
-					url: "/-/lista/novo",
-					data: {
-						action: "upload",
-						edition: Lista.Regulamento["titulo"],
-						tarefa: tarefa_active,
-						turma: user["turma"],
-						user: user["id"]
-					},
-					prepare: function(file, options) {
-						options.data.ref = file_stack[file["name"]]["ref"];
-						file.ref = file_stack[file["name"]]["ref"];
-					},
-
-					imageAutoOrientation: true,
-					imageTransform: {
-						maxWidth: 1920,
-						maxHeight: 1920
-					},
-
-					files: files,
-					fileprogress: function(event, file, xhr) {
-						var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0),
-							status = (percent < 100? "<strong>Enviando&hellip;</strong> " +
-									percent + "%" : "<strong>Processando&hellip;</strong>");
-
-						$("#file-" + file["ref"] + " .status", "#dropzone").html(status);
-					},
-					progress: function(event) {
-					//	var percent = ((event["loaded"] / event["total"]) * 100).toFixed(0) + "%"
-					//	console.log(percent);
-					},
-					filecomplete: function(file, xhr, options) {
-					//	console.log(file, xhr, options);
-						$("#file-" + options["ref"] + " .status", "#dropzone").html("<i class=\"material-icons\">check</i>");
-					},
-					complete: function(err, xhr) {
-						$(".submit", $post).removeClass("disabled");
-					}
-				});
-			}
-		}
-	});
-}
-
-$.fn.dropzone = function() {
-	// dropzone
-	var $dropzone = $("#dropzone", this);
-	FileAPI.event.dnd($dropzone[0], function(over) {
-		if(over) {
-			$dropzone.addClass("active");
-		} else {
-			$dropzone.removeClass("active");
-		}
-	}, function(files) {
-		upload(files);
-	});
-
-	// manual select
-	var $file_input = document.getElementById("form-file");
-	FileAPI.event.on($file_input, "change", function(event) {
-		var files = FileAPI.getFiles(event);
-		upload(files);
-	});
-
-	// reorder
-	var $board = $("#board", this);
-	$board.on("slip:beforewait", function(event) {
-		if(ui["interaction-type"] === "pointer") {
-			event.preventDefault();
-		}
-	}).on("slip:afterswipe", function(event) {
-		event.target.remove();
-	}).on("slip:reorder", function(event) {
-		event = event.originalEvent;
-		event.target.parentNode.insertBefore(event.target, event.detail.insertBefore);
-		return false;
-	});
-
-	new Slip($board[0]);
-};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // workers /////////////////////////////////////////////////////////////////////////////////////////
@@ -1907,9 +1961,18 @@ worker.Start = (function() {
 
 		cue["load-edicao"].done(function() {
 			timeout["delay-evolucao"] = setTimeout(app.Evolucao.start, 200);
-		});
 
-	}, 300);
+			// Se tiver número de tarefa especificado na URL, abre ela
+			if (router["path"] && router["path"][2]) {
+				// Antes, testa se o valor é um número
+				// e dentro do número de tarefas dessa Edição
+				let numero = router["path"][2];
+				if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["numero-de-tarefas"]) {
+					app.Tarefa.open(numero, false, false);
+				}
+			}
+		});
+	}, 0);
 })();
 
 
@@ -1923,9 +1986,11 @@ worker.Load = (function() {
 			Lista.Edicao = response["edicao"];
 			Lista.Placar = response["placar"];
 			Lista.Tarefas = response["tarefas"];
-			cue["load-edicao"].resolve();
 
-			timeout["delay-lista"] = setTimeout(app.Lista.start, 1);
+			timeout["delay-lista"] = setTimeout(function() {
+				app.Lista.start();
+				cue["load-edicao"].resolve();
+			}, 1);
 			// timeout["delay-placar"] = setTimeout(app.Placar.start, 400);
 
 			// var data = response["data"];
@@ -1951,10 +2016,10 @@ worker.Update = (function() {
 		log("worker.Update", "info");
 
 		ListaAPI("/atividade").done(function(response) {
-			// confere data de cada atividade e vê se é posterior à última atualização.
-			// se for, adiciona à contagem de nova atividade
+			// Confere data de cada atividade e vê se é posterior à última atualização.
+			// Se for, adiciona à contagem de nova atividade
 			for (let atividade of response) {
-				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != user["id"]) {
+				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
 					if (value["acao"] === "novo-tarefa") {
 						updates["tarefas"]++;
@@ -1964,9 +2029,9 @@ worker.Update = (function() {
 				}
 			}
 
-			// se houver nova atividade
+			// Se houver nova atividade
 			if (updates["total"] > 0) {
-				// monta o texto do toast
+				// Monta o texto do toast
 				let texto = {
 					"tarefas": updates["tarefas"] + " " + (updates["tarefas"] > 1? "novas tarefas" : "nova tarefa"),
 					"posts": updates["posts"] + " " + (updates["posts"] > 1? "novos posts" : "novo post"),
@@ -1996,7 +2061,7 @@ worker.Update = (function() {
 					}
 				});
 
-				// mostra número de novas atividades no título
+				// Mostra número de novas atividades no título
 				$ui["title"].html("(" + updates["total"] + ") " + UI.data["page-title"]);
 			}
 
@@ -2008,6 +2073,10 @@ worker.Update = (function() {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // fonts ///////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Cria uma promise que será resolvida
+// quando as fontes forem carregadas
+cue["load-fonts"] = $.Deferred();
 
 WebFont.load({
 	timeout: 15000,
@@ -2022,11 +2091,14 @@ WebFont.load({
 	custom: {
 		families: [
 			"FontAwesome"
-		], urls: [
+		],
+		urls: [
 			"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 		]
 	},
 	active: function() {
+		cue["load-fonts"].resolve();
+
 		$(function() {
 			app.Lista.layout();
 		});

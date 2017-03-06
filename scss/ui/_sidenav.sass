@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// sidenav /////////////////////////////////////////////////////////////////////////////////////////
+// ui sidenav //////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .ui-sidenav
@@ -9,11 +9,11 @@
 	left: 0
 	width: 240px
 	background-color: #fff
-	z-index: 112
+	z-index: $z-index-sidenav
 	overflow: auto
 
 	// box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)
-	box-shadow: 0 0 6px rgba(0,0,0,.36)
+	box-shadow: 0 0 6px rgba(#000, 0.36)
 	-webkit-overflow-scrolling: touch
 
 	will-change: transform
@@ -32,6 +32,9 @@
 			width: 64px
 			height: 64px
 			padding: 12px 12px 0 0
+
+	.fa-twitter
+		margin-right: 6px
 
 // #sidenav section h1 { padding: 16px 16px 8px 16px; font-size: inherit; color: rgba(0,0,0,.54); }
 // #sidenav .level-1 > li > a { display: block; padding: 12px 16px; line-height: 24px; color: #000; position: relative; -webkit-tap-highlight-color: rgba(0,0,0,.1); }

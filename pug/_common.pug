@@ -2,7 +2,7 @@
 //- common
 
 template#card-tarefa
-	li.ui-card.card-tarefa
+	li.card-tarefa.ui-card
 		a.card-container.fill(href="#", data-fill="href: url")
 			.ui-tarefa
 				.tarefa-designacao
@@ -15,7 +15,8 @@ template#card-tarefa
 				.tarefa-corpo
 					.tarefa-descricao.fill(data-fill="descricao")
 					.tarefa-pontuacao.fill(data-fill="pontuacao")
-				ul.grid
+				.tarefa-conteudo
+					ul.grid
 
 template#backdrop
 	.ui-backdrop

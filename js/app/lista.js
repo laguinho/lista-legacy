@@ -24,11 +24,11 @@ app.Lista = (function() {
 			},
 			"sortBy": ["date", "tarefa"],
 			"masonry": {
-				"gutter": (ui["columns"] === 1? 8 : 16)
+				"gutter": (UI.data["columns"] === 1? 8 : 16)
 			}
 		});
 
-		$app["lista"].on("click", ".card-tarefa:not(.ghost)", function(event) {
+		$app["lista"].on("click", ".card-tarefa:not(.fantasma)", function(event) {
 			if (event.which === 1) {
 				event.preventDefault();
 
@@ -67,7 +67,7 @@ app.Lista = (function() {
 
 			// se a edição estiver encerrada, insere classe no <body>
 			// e para de atualizar automaticamente
-			if (Lista.Regulamento["encerrada"] === true) {
+			if (Lista.Edicao["encerrada"] === true) {
 				$ui["body"].addClass("edicao-encerrada");
 				clearInterval(update_interval);
 			}
@@ -98,22 +98,89 @@ app.Lista = (function() {
 
 			// insere as tarefas
 			for (let tarefa of Lista.Tarefas) {
-				// insere no cache
+				// Insere no cache
 				cache["tarefas"][tarefa["numero"]] = tarefa;
 
-				// cria o link para a tarefa
+				// Cria o link para a tarefa
 				tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
 
-				// se tiver imagem, ajusta as dimensoes
+				// Se tiver imagem, ajusta as dimensoes
 				if (tarefa["imagem"]) {
-					tarefa["imagem-url"] = tarefa["imagem"]["url"];
-					tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+					tarefa["imagem/url"] = tarefa["imagem"]["url"];
+					tarefa["imagem/aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
 				}
 
 				let $tarefa = __render("card-tarefa", tarefa).data({
 					"tarefa": tarefa["numero"],
 					"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 				});
+
+				// posts
+				let $grid = $(".tarefa-conteudo .grid", $tarefa);
+
+				if (tarefa["posts"] && tarefa["posts"].length) {
+					var total_posts = tarefa["posts"].length;
+					// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
+					// var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
+					var max_media_to_show = 8;
+					var shown_media_count = 0;
+
+					var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
+					var post_types_with_text_preview = ["texto"];
+
+					for (var i = 0; i < total_posts; i++) {
+						var post = tarefa["posts"][i];
+
+						if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
+							shown_media_count++;
+
+							var tile_type;
+							var media = { };
+
+							// imagem
+							if (post_types_with_image_preview.indexOf(post["tipo"]) > -1) {
+								tile_type = "tile-image";
+
+								media["count"] = shown_media_count;
+
+								if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
+									media["preview"] = "background-image: url('" + post["midia"][0]["thumbnail"] + "');";
+									media["modifier"] = "video";
+								} else if (post["midia"] && post["midia"][0]) {
+									media["preview"] = "background-image: url('" + post["midia"][0]["caminho"] +
+										post["midia"][0]["arquivos"][0] + "');";
+								}
+							} else
+
+							// texto
+							if (post_types_with_text_preview.indexOf(post["tipo"]) > -1) {
+								tile_type = "tile-text";
+								media = {
+									"preview": post["legenda"].substring(0, 120),
+									"count": shown_media_count
+								};
+							}
+
+							if ((shown_media_count === max_media_to_show) && ((total_posts - shown_media_count) > 0)) {
+								media["modifier"] = "more";
+								media["more"] = "+&thinsp;" + (total_posts - shown_media_count + 1);
+							}
+
+							var $tile = __render(tile_type, media).appendTo($grid);
+						}
+					}
+
+				} else {
+					// se não tiver nenhum post, remove o grid
+					$(".tarefa-conteudo", $tarefa).remove();
+				}
+
+				// Se for preview
+				if (tarefa["preview"]) {
+					$tarefa.addClass("fantasma");
+					$("a", $tarefa).removeAttr("href");
+					$(".tarefa-corpo", $tarefa).remove();
+				}
 
 				$app["lista"].append($tarefa).isotope("appended", $tarefa);
 			}
@@ -177,7 +244,7 @@ app.Lista = (function() {
 					if (tarefa["posts"] && tarefa["posts"].length) {
 						var total_posts = tarefa["posts"].length;
 						// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
-						var max_media_to_show = (ui["columns"] < 2? 9 : 8);
+						var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
 						var shown_media_count = 0;
 
 						var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
@@ -237,7 +304,7 @@ app.Lista = (function() {
 				// Se a Edição estiver encerrada, ordena por número da tarefa.
 				// Se não, ordena por ordem de atualização
 				app.Lista.layout();
-				app.Lista.sort((Lista.Regulamento["encerrada"]? "tarefa": "date"));
+				app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
 
 				// se tiver tarefa especificada no load da página, carrega ela
 				if (router["path"][2]) {
@@ -297,7 +364,7 @@ $(function() {
 		},
 		"sortBy": ["date", "tarefa"],
 		"masonry": {
-			"gutter": (ui["columns"] === 1? 8 : 16)
+			"gutter": (UI.data["columns"] === 1? 8 : 16)
 		}
 	});
 

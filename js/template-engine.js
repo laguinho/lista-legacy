@@ -2,13 +2,16 @@
 // template engine /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var $templates = { };
+let $templates = { };
 
 $(function() {
+	// Pega os templates do HTML,
+	// guarda em $templates
+	// e remove eles do código-fonte
 	$("template").each(function() {
-		var $this = $(this);
-		var name = $this.attr("id");
-		var html = $this.html();
+		let $this = $(this);
+		let name = $this.attr("id");
+		let html = $this.html();
 
 		$templates[name] = $(html);
 		$this.remove();
@@ -16,7 +19,11 @@ $(function() {
 });
 
 function __render(template, data) {
-	if (!$templates[template]) { return false; }
+	// Se template não existir, aborta
+	if (!$templates[template]) {
+		return false;
+	}
+
 	var $render = $templates[template].clone();
 
 	$render.data(data);
@@ -32,14 +39,22 @@ function __render(template, data) {
 			var source = (pair[1]? pair[1].trim() : pair[0]);
 			var value = data[source];
 
-			source = source.split("/");
-			if (source.length > 1 && typeof value !== "undefined") {
-				value = data[source[0]];
-
-				for (var j = 1; j < source.length; j++) {
-					value = (value[source[j]])? value[source[j]] : null;
-				}
-			}
+			// TODO
+			// source = source.split("/");
+			// if (source.length > 1) {
+			// 	// value = data[source[0]];
+			// 	// console.log(source, source, value);
+			// 	// if (typeof value !== "undefined") {
+			// 		for (var j = 0; j <= source.length; j++) {
+			// 			console.log(value, source, data[source[0]]);
+			// 			if (value && value[source] && source[j] && value[source[j]]) {
+			// 				value = (value[source[j]])? value[source[j]] : null;
+			// 			} else {
+			// 				value = null;
+			// 			}
+			// 		}
+			// 	// }
+			// }
 
 			if (typeof value !== "undefined" && value !== null) {
 				if (dest === "class") {
