@@ -8,6 +8,10 @@ let $ui = [ ];
 $ui["window"] = $(window);
 $ui["body"] = $(document.body);
 
+// Pega o título da página ("Lista de Tarefas")
+// e guarda pra quando for necessário recuperar
+$ui["page-title"] = $("head title");
+UI.data["page-title"] = $ui["page-title"].text();
 
 // $ui["window"]
 // $ui["title"]
@@ -19,6 +23,7 @@ $ui["body"] = $(document.body);
 // $ui["toast"]
 // $ui["backdrop"]
 // $ui["footer"]
+// $ui["page-title"]
 
 // Dados definidos:
 // UI.data["column-width"]

@@ -4,15 +4,13 @@
 
 // start
 worker.Start = (function() {
-	timeout["delay-start"] = setTimeout(function() {
+	timing["delay-start"] = setTimeout(function() {
 		log("worker.Start", "info");
 
 		cue["load-edicao"] = $.Deferred();
-		worker.Load();
+		cue["first-load"] = true;
 
 		cue["load-edicao"].done(function() {
-			timeout["delay-evolucao"] = setTimeout(app.Evolucao.start, 200);
-
 			// Se tiver número de tarefa especificado na URL, abre ela
 			if (router["path"] && router["path"][2]) {
 				// Antes, testa se o valor é um número
@@ -22,35 +20,47 @@ worker.Start = (function() {
 					app.Tarefa.open(numero, false, false);
 				}
 			}
+
+			// Se for o primeiro load
+			if (cue["first-load"]) {
+				// Inicia a barra de evolução
+				timing["delay-evolucao"] = setTimeout(app.Evolucao.start, 100);
+
+				// Inicia a checagem de atividade
+				worker.Update();
+
+				// Desativa nos loads seguintes
+				cue["first-load"] = false;
+			}
 		});
+
+		timing["delay-load"] = setTimeout(function() {
+			worker.Load();
+		}, 300);
 	}, 0);
 })();
 
 
 // load
 worker.Load = (function() {
-	timeout["delay-load"] = setTimeout(function() {
-		log("worker.Load", "info");
+	log("worker.Load", "info");
 
-		ListaAPI("/tudo").done(function(response) {
+	ListaAPI("/tudo").done(function(response) {
+		Lista.Edicao = response["edicao"];
+		Lista.Placar = response["placar"];
+		Lista.Tarefas = response["tarefas"];
+
+		timing["delay-lista"] = setTimeout(function() {
+			// Dispara a função de montagem da Lista
+			app.Lista.start();
+
+			// Resolve a promise load-edicao
+			cue["load-edicao"].resolve();
 			log("cue[\"load-edicao\"] triggered");
-			Lista.Edicao = response["edicao"];
-			Lista.Placar = response["placar"];
-			Lista.Tarefas = response["tarefas"];
+		}, 1);
 
-			timeout["delay-lista"] = setTimeout(function() {
-				app.Lista.start();
-				cue["load-edicao"].resolve();
-			}, 1);
-			// timeout["delay-placar"] = setTimeout(app.Placar.start, 400);
-
-			// var data = response["data"];
-			// Lista.Identificacao = data;
-
-		});
-
-		worker.Update();
-	}, 300);
+		// timing["delay-placar"] = setTimeout(app.Placar.start, 400);
+	});
 });
 
 
@@ -63,18 +73,21 @@ worker.Update = (function() {
 		"last-updated": null
 	};
 
-	timeout["atividade"] = setInterval(function() {
+	timing["atividade"] = setInterval(function() {
 		log("worker.Update", "info");
 
 		ListaAPI("/atividade").done(function(response) {
+			// console.info(updates);
 			// Confere data de cada atividade e vê se é posterior à última atualização.
 			// Se for, adiciona à contagem de nova atividade
 			for (let atividade of response) {
+				// console.log(moment(atividade["ts"]).isAfter(updates["last-updated"]));
 				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
-					if (value["acao"] === "novo-tarefa") {
+
+					if (atividade["acao"] === "novo-tarefa") {
 						updates["tarefas"]++;
-					} else if (value["acao"] === "novo-post") {
+					} else if (atividade["acao"] === "novo-post") {
 						updates["posts"]++;
 					}
 				}
@@ -99,8 +112,8 @@ worker.Update = (function() {
 					texto["final"] += texto["posts"];
 				}
 
+				// Mostra o toast
 				UI.toast.show({
-					"persistent": true,
 					"message": texto["final"],
 					"label": "Atualizar",
 					"action": function() {
@@ -109,7 +122,9 @@ worker.Update = (function() {
 						updates["posts"] = 0;
 						updates["total"] = 0;
 						$ui["page-title"].html(UI.data["page-title"]);
-					}
+					},
+					"persistent": true,
+					"start-only": true
 				});
 
 				// Mostra número de novas atividades no título
@@ -117,6 +132,8 @@ worker.Update = (function() {
 			}
 
 			updates["last-updated"] = (response[0]? moment(response[0]["ts"]) : moment());
+
+			// console.log(response, updates);
 		});
-	}, 30 * 1000);
+	}, 30000);
 });

@@ -123,7 +123,7 @@
    </div>
   </template>
   <template id="content-card">
-   <li class="content-card ui-card fill" data-fill="class: turma">
+   <li class="content-card ui-card fill" data-fill="class: turma, data-post: id">
     <div class="content-body">
      <div class="content-media">
       <ul></ul>
@@ -134,6 +134,7 @@
        <div class="content-bullet turma-background turma-border"></div><span class="turma-text fill" data-fill="turma-formatada"></span>
       </div>
       <div class="content-date fill" data-fill="data-de-postagem-formatada"></div>
+      <div class="content-author"><span>postado por&nbsp;</span><span class="fill" data-fill="autor"></span></div>
      </div>
     </div>
     <div class="content-rating"><i class="material-icons">&#xE5DA;</i>
@@ -320,7 +321,7 @@
   <div class="ui-bottomsheet js-ui-bottomsheet"></div>
   <div class="ui-toast js-ui-toast">
    <div class="toast-message"></div>
-   <div class="toast-action"></div>
+   <div class="toast-label"></div>
   </div>
   <script>var edicao = "xciii";</script>
   <script src="./bower_components/jquery/dist/jquery.min.js"></script>
@@ -331,5 +332,14 @@
   <script src="./bower_components/FileAPI.exif/index.js"></script>
   <script src="./bower_components/slip/slip.js"></script>
   <script src="./dist/lista.js"></script>
+  <script>
+   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+   
+   ga('create', 'UA-60712039-1', 'auto');
+   ga('send', 'pageview');
+  </script>
  </body>
 </html>

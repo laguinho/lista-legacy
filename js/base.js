@@ -22,13 +22,17 @@ cache["tarefas"] = [ ];
 
 let cue = [ ];
 let worker = [ ];
-let timeout = [ ];
+let timing = [ ];
 
-// Se o logging estiver ligado, relata cada passo no Console
+// Se o logging estiver ligado, relata cada passo no console
 // Obs: nem todos os métodos estão com logs criados ou detalhados!
 let logging = false;
 let log = function(message, type) {
 	if (logging) {
+		// Insere a hora no log
+		let timestamp = moment().format("LTS");
+		message = "[" + timestamp + "] " + message;
+
 		if (!type) {
 			console.log(message);
 		} else {
@@ -36,6 +40,10 @@ let log = function(message, type) {
 		}
 	}
 }
+
+let analytics = function(category, action, label) {
+	ga("send", "event", category, action, label);
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////

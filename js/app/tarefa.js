@@ -129,17 +129,17 @@ app.Tarefa = (function() {
 			let tarefa = cache["tarefas"][numero];
 			tarefa_active = numero;
 
-			if (UI.data["columns"] >= 3) {
-				// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
-				// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
-			}
+			// if (UI.data["columns"] >= 3) {
+			// 	// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
+			// 	// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
+			// }
 
 			$app["tarefa"].addClass("in");
 			app.Tarefa.render(tarefa);
 
 			$app["tarefa"].reflow().addClass("slide-x").one("transitionend", function() {
-			//	var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
-				$("head meta[name='theme-color']").attr("content", "#546e7a");
+				// var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
+				// $("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
 			UI.body.lock();
@@ -153,6 +153,9 @@ app.Tarefa = (function() {
 					"id": tarefa["numero"]
 				}, tarefa["titulo"]);
 			}
+
+			// analytics
+			analytics("Tarefa", "Visualização", numero);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////

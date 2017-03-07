@@ -13,7 +13,9 @@ app.Lista = (function() {
 			"itemSelector": ".card-tarefa",
 			"transitionDuration": ".8s",
 			"getSortData": {
-				"date": ".last-modified",
+				"date": function(element) {
+					return $(element).data("last-modified");
+				},
 				"tarefa": function(element) {
 					return parseInt($(element).data("tarefa"), 10);
 				}
@@ -47,11 +49,9 @@ app.Lista = (function() {
 
 			// faz as alterações de acordo com o status
 			// insere as mensagens
+			app.Lista.tarefas();
 			app.Lista.status();
 			app.Lista.messages();
-			app.Lista.tarefas();
-
-
 
 			// tira a tela de loading
 			UI.loadbar.hide();
@@ -69,7 +69,7 @@ app.Lista = (function() {
 			// e para de atualizar automaticamente
 			if (Lista.Edicao["encerrada"] === true) {
 				$ui["body"].addClass("edicao-encerrada");
-				clearInterval(update_interval);
+				clearInterval(timing["atividade"]);
 			}
 		},
 
@@ -186,6 +186,7 @@ app.Lista = (function() {
 			}
 
 			app.Lista.layout();
+			app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +322,8 @@ app.Lista = (function() {
 
 				// guarda a data da última atualização e zera o contador de novidades
 				last_updated = moment(data["edicao"]["ultima-atualizacao"]);
-				updated["tarefas"] = 0; updated["posts"] = 0;
+				updated["tarefas"] = 0;
+				updated["posts"] = 0;
 			});
 		},
 

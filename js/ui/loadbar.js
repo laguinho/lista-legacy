@@ -14,7 +14,7 @@ UI.loadbar = (function() {
 			$ui["loadbar"].addClass("in");
 		},
 		hide: function() {
-			timeout["hide-loadbar"] = setTimeout(function() {
+			timing["hide-loadbar"] = setTimeout(function() {
 				$ui["loadbar"]
 					.removeClass("fade-in")
 					.one("transitionend", function() {

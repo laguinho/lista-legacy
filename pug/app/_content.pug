@@ -4,7 +4,7 @@
 
 template#content-card
 	//- li.ui-card.card.card-l.post
-	li.content-card.ui-card.fill(data-fill="class: turma")
+	li.content-card.ui-card.fill(data-fill="class: turma, data-post: id")
 		.content-body
 			.content-media
 				ul
@@ -14,6 +14,9 @@ template#content-card
 					.content-bullet.turma-background.turma-border
 					span.turma-text.fill(data-fill="turma-formatada")
 				.content-date.fill(data-fill="data-de-postagem-formatada")
+				.content-author
+					span postado por&nbsp;
+					span.fill(data-fill="autor")
 		.content-rating
 			i.material-icons &#xE5DA;
 			.content-points.fill(data-fill="class: avaliacao/class, html: avaliacao/status")

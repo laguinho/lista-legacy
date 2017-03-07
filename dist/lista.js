@@ -22,13 +22,17 @@ cache["tarefas"] = [ ];
 
 let cue = [ ];
 let worker = [ ];
-let timeout = [ ];
+let timing = [ ];
 
-// Se o logging estiver ligado, relata cada passo no Console
+// Se o logging estiver ligado, relata cada passo no console
 // Obs: nem todos os métodos estão com logs criados ou detalhados!
 let logging = false;
 let log = function(message, type) {
 	if (logging) {
+		// Insere a hora no log
+		let timestamp = moment().format("LTS");
+		message = "[" + timestamp + "] " + message;
+
 		if (!type) {
 			console.log(message);
 		} else {
@@ -36,6 +40,10 @@ let log = function(message, type) {
 		}
 	}
 }
+
+let analytics = function(category, action, label) {
+	ga("send", "event", category, action, label);
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,6 +266,10 @@ let $ui = [ ];
 $ui["window"] = $(window);
 $ui["body"] = $(document.body);
 
+// Pega o título da página ("Lista de Tarefas")
+// e guarda pra quando for necessário recuperar
+$ui["page-title"] = $("head title");
+UI.data["page-title"] = $ui["page-title"].text();
 
 // $ui["window"]
 // $ui["title"]
@@ -269,6 +281,7 @@ $ui["body"] = $(document.body);
 // $ui["toast"]
 // $ui["backdrop"]
 // $ui["footer"]
+// $ui["page-title"]
 
 // Dados definidos:
 // UI.data["column-width"]
@@ -438,7 +451,7 @@ UI.loadbar = (function() {
 			$ui["loadbar"].addClass("in");
 		},
 		hide: function() {
-			timeout["hide-loadbar"] = setTimeout(function() {
+			timing["hide-loadbar"] = setTimeout(function() {
 				$ui["loadbar"]
 					.removeClass("fade-in")
 					.one("transitionend", function() {
@@ -558,30 +571,57 @@ UI.toast = (function() {
 	$(function() {
 		$ui["toast"] = $(".js-ui-toast");
 		$ui["toast"]["message"] = $(".toast-message", $ui["toast"]);
-		$ui["toast"]["action"] = $(".toast-action", $ui["toast"]);
+		$ui["toast"]["label"] = $(".toast-label", $ui["toast"]);
 	});
 
 	return {
 		// TODO nova sintaxe, usar template e __render
 		show: function(config) {
+			// Opções:
+			// • "message" [string]
+			// • "label" [string]
+			// • "action" [function]
+			// • "persistent" [boolean]
+			// • "timeout" [integer] default: 6000
+			// • "start-only" [boolean]
+
 			if (typeof config === "object") {
-				$ui["toast"]["message"].html(config["message"]);
-				$ui["toast"]["action"].html((config["action"]? config["action"] : ""));
+				$ui["toast"].removeClass("start-only");
+
+				// Texto do toast
+				$ui["toast"]["message"].html(config["message"] || "");
+
+				// Texto da ação
+				// (Só mostra de texto e ação estiverem definidos)
+				if (config["label"] && config["action"]) {
+					$ui["toast"]["label"]
+						.html(config["label"])
+						.off("click")
+						.on("click", config["action"])
+						.show();
+				} else {
+					$ui["toast"]["label"]
+						.hide();
+				}
+
 				$ui["toast"].addClass("in").reflow().addClass("slide");
 				$ui["body"].addClass("toast-active");
 
 				// TODO: .fab-bottom transform: translateY
 
+				// Ao clicar no toast, fecha ele
 				$ui["toast"].on("click", UI.toast.dismiss);
-				$ui["toast"]["action"].on("click", config["callback"]);
+				clearTimeout(timing["toast"]);
 
-				clearTimeout(timeout["toast"]);
-
+				// Se não for persistente,
+				// fecha depois de um tempo determinado
 				if (!config["persistent"]) {
-					$ui["toast"].removeClass("stream-only");
-					timeout["toast"] = setTimeout(UI.toast.dismiss, (config["timeout"]? config["timeout"] : 6000));
-				} else {
-					$ui["toast"].addClass("stream-only");
+					timing["toast"] = setTimeout(UI.toast.dismiss, (config["timeout"]? config["timeout"] : 6000));
+				}
+
+				// Se for pra ser exibido só na tela inicial
+				if (config["start-only"]) {
+					$ui["toast"].addClass("start-only");
 				}
 			} else {
 				UI.toast.show({
@@ -593,32 +633,32 @@ UI.toast = (function() {
 		dismiss: function() {
 			$ui["toast"].removeClass("slide").one("transitionend", function() {
 				$ui["body"].removeClass("toast-active");
-				$ui["toast"].removeClass("in stream-only");
+				$ui["toast"].removeClass("in start-only");
 
 				$ui["toast"]["message"].empty();
-				$ui["toast"]["action"].empty();
+				$ui["toast"]["label"].empty();
 			});
-			clearTimeout(timeout["toast"]);
+			clearTimeout(timing["toast"]);
 		},
 
 		// TODO DEPRECATED
 		open: function(message, action, callback, persistent) {
 		// open: function(message, addClass) {
 			$ui["toast"].message.html(message);
-			$ui["toast"].action.html((action? action : ""));
+			$ui["toast"].label.html((action? action : ""));
 			$ui["toast"].addClass("in").reflow().addClass("slide");
 			$ui["body"].addClass("toast-active");
 
 			// TODO: .fab-bottom transform: translateY
 
 			$ui["toast"].on("click", UI.toast.dismiss);
-			$ui["toast"].action.on("click", callback);
+			$ui["toast"].label.on("click", callback);
 
-			clearTimeout(timeout["toast"]);
+			clearTimeout(timing["toast"]);
 
 			if (!persistent) {
 				$ui["toast"].removeClass("stream-only");
-				timeout["toast"] = setTimeout(UI.toast.dismiss, 6500);
+				timing["toast"] = setTimeout(UI.toast.dismiss, 6500);
 			} else {
 				$ui["toast"].addClass("stream-only");
 			}
@@ -710,9 +750,11 @@ app.Placar = (function() {
 // TODO
 // - mostrar contador nas últimas 48 horas
 // - o que acontece depois do encerramento?
-//   - barra fica da cor da turma e aparece mensagem em cima "EC1 campeã"
+//   barra fica da cor da turma e aparece mensagem em cima "EC1 campeã"
 
 app.Evolucao = (function() {
+	let duracao_total;
+
 	$(function() {
 		$ui["evolucao"] = $(".app-evolucao");
 	});
@@ -723,33 +765,30 @@ app.Evolucao = (function() {
 		start: function() {
 			log("app.Evolucao.start", "info");
 
-			// pega data de início e data de encerramento
+			// Pega data de início e data de encerramento
 			let dia_inicial = Lista.Edicao["inicio"] = moment(Lista.Edicao["inicio"]);
 			let dia_final = Lista.Edicao["fim"] = moment(Lista.Edicao["fim"]);
 
-			// let dia_inicial = Lista.Edicao["inicio"];
-			// let dia_final = Lista.Edicao["fim"];
+			// Calcula o tempo total (em minutos)
+			duracao_total = dia_final.diff(dia_inicial, "minutes");
 
-			// calcula o tempo total (em minutos)
-			let duracao_total = Lista.Edicao["duracao-em-minutos"] = dia_final.diff(dia_inicial, "minutes");
-
-			// insere os dias na barra, indo de dia em dia até chegar ao encerramento
+			// Insere os dias na barra, indo de dia em dia até chegar ao encerramento
 			for (let dia = dia_inicial.clone(); dia.isBefore(dia_final); dia.add(1, "days")) {
-				// define início e final do dia.
-				// se final for após a data de encerramento, usa ela como final
+				// Define início e final do dia
+				// Se final for após a data de encerramento, usa ela como final
 				let inicio_do_dia = dia;
 				let final_do_dia = dia.clone().endOf("day");
 				if (final_do_dia.isAfter(dia_final)) {
 					final_do_dia = dia_final;
 				}
 
-				// calcula a duração do dia em minutos
+				// Calcula a duração do dia em minutos
 				let duracao_do_dia = final_do_dia.diff(inicio_do_dia, "minutes");
 
-				// define a duração percentual do dia em relação ao total
+				// Define a duração percentual do dia em relação ao total
 				let percentual_do_dia = duracao_do_dia / duracao_total;
 
-				// calcula a largura do dia (de acordo com duração percentual)
+				// Calcula a largura do dia (de acordo com duração percentual)
 				// e insere dia na barra de evolução
 				let largura_do_dia = (percentual_do_dia * 100).toFixed(3);
 				let $dia = __render("evolucao-dia", {
@@ -759,12 +798,12 @@ app.Evolucao = (function() {
 				$(".day-labels", $ui["evolucao"]).append($dia);
 			}
 
-			// com os dias inseridos na barra de evolução,
+			// Com os dias inseridos na barra de evolução,
 			// desenha a barra de tempo transcorrido
 			setTimeout(app.Evolucao.update, 1000);
 
-			// atualiza a linha de evolução a cada X minutos
-			timeout["evolucao"] = setInterval(app.Evolucao.update, 60 * 1000);
+			// Atualiza a linha de evolução a cada X minutos
+			timing["evolucao"] = setInterval(app.Evolucao.update, 60 * 1000);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,17 +811,16 @@ app.Evolucao = (function() {
 		update: function() {
 			log("app.Evolucao.update", "info");
 
-			// pega as datas e calcula o tempo (em minutos) e percentual transcorridos
+			// Pega as datas e calcula o tempo (em minutos) e percentual transcorridos
 			let agora = moment();
-			let dia_inicial = Lista.Edicao["inicio"];
-			let dia_final = Lista.Edicao["fim"];
-			let duracao_total = Lista.Edicao["duracao-em-minutos"];
+			let dia_inicial = moment(Lista.Edicao["inicio"]);
+			let dia_final = moment(Lista.Edicao["fim"]);
 
 			let tempo_transcorrido = agora.diff(dia_inicial, "minutes");
 			let percentual_transcorrido = (tempo_transcorrido < duracao_total ? tempo_transcorrido / duracao_total : 1);
 
-			// define a largura da barra de evolução completa igual à largura da tela
-			// depois, mostra apenas o percentual transcorrido
+			// Define a largura da barra de evolução completa igual à largura da tela
+			// Depois, mostra apenas o percentual transcorrido
 			$(".elapsed-time .bar", $ui["evolucao"]).css("width", UI.data["window"]["width"]);
 
 			let largura_da_barra = (percentual_transcorrido * 100).toFixed(3);
@@ -806,7 +844,9 @@ app.Lista = (function() {
 			"itemSelector": ".card-tarefa",
 			"transitionDuration": ".8s",
 			"getSortData": {
-				"date": ".last-modified",
+				"date": function(element) {
+					return $(element).data("last-modified");
+				},
 				"tarefa": function(element) {
 					return parseInt($(element).data("tarefa"), 10);
 				}
@@ -840,11 +880,9 @@ app.Lista = (function() {
 
 			// faz as alterações de acordo com o status
 			// insere as mensagens
+			app.Lista.tarefas();
 			app.Lista.status();
 			app.Lista.messages();
-			app.Lista.tarefas();
-
-
 
 			// tira a tela de loading
 			UI.loadbar.hide();
@@ -862,7 +900,7 @@ app.Lista = (function() {
 			// e para de atualizar automaticamente
 			if (Lista.Edicao["encerrada"] === true) {
 				$ui["body"].addClass("edicao-encerrada");
-				clearInterval(update_interval);
+				clearInterval(timing["atividade"]);
 			}
 		},
 
@@ -979,6 +1017,7 @@ app.Lista = (function() {
 			}
 
 			app.Lista.layout();
+			app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -1114,7 +1153,8 @@ app.Lista = (function() {
 
 				// guarda a data da última atualização e zera o contador de novidades
 				last_updated = moment(data["edicao"]["ultima-atualizacao"]);
-				updated["tarefas"] = 0; updated["posts"] = 0;
+				updated["tarefas"] = 0;
+				updated["posts"] = 0;
 			});
 		},
 
@@ -1316,17 +1356,17 @@ app.Tarefa = (function() {
 			let tarefa = cache["tarefas"][numero];
 			tarefa_active = numero;
 
-			if (UI.data["columns"] >= 3) {
-				// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
-				// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
-			}
+			// if (UI.data["columns"] >= 3) {
+			// 	// UI.backdrop.show($app["tarefa"], { "hide": app.Tarefa.close });
+			// 	// $ui["backdrop"][$app["tarefa"]].on("hide", app.Tarefa.close);
+			// }
 
 			$app["tarefa"].addClass("in");
 			app.Tarefa.render(tarefa);
 
 			$app["tarefa"].reflow().addClass("slide-x").one("transitionend", function() {
-			//	var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
-				$("head meta[name='theme-color']").attr("content", "#546e7a");
+				// var view_theme_color = $(".appbar", $app["tarefa"]).css("background-color");
+				// $("head meta[name='theme-color']").attr("content", "#546e7a");
 			});
 
 			UI.body.lock();
@@ -1340,6 +1380,9 @@ app.Tarefa = (function() {
 					"id": tarefa["numero"]
 				}, tarefa["titulo"]);
 			}
+
+			// analytics
+			analytics("Tarefa", "Visualização", numero);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -1842,9 +1885,14 @@ app.Login = (function() {
 		$(function() {
 			if (Lista.Usuario["id"] !== null) {
 				$ui["body"].addClass("signed-in user-" + Lista.Usuario["turma"]);
-				setTimeout(function() {
-					UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
-				}, 3000);
+
+				// Mostra toast somente após 3 segundos
+				// depois do load da Lista
+				cue["load-edicao"].done(function() {
+					setTimeout(function() {
+						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
+					}, 3000);
+				});
 			}
 		});
 	}
@@ -1903,6 +1951,8 @@ app.Login = (function() {
 		// app.Login.submit()
 		submit: function(data) {
 			ListaAPI("/auth", data).done(function(response) {
+				analytics("Login", "Tentativa");
+
 				if (response["meta"]["status"] === 200) {
 					Lista.Usuario = response["user"];
 					Lista.Usuario["signed-in"] = true;
@@ -1913,9 +1963,13 @@ app.Login = (function() {
 					setTimeout(function() {
 						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
 					}, 500);
+
+					analytics("Login", "Sucesso");
 				} else {
 					$(".form-group", $ui["login"]).addClass("animated shake");
 					setTimeout(function() { $(".form-group", $ui["login"]).removeClass("animated shake"); }, 1000);
+
+					analytics("Login", "Falha");
 				}
 			});
 		},
@@ -1953,15 +2007,13 @@ app.Login = (function() {
 
 // start
 worker.Start = (function() {
-	timeout["delay-start"] = setTimeout(function() {
+	timing["delay-start"] = setTimeout(function() {
 		log("worker.Start", "info");
 
 		cue["load-edicao"] = $.Deferred();
-		worker.Load();
+		cue["first-load"] = true;
 
 		cue["load-edicao"].done(function() {
-			timeout["delay-evolucao"] = setTimeout(app.Evolucao.start, 200);
-
 			// Se tiver número de tarefa especificado na URL, abre ela
 			if (router["path"] && router["path"][2]) {
 				// Antes, testa se o valor é um número
@@ -1971,35 +2023,47 @@ worker.Start = (function() {
 					app.Tarefa.open(numero, false, false);
 				}
 			}
+
+			// Se for o primeiro load
+			if (cue["first-load"]) {
+				// Inicia a barra de evolução
+				timing["delay-evolucao"] = setTimeout(app.Evolucao.start, 100);
+
+				// Inicia a checagem de atividade
+				worker.Update();
+
+				// Desativa nos loads seguintes
+				cue["first-load"] = false;
+			}
 		});
+
+		timing["delay-load"] = setTimeout(function() {
+			worker.Load();
+		}, 300);
 	}, 0);
 })();
 
 
 // load
 worker.Load = (function() {
-	timeout["delay-load"] = setTimeout(function() {
-		log("worker.Load", "info");
+	log("worker.Load", "info");
 
-		ListaAPI("/tudo").done(function(response) {
+	ListaAPI("/tudo").done(function(response) {
+		Lista.Edicao = response["edicao"];
+		Lista.Placar = response["placar"];
+		Lista.Tarefas = response["tarefas"];
+
+		timing["delay-lista"] = setTimeout(function() {
+			// Dispara a função de montagem da Lista
+			app.Lista.start();
+
+			// Resolve a promise load-edicao
+			cue["load-edicao"].resolve();
 			log("cue[\"load-edicao\"] triggered");
-			Lista.Edicao = response["edicao"];
-			Lista.Placar = response["placar"];
-			Lista.Tarefas = response["tarefas"];
+		}, 1);
 
-			timeout["delay-lista"] = setTimeout(function() {
-				app.Lista.start();
-				cue["load-edicao"].resolve();
-			}, 1);
-			// timeout["delay-placar"] = setTimeout(app.Placar.start, 400);
-
-			// var data = response["data"];
-			// Lista.Identificacao = data;
-
-		});
-
-		worker.Update();
-	}, 300);
+		// timing["delay-placar"] = setTimeout(app.Placar.start, 400);
+	});
 });
 
 
@@ -2012,18 +2076,21 @@ worker.Update = (function() {
 		"last-updated": null
 	};
 
-	timeout["atividade"] = setInterval(function() {
+	timing["atividade"] = setInterval(function() {
 		log("worker.Update", "info");
 
 		ListaAPI("/atividade").done(function(response) {
+			// console.info(updates);
 			// Confere data de cada atividade e vê se é posterior à última atualização.
 			// Se for, adiciona à contagem de nova atividade
 			for (let atividade of response) {
+				// console.log(moment(atividade["ts"]).isAfter(updates["last-updated"]));
 				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
-					if (value["acao"] === "novo-tarefa") {
+
+					if (atividade["acao"] === "novo-tarefa") {
 						updates["tarefas"]++;
-					} else if (value["acao"] === "novo-post") {
+					} else if (atividade["acao"] === "novo-post") {
 						updates["posts"]++;
 					}
 				}
@@ -2048,8 +2115,8 @@ worker.Update = (function() {
 					texto["final"] += texto["posts"];
 				}
 
+				// Mostra o toast
 				UI.toast.show({
-					"persistent": true,
 					"message": texto["final"],
 					"label": "Atualizar",
 					"action": function() {
@@ -2058,7 +2125,9 @@ worker.Update = (function() {
 						updates["posts"] = 0;
 						updates["total"] = 0;
 						$ui["page-title"].html(UI.data["page-title"]);
-					}
+					},
+					"persistent": true,
+					"start-only": true
 				});
 
 				// Mostra número de novas atividades no título
@@ -2066,8 +2135,10 @@ worker.Update = (function() {
 			}
 
 			updates["last-updated"] = (response[0]? moment(response[0]["ts"]) : moment());
+
+			// console.log(response, updates);
 		});
-	}, 30 * 1000);
+	}, 30000);
 });
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

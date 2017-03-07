@@ -23,9 +23,14 @@ app.Login = (function() {
 		$(function() {
 			if (Lista.Usuario["id"] !== null) {
 				$ui["body"].addClass("signed-in user-" + Lista.Usuario["turma"]);
-				setTimeout(function() {
-					UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
-				}, 3000);
+
+				// Mostra toast somente após 3 segundos
+				// depois do load da Lista
+				cue["load-edicao"].done(function() {
+					setTimeout(function() {
+						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
+					}, 3000);
+				});
 			}
 		});
 	}
@@ -84,6 +89,8 @@ app.Login = (function() {
 		// app.Login.submit()
 		submit: function(data) {
 			ListaAPI("/auth", data).done(function(response) {
+				analytics("Login", "Tentativa");
+
 				if (response["meta"]["status"] === 200) {
 					Lista.Usuario = response["user"];
 					Lista.Usuario["signed-in"] = true;
@@ -94,9 +101,13 @@ app.Login = (function() {
 					setTimeout(function() {
 						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
 					}, 500);
+
+					analytics("Login", "Sucesso");
 				} else {
 					$(".form-group", $ui["login"]).addClass("animated shake");
 					setTimeout(function() { $(".form-group", $ui["login"]).removeClass("animated shake"); }, 1000);
+
+					analytics("Login", "Falha");
 				}
 			});
 		},

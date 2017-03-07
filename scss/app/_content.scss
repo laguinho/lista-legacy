@@ -52,9 +52,20 @@
 			border-radius: 50%;
 		}
 
+		.content-author {
+			display: inline-block;
+			margin-left: 3px;
+			font-size: 0.8em;
+			color: rgba(#000, 0.25);
+
+			&::before {
+				margin-right: 3px;
+				content: "•";
+			}
+		}
+
 		.content-date {
 			display: inline-block;
-			// float: right;
 			margin-left: 4px;
 			font-size: 0.8em;
 			color: rgba(#000, 0.25);
