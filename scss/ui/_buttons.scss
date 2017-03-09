@@ -14,12 +14,17 @@
 	box-shadow: 0 1px 1.5px 0 rgba(#000, 0.12), 0 1px 1px 0 rgba(#000, 0.24);
 	cursor: pointer;
 	outline: 0;
+	transition: transform $transition-timing-function 0.2s;
 
 	i {
 		line-height: 56px;
 	}
 
-	.toast-active &.fab-bottom {
-		transform: translateY(-48px);
+	@media ($--narrowbody) {
+		// No mobile, quando o toast está na tela,
+		// o botão deve subir pra não ficar escondido
+		.toast-active &.fab-bottom {
+			transform: translateY(-48px);
+		}
 	}
 }

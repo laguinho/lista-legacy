@@ -42,7 +42,9 @@ let log = function(message, type) {
 }
 
 let analytics = function(category, action, label) {
-	ga("send", "event", category, action, label);
+	if (typeof ga !== "undefined") {
+		ga("send", "event", category, action, label);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

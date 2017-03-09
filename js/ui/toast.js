@@ -14,6 +14,7 @@ UI.toast = (function() {
 	return {
 		// TODO nova sintaxe, usar template e __render
 		show: function(config) {
+			log("UI.toast.show");
 			// Opções:
 			// • "message" [string]
 			// • "label" [string]
@@ -68,6 +69,7 @@ UI.toast = (function() {
 		},
 
 		dismiss: function() {
+			log("UI.toast.dismiss");
 			$ui["toast"].removeClass("slide").one("transitionend", function() {
 				$ui["body"].removeClass("toast-active");
 				$ui["toast"].removeClass("in start-only");
@@ -94,10 +96,10 @@ UI.toast = (function() {
 			clearTimeout(timing["toast"]);
 
 			if (!persistent) {
-				$ui["toast"].removeClass("stream-only");
-				timing["toast"] = setTimeout(UI.toast.dismiss, 6500);
+				$ui["toast"].removeClass("start-only");
+				timing["toast-open"] = setTimeout(UI.toast.dismiss, 6500);
 			} else {
-				$ui["toast"].addClass("stream-only");
+				$ui["toast"].addClass("start-only");
 			}
 		}
 	};

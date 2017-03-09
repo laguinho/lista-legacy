@@ -155,7 +155,7 @@ app.Tarefa = (function() {
 			}
 
 			// analytics
-			analytics("Tarefa", "Visualização", numero);
+			analytics("Tarefa", "Acesso", numero);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////

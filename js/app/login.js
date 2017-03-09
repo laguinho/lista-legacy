@@ -37,6 +37,7 @@ app.Login = (function() {
 
 	$(function() {
 		$ui["login"] = $(".app-login");
+		$ui["login"]["button"] = $(".js-login-button", $ui["login"]);
 
 		// Botões de login e logout
 		$(".js-login-trigger", $ui["sidenav"]).on("click", function(event) {
@@ -58,6 +59,7 @@ app.Login = (function() {
 		}).on("submit", "form", function(event) {
 			event.preventDefault();
 
+			$(".js-login-button", $ui["form"]).trigger("click");
 			let login_data = $("form", $ui["login"]).serialize();
 			app.Login.submit(login_data);
 		});
@@ -88,9 +90,13 @@ app.Login = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Login.submit()
 		submit: function(data) {
-			ListaAPI("/auth", data).done(function(response) {
-				analytics("Login", "Tentativa");
+			// Desativa o botão e coloca mensagem de espera
+			$ui["login"]["button"]
+				.prop("disabled", true)
+				.text("Aguarde…");
 
+			// Envia pedido para a API
+			ListaAPI("/identificacao", data).done(function(response) {
 				if (response["meta"]["status"] === 200) {
 					Lista.Usuario = response["user"];
 					Lista.Usuario["signed-in"] = true;
@@ -102,13 +108,26 @@ app.Login = (function() {
 						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
 					}, 500);
 
-					analytics("Login", "Sucesso");
+					analytics("Login", "Acesso");
 				} else {
+					// Se tentativa for recusada,
+					// coloca animação no campo de login por 1 segundo
 					$(".form-group", $ui["login"]).addClass("animated shake");
-					setTimeout(function() { $(".form-group", $ui["login"]).removeClass("animated shake"); }, 1000);
 
-					analytics("Login", "Falha");
+					setTimeout(function() {
+						$(".form-group", $ui["login"]).removeClass("animated shake");
+					}, 1000);
+
+					analytics("Login", "Erro");
 				}
+			}).fail(function() {
+				UI.toast.show("Ocorreu um erro. Tente novamente");
+				analytics("Login", "Erro");
+			}).always(function() {
+				$ui["login"]["button"]
+					.prop("disabled", false)
+					.text("Login");
+				analytics("Login", "Tentativa");
 			});
 		},
 
@@ -135,6 +154,8 @@ app.Login = (function() {
 			setTimeout(function() {
 				UI.toast.show("Sessão encerrada!");
 			}, 500);
+
+			analytics("Login", "Logout");
 		}
 	};
 })();

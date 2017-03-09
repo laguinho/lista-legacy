@@ -52,6 +52,8 @@ app.Post = (function() {
 			$(".submit-button", $app["post"]).addClass("disabled").html("Enviando&hellip;");
 
 			$.post("/tarefas/" + tarefa_active + "/postar", data).done(function(response) {
+				analytics("Conteúdo", "Tentativa");
+
 				if (response["meta"]["status"] === 200) {
 					app.Post.close();
 					app.Tarefa.render(response["data"]);
@@ -59,11 +61,14 @@ app.Post = (function() {
 					navigator.vibrate(800);
 
 					Lista.Tarefas[response["data"]["numero"]] = response["data"];
+					analytics("Conteúdo", "Postagem");
 				} else {
 					UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
+					analytics("Conteúdo", "Erro");
 				}
 			}).fail(function() {
 				UI.toast.open("Ocorreu um erro. Tente novamente", null, null, false);
+				analytics("Conteúdo", "Erro");
 			});
 
 		}).on("click", ".back-button", function(event) {

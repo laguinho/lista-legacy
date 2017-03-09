@@ -96,6 +96,8 @@ function deployHTML() {
 	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.css"];
 	assets["scripts"]["lista"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.js"];
 
+	let release = manifest["lista.min.js"].replace("lista-", "").replace(".min.js", "");
+
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
 
@@ -104,7 +106,8 @@ function deployHTML() {
 			"locals": {
 				"env": "production",
 				"edicao": edicao,
-				"assets": assets
+				"assets": assets,
+				"release": release
 			}
 		}))
 

@@ -42,7 +42,9 @@ let log = function(message, type) {
 }
 
 let analytics = function(category, action, label) {
-	ga("send", "event", category, action, label);
+	if (typeof ga !== "undefined") {
+		ga("send", "event", category, action, label);
+	}
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -577,6 +579,7 @@ UI.toast = (function() {
 	return {
 		// TODO nova sintaxe, usar template e __render
 		show: function(config) {
+			log("UI.toast.show");
 			// Opções:
 			// • "message" [string]
 			// • "label" [string]
@@ -631,6 +634,7 @@ UI.toast = (function() {
 		},
 
 		dismiss: function() {
+			log("UI.toast.dismiss");
 			$ui["toast"].removeClass("slide").one("transitionend", function() {
 				$ui["body"].removeClass("toast-active");
 				$ui["toast"].removeClass("in start-only");
@@ -657,10 +661,10 @@ UI.toast = (function() {
 			clearTimeout(timing["toast"]);
 
 			if (!persistent) {
-				$ui["toast"].removeClass("stream-only");
-				timing["toast"] = setTimeout(UI.toast.dismiss, 6500);
+				$ui["toast"].removeClass("start-only");
+				timing["toast-open"] = setTimeout(UI.toast.dismiss, 6500);
 			} else {
-				$ui["toast"].addClass("stream-only");
+				$ui["toast"].addClass("start-only");
 			}
 		}
 	};
@@ -1213,15 +1217,17 @@ $(function() {
 	// app.Lista.load();
 
 	// ordenação
-	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {
+	$ui["sidenav"].on("click", ".js-lista-sort a", function(event) {
 		event.preventDefault();
 
-		var criteria = $(this).data("sort-by");
-		$(".js-stream-sort a", $ui["sidenav"]).removeClass("active");
+		let criteria = $(this).data("sort-by");
+		let title = $(this).find("span").text();
+		$(".js-lista-sort a", $ui["sidenav"]).removeClass("active");
 		$(this).addClass("active");
 
 		app.Lista.sort(criteria);
 		UI.sidenav.close();
+		analytics("Lista", "Ordenação", title);
 	});
 });
 
@@ -1382,7 +1388,7 @@ app.Tarefa = (function() {
 			}
 
 			// analytics
-			analytics("Tarefa", "Visualização", numero);
+			analytics("Tarefa", "Acesso", numero);
 		},
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -1551,6 +1557,8 @@ app.Post = (function() {
 			$(".submit-button", $app["post"]).addClass("disabled").html("Enviando&hellip;");
 
 			$.post("/tarefas/" + tarefa_active + "/postar", data).done(function(response) {
+				analytics("Conteúdo", "Tentativa");
+
 				if (response["meta"]["status"] === 200) {
 					app.Post.close();
 					app.Tarefa.render(response["data"]);
@@ -1558,11 +1566,14 @@ app.Post = (function() {
 					navigator.vibrate(800);
 
 					Lista.Tarefas[response["data"]["numero"]] = response["data"];
+					analytics("Conteúdo", "Postagem");
 				} else {
 					UI.toast.open((response["meta"]["message"]? response["meta"]["message"] : "Ocorreu um erro. Tente novamente"));
+					analytics("Conteúdo", "Erro");
 				}
 			}).fail(function() {
 				UI.toast.open("Ocorreu um erro. Tente novamente", null, null, false);
+				analytics("Conteúdo", "Erro");
 			});
 
 		}).on("click", ".back-button", function(event) {
@@ -1899,6 +1910,7 @@ app.Login = (function() {
 
 	$(function() {
 		$ui["login"] = $(".app-login");
+		$ui["login"]["button"] = $(".js-login-button", $ui["login"]);
 
 		// Botões de login e logout
 		$(".js-login-trigger", $ui["sidenav"]).on("click", function(event) {
@@ -1920,6 +1932,7 @@ app.Login = (function() {
 		}).on("submit", "form", function(event) {
 			event.preventDefault();
 
+			$(".js-login-button", $ui["form"]).trigger("click");
 			let login_data = $("form", $ui["login"]).serialize();
 			app.Login.submit(login_data);
 		});
@@ -1950,9 +1963,13 @@ app.Login = (function() {
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Login.submit()
 		submit: function(data) {
-			ListaAPI("/auth", data).done(function(response) {
-				analytics("Login", "Tentativa");
+			// Desativa o botão e coloca mensagem de espera
+			$ui["login"]["button"]
+				.prop("disabled", true)
+				.text("Aguarde…");
 
+			// Envia pedido para a API
+			ListaAPI("/identificacao", data).done(function(response) {
 				if (response["meta"]["status"] === 200) {
 					Lista.Usuario = response["user"];
 					Lista.Usuario["signed-in"] = true;
@@ -1964,13 +1981,26 @@ app.Login = (function() {
 						UI.toast.show("Olá " + Lista.Usuario["name"] + "!");
 					}, 500);
 
-					analytics("Login", "Sucesso");
+					analytics("Login", "Acesso");
 				} else {
+					// Se tentativa for recusada,
+					// coloca animação no campo de login por 1 segundo
 					$(".form-group", $ui["login"]).addClass("animated shake");
-					setTimeout(function() { $(".form-group", $ui["login"]).removeClass("animated shake"); }, 1000);
 
-					analytics("Login", "Falha");
+					setTimeout(function() {
+						$(".form-group", $ui["login"]).removeClass("animated shake");
+					}, 1000);
+
+					analytics("Login", "Erro");
 				}
+			}).fail(function() {
+				UI.toast.show("Ocorreu um erro. Tente novamente");
+				analytics("Login", "Erro");
+			}).always(function() {
+				$ui["login"]["button"]
+					.prop("disabled", false)
+					.text("Login");
+				analytics("Login", "Tentativa");
 			});
 		},
 
@@ -1997,6 +2027,8 @@ app.Login = (function() {
 			setTimeout(function() {
 				UI.toast.show("Sessão encerrada!");
 			}, 500);
+
+			analytics("Login", "Logout");
 		}
 	};
 })();
@@ -2040,6 +2072,8 @@ worker.Start = (function() {
 		timing["delay-load"] = setTimeout(function() {
 			worker.Load();
 		}, 300);
+
+		analytics("Lista", "Acesso");
 	}, 0);
 })();
 
@@ -2088,7 +2122,7 @@ worker.Update = (function() {
 				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
 
-					if (atividade["acao"] === "novo-tarefa") {
+					if (atividade["acao"] === "nova-tarefa") {
 						updates["tarefas"]++;
 					} else if (atividade["acao"] === "novo-post") {
 						updates["posts"]++;
@@ -2125,6 +2159,7 @@ worker.Update = (function() {
 						updates["posts"] = 0;
 						updates["total"] = 0;
 						$ui["page-title"].html(UI.data["page-title"]);
+						analytics("Lista", "Atualização");
 					},
 					"persistent": true,
 					"start-only": true
@@ -2154,8 +2189,8 @@ WebFont.load({
 	google: {
 		families: [
 			"Material Icons",
-			"Roboto:400,400italic,500:latin",
-			"Roboto+Mono:700:latin",
+			// "Roboto:400,400italic,500:latin",
+			// "Roboto+Mono:700:latin",
 			"Lato:400:latin"
 		]
 	},

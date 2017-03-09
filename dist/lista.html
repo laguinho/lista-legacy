@@ -24,9 +24,9 @@
    <header><img class="logo" src="https://assets.laguinho.org/laguinho.svg"></header>
    <section class="sort-navigation">
     <h1>Ordenar por</h1>
-    <ul class="level-1 js-stream-sort">
-     <li><a class="active" href="#" data-sort-by="date"><i class="material-icons">&#xE5CA;</i>Última postagem</a></li>
-     <li><a href="#" data-sort-by="tarefa"><i class="material-icons">&#xE5CA;</i>Número da tarefa</a></li>
+    <ul class="level-1 js-lista-sort">
+     <li><a class="active" href="#" data-sort-by="date"><i class="material-icons">&#xE5CA;</i><span>Última postagem</span></a></li>
+     <li><a href="#" data-sort-by="tarefa"><i class="material-icons">&#xE5CA;</i><span>Número da tarefa</span></a></li>
     </ul>
    </section>
    <section class="secondary-navigation">
@@ -292,7 +292,7 @@
       <input type="email" name="email" placeholder="E-mail">
       <input type="password" name="password" placeholder="Senha">
      </div>
-     <button class="btn btn-primary">Login</button>
+     <button class="btn btn-primary js-login-button">Login</button>
     </form>
    </div>
   </aside>
@@ -323,6 +323,13 @@
    <div class="toast-message"></div>
    <div class="toast-label"></div>
   </div>
+  <script>
+   (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+   })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+   ga("create", "UA-60712039-1", "auto");
+  </script>
   <script>var edicao = "xciii";</script>
   <script src="./bower_components/jquery/dist/jquery.min.js"></script>
   <script src="./bower_components/isotope/dist/isotope.pkgd.min.js"></script>
@@ -332,14 +339,5 @@
   <script src="./bower_components/FileAPI.exif/index.js"></script>
   <script src="./bower_components/slip/slip.js"></script>
   <script src="./dist/lista.js"></script>
-  <script>
-   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-   
-   ga('create', 'UA-60712039-1', 'auto');
-   ga('send', 'pageview');
-  </script>
  </body>
 </html>

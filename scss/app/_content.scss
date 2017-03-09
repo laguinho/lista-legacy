@@ -5,6 +5,7 @@
 .content-card {
 	width: 100%;
 	margin-bottom: $gutter / 2;
+	overflow: hidden;
 
 	@media ($--widebody) {
 		width: 370px;

@@ -1,0 +1,23 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- tracking ///////////////////////////////////////////////////////////////////////////////////////
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+
+//- Sentry (error tracking)
+//- Apenas em produção
+if env === "production"
+	script(src="https://cdn.ravenjs.com/3.12.1/raven.min.js",
+		integrity="sha384-Xsu9Kcp/8TUx5byUpQAwCO2ByWnABezqEqRw4j5RwiAF9dzn3/9lazwDT1RDg5Pe",
+		crossorigin="anonymous")
+	script.
+		Raven.config("https://e171a3b13ee4458e83250409c1608294@sentry.io/105537", {
+			environment: "#{env}",
+			release: "#{release}"
+		}).install();
+
+//- Google Analytics
+script.
+	(function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+	ga("create", "UA-60712039-1", "auto");

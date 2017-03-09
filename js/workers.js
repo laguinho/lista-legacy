@@ -37,6 +37,8 @@ worker.Start = (function() {
 		timing["delay-load"] = setTimeout(function() {
 			worker.Load();
 		}, 300);
+
+		analytics("Lista", "Acesso");
 	}, 0);
 })();
 
@@ -85,7 +87,7 @@ worker.Update = (function() {
 				if (moment(atividade["ts"]).isAfter(updates["last-updated"]) && atividade["autor"] != Lista.Usuario["id"]) {
 					updates["total"]++;
 
-					if (atividade["acao"] === "novo-tarefa") {
+					if (atividade["acao"] === "nova-tarefa") {
 						updates["tarefas"]++;
 					} else if (atividade["acao"] === "novo-post") {
 						updates["posts"]++;
@@ -122,6 +124,7 @@ worker.Update = (function() {
 						updates["posts"] = 0;
 						updates["total"] = 0;
 						$ui["page-title"].html(UI.data["page-title"]);
+						analytics("Lista", "Atualização");
 					},
 					"persistent": true,
 					"start-only": true

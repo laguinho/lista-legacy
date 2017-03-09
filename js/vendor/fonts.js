@@ -11,8 +11,8 @@ WebFont.load({
 	google: {
 		families: [
 			"Material Icons",
-			"Roboto:400,400italic,500:latin",
-			"Roboto+Mono:700:latin",
+			// "Roboto:400,400italic,500:latin",
+			// "Roboto+Mono:700:latin",
 			"Lato:400:latin"
 		]
 	},

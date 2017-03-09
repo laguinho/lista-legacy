@@ -382,14 +382,16 @@ $(function() {
 	// app.Lista.load();
 
 	// ordenação
-	$ui["sidenav"].on("click", ".js-stream-sort a", function(event) {
+	$ui["sidenav"].on("click", ".js-lista-sort a", function(event) {
 		event.preventDefault();
 
-		var criteria = $(this).data("sort-by");
-		$(".js-stream-sort a", $ui["sidenav"]).removeClass("active");
+		let criteria = $(this).data("sort-by");
+		let title = $(this).find("span").text();
+		$(".js-lista-sort a", $ui["sidenav"]).removeClass("active");
 		$(this).addClass("active");
 
 		app.Lista.sort(criteria);
 		UI.sidenav.close();
+		analytics("Lista", "Ordenação", title);
 	});
 });
