@@ -32,6 +32,8 @@ worker.Start = (function() {
 				// Desativa nos loads seguintes
 				cue["first-load"] = false;
 			}
+
+			// app.Placar.start();
 		});
 
 		timing["delay-load"] = setTimeout(function() {
@@ -55,6 +57,7 @@ worker.Load = (function() {
 		timing["delay-lista"] = setTimeout(function() {
 			// Dispara a função de montagem da Lista
 			app.Lista.start();
+			app.Placar.update();
 
 			// Resolve a promise load-edicao
 			cue["load-edicao"].resolve();

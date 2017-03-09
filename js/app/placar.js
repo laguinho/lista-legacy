@@ -1,52 +1,56 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// placar //////////////////////////////////////////////////////////////////////////////////////////
+// app placar //////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.Placar = (function() {
 	$(function() {
-		$ui["placar"] = $(".js-app-placar > ul");
+		$ui["placar"] = $(".js-app-placar ul");
 	});
 
 	return {
-		update: function(turmas) {
-			// confere qual a turma com maior pontuação
-			// e soma a pontuação de cada turma para obter o total de pontos
-			var maior_pontuacao = 0;
-			var total_de_pontos = 0;
+		start: function() {
+			// TODO
+		},
 
-			for (var turma in turmas) {
-				var pontuacao_da_turma = turmas[turma]["pontos"];
+		update: function() {
+			// Limpa o placar
+			$ui["placar"].empty();
+
+			// Confere qual a turma com maior pontuação
+			// e soma a pontuação de cada turma para obter o total de pontos
+			let maior_pontuacao = 0;
+			let total_de_pontos = 0;
+
+			Lista.Placar.forEach(function(turma) {
+				let pontuacao_da_turma = turma["pontos"];
 
 				if (pontuacao_da_turma > maior_pontuacao) {
 					maior_pontuacao = pontuacao_da_turma;
 				}
 
 				total_de_pontos += pontuacao_da_turma;
-			}
+			});
 
-			// limpa o placar
-			$ui["placar"].empty();
+			// Com os dados básicos calculados,
+			// adiciona as turmas no placar
+			Lista.Placar.forEach(function(turma) {
+				// Calcula % da turma
+				// em relação à turma de maior pontuação
+				let percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / maior_pontuacao : 0);
 
-			// adiciona cada turma no placar
-			$.each(turmas, function(index, turma) {
-				// calcula % da turma em relação ao total de pontos
-				var percentual_da_turma = (total_de_pontos > 0? turma["pontos"] / maior_pontuacao : 0);
-
-				// formata os dados
-				turma["largura-da-barra"] = "width: " + (percentual_da_turma * 100).toFixed(3) + "%;";
+				// Formata os dados para o placar
 				turma["turma-formatada"] = turma["turma"].toUpperCase();
-				turma["pontos"] = turma["pontos"];
+				turma["tamanho-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%;";
 				turma["pontuacao-formatada"] = turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-				// renderiza e coloca na página
-				var $turma = __render("placar-turma", turma);
+				let $turma = __render("placar-turma", turma);
 				$ui["placar"].append($turma);
 			});
 
 			if (total_de_pontos === 0) {
-				$ui["placar"].parent().addClass("zeroed");
+				$ui["placar"].addClass("placar-zerado");
 			} else {
-				$ui["placar"].parent().removeClass("zeroed");
+				$ui["placar"].removeClass("placar-zerado");
 			}
 		}
 	}

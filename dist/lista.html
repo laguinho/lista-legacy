@@ -40,7 +40,6 @@
   <div class="app-livesite js-app-livesite">
    <div class="lista-container container">
     <div class="marquee-transitory"><span>Lista de Tarefas</span></div>
-    <div class="app-placar js-app-placar"></div>
    </div>
    <div class="app-evolucao">
     <div class="timeline">
@@ -54,6 +53,11 @@
     <li class="fill" data-fill="dia"></li>
    </template>
   </div>
+  <div class="app-placar js-app-placar">
+   <div class="lista-container container">
+    <ul></ul>
+   </div>
+  </div>
   <main class="lista-capa">
    <div class="lista-container container">
     <ul class="app-lista js-app-lista"></ul>
@@ -63,10 +67,9 @@
   <aside class="app-post ui-view app-new-post"></aside>
   <template id="placar-turma">
    <li class="fill" data-fill="class: turma">
-    <div class="label turma-text fill" data-fill="turma-formatada"></div>
-    <div class="score fill" data-fill="style: largura-da-barra">
-     <div class="bar turma-background"></div>
-     <div class="points turma-text fill" data-fill="pontuacao-formatada"></div>
+    <div class="barra turma-border turma-text fill" data-fill="style: tamanho-da-barra">
+     <div class="turma fill" data-fill="turma-formatada"></div>
+     <div class="pontuacao fill" data-fill="pontuacao-formatada"></div>
     </div>
    </li>
   </template>

@@ -1065,12 +1065,12 @@ colunas
   display: table-cell;
   width: 1%;
   padding: 0 0 6px 3px;
-  padding-bottom: 6px;
 }
 
 @media (min-width: 664px) {
   .app-evolucao .day-labels li {
     padding-left: 4px;
+    padding-bottom: 7px;
   }
 }
 
@@ -1080,7 +1080,6 @@ colunas
 
 .app-livesite {
   height: 112px;
-  margin-bottom: 16px;
   padding-top: 56px;
   position: relative;
   background-color: #fff;
@@ -1090,7 +1089,6 @@ colunas
 @media (min-width: 664px) {
   .app-livesite {
     height: 128px;
-    margin-bottom: 32px;
     padding-top: 64px;
   }
 }
@@ -1111,52 +1109,45 @@ colunas
 }
 
 .app-placar {
-  font-size: 13px;
-  display: none;
+  margin-bottom: 16px;
 }
 
-@media (min-width: 1328px) {
+@media (min-width: 664px) {
   .app-placar {
-    width: 250px;
+    margin-bottom: 32px;
+  }
+}
+
+.app-placar ul {
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@media (min-width: 664px) {
+  .app-placar ul {
+    height: 60px;
+    padding: 0 150px;
   }
 }
 
 .app-placar li {
-  height: 17px;
-  padding: 0 64px 0 28px;
-  position: relative;
+  width: 33.3%;
+  padding: 0 8px;
 }
 
-.app-placar li::after {
-  clear: both;
-  display: block;
-  content: "";
+.app-placar .barra {
+  min-height: 25px;
+  border: 1px solid;
+  border-top: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
 }
 
-.app-placar .label {
-  position: absolute;
-  top: 2px;
-  left: 0;
-  width: 42px;
-  padding-right: 6px;
-}
-
-.app-placar .score {
-  position: relative;
-  padding-top: 11px;
-}
-
-.app-placar .score .bar {
-  min-width: 2px;
-  height: 2px;
-}
-
-.app-placar .score .points {
-  position: absolute;
-  top: 2px;
-  right: -64px;
-  width: 64px;
-  padding-left: 8px;
+.app-placar .turma,
+.app-placar .pontuacao {
+  padding: 4px 6px;
 }
 
 main {
