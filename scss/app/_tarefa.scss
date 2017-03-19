@@ -1,0 +1,320 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// tarefa //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.app-tarefa {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: darken($background-color, 5%);
+	z-index: $z-index-tarefa;
+	transform: translateY(6%) !important;
+
+	@media ($--widebody) {
+		background-color: rgba(darken($background-color, 10%), 0);
+		opacity: 0.5;
+		// cursor: zoom-out; TODO
+		transform: translateY(0) !important;
+		// transition: background-color $transition-timing-function 5s;
+
+		&.in {
+			background-color: rgba(darken($background-color, 10%), 0.9);
+		}
+	}
+
+	.tarefa-wrapper {
+
+		@media ($--widebody) {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			overflow: auto;
+		}
+	}
+
+	.tarefa-outer-container {
+		@media ($--widebody) {
+			min-height: 100%;
+			padding: 32px 72px;
+			flex-grow: 1;
+
+			display: flex;
+			justify-content: center;
+		}
+	}
+
+	.tarefa-container {
+		@media ($--narrowbody) {
+			position: absolute;
+			top: $appbar-height;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			overflow: auto;
+		}
+
+		@media ($--widebody) {
+			max-width: 1136px;
+			min-height: 100%;
+			// margin: 0 auto;
+			// margin: 32px 0;
+			// padding: 32px 0 !important;
+
+			flex-grow: 1;
+		}
+	}
+
+	.tarefa-body {
+
+		@media ($--widebody) {
+			display: flex;
+			min-height: 100%;
+			border-radius: 6px;
+			background-color: #fff;
+			// cursor: default;
+
+			transform: translateY(12%);
+			transition: transform $transition-timing-function 0.32s;
+		}
+	}
+
+	@media ($--widebody) {
+		&.in {
+			.tarefa-body {
+				transform: translateY(0) !important;
+			}
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// meta //////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.tarefa-meta {
+		padding: 12px 8px 0;
+		// @include scaffolding(cyan);
+
+		@media ($--widebody) {
+			width: $column-width + $gutter;
+			padding:
+				$gutter
+				$gutter * 1.25 / 2
+				$gutter
+				$gutter * 1.25;
+		}
+	}
+
+	.tarefa-texto {
+
+		@media ($--widebody) {
+			.ui-card {
+				box-shadow: 0 0 0;
+			}
+		}
+
+		a {
+			cursor: initial;
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// content ///////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.tarefa-content {
+		padding: 0 8px;
+		// @include scaffolding(pink);
+		// overflow: auto;
+		// position: relative;
+
+		@media ($--widebody) {
+			// width: 100%;
+			padding:
+				36px
+				$gutter * 1.25
+				36px
+				$gutter / 2;
+
+			flex-grow: 1;
+
+			> ul {
+				height: 100%;
+				margin: 0 auto;
+			}
+		}
+
+		.empty {
+			// @include scaffolding;
+			min-height: 72px;
+			font-size: 24px;
+			opacity: 0.5;
+
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			position: relative;
+
+			&::before {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				border: 1px solid rgba(#000, 0.25);
+				content: "";
+			}
+
+			@media ($--widebody) {
+				height: 100%;
+			}
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// header
+	.tarefa-appbar {
+
+		@media ($--widebody) {
+			display: none;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// close
+	.tarefa-close {
+		@media ($--narrowbody) {
+			display: none;
+		}
+
+		@media ($--widebody) {
+			position: fixed;
+			top: 0;
+			right: 0;
+			// width: 332px;
+			// height: 64px;
+			padding: 12px;
+			font-size: 32px;
+			color: #000;
+			text-align: center;
+
+			opacity: 0.45;
+			transition: .2s opacity $transition-timing-function;
+			cursor: pointer;
+
+			// display: flex;
+			// align-items: center;
+
+			&:hover {
+				opacity: 1;
+			}
+		}
+	}
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// old
+
+.app-tarefa {
+	// .tarefa-appbar {
+	// 	// background-color: #546e7a
+	//
+	// 	.container {
+	// 		padding-left: $appbar-height;
+	// 	}
+	//
+	// 	@media (min-width: $large-column-width * 2) {
+	// 		display: none;
+	// 	}
+	// }
+	//
+	// //////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// .tarefa-body {
+	// 	@media (min-width: $large-column-width * 2) {
+	// 		top: 0;
+	// 		left: auto;
+	// 		width: $large-column-width * 2 + 32px;
+	// 	}
+	// }
+	//
+	// //////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// .painel {
+	// 	.card {
+	// 		margin: 0 auto;
+	// 		z-index: 1;
+	// 	}
+	//
+	// 	.placar {
+	// 		height: 90px;
+	// 		margin: 0 auto;
+	// 		padding: 0 16px;
+	// 	}
+	// }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// .tarefa-backdrop
+	// 	@extend %ui-backdrop
+	// 	position: fixed
+	// 	top: 0
+	// 	bottom: 0
+	// 	left: 0
+	// 	display: none
+	//
+	// 	@media (min-width: $large-column-width * 2)
+	// 		display: block
+	// 		right: ($large-column-width * 2) + 32px
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// .posts {
+	// 	margin: 0 auto;
+	//
+	// 	.empty {
+	// 		margin-top: 15px;
+	// 		font-weight: 500;
+	// 		font-size: 14px;
+	// 		color: #aaa;
+	// 		text-align: center;
+	// 		text-transform: uppercase;
+	// 	}
+	// }
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	.new-post {
+		position: fixed;
+		bottom: 16px;
+		right: 16px;
+		display: none !important;
+
+		@media ($--widebody) {
+			bottom: 24px;
+			right: 24px;
+		}
+	}
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+
+	// .tarefa-end {
+	// 	height: 20px;
+	// 	margin: 16px 0 24px;
+	// 	background: url("//assets.laguinho.org/logo/000-64px.png") no-repeat center;
+	// 	background-size: contain;
+	// 	opacity: 0.18;
+	// }
+}
+
+.signed-in .app-tarefa .new-post { display: block !important; }
+.postagens-encerradas .app-tarefa .new-post { display: none !important; }

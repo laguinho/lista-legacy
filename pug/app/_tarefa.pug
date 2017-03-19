@@ -1,0 +1,56 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- tarefa
+
+article.app-tarefa.ui-view
+
+template#view-tarefa
+	.tarefa-wrapper
+		//- header
+		//- Fixo, mostrado só no mobile
+		header.tarefa-appbar.ui-appbar
+			.appbar-container.container
+				h1.fill(data-fill="titulo")
+				.appbar-actions.appbar-actions-left
+					a.appbar-button.back-button.js-tarefa-close(href="/tarefas")
+						i.material-icons &#xE5C4;
+
+		.tarefa-outer-container
+			.tarefa-container
+
+				//- ////////////////////////////////////////////////////////////////////////////////////////////
+				//- body
+				.tarefa-body
+
+					//- meta
+					.tarefa-meta
+						.tarefa-texto
+						.tarefa-placar
+
+					//- posts
+					.tarefa-content
+						ul
+						.eot
+
+			//- ////////////////////////////////////////////////////////////////////////////////////////////
+
+		.tarefa-close.js-tarefa-close.material-icons(title="Voltar à Lista") &#xE5CD;
+
+		//- new post
+		button.fab.fab-bottom.user-background.new-post.js-new-post-trigger(title="Novo post")
+			i.material-icons &#xE145;
+
+		aside.new-post-sheet(style="display: none;")
+			h1 Postar
+
+			mixin new-post-link(title, type, icon, icon_source)
+				li
+					a(href="#", data-post-type=type)
+						if (icon_source === "font-awesome")
+							i.fa(class!=icon)
+						else
+							i.material-icons !{icon}
+						= title
+			ul
+				+new-post-link("Foto", "photo", "&#xE251;")
+				+new-post-link("Vídeo", "video", "&#xE02C;")
+				+new-post-link("Texto", "text", "&#xE165;")

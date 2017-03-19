@@ -1,0 +1,30 @@
+[
+	"js/base.js",
+	"js/utilities.js",
+	"js/template-engine.js",
+	"js/router.js",
+
+	"js/ui/document.js",
+	"js/ui/utilities.js",
+	"js/ui/body.js",
+	"js/ui/loadbar.js",
+	"js/ui/backdrop.js",
+	"js/ui/sidenav.js",
+	"js/ui/bottomsheet.js",
+	"js/ui/toast.js",
+
+	"js/api.js",
+
+	"js/app/placar.js",
+	"js/app/evolucao.js",
+	"js/app/lista.js",
+	"js/app/tarefa.js",
+	"js/app/post.js",
+	"js/app/upload.js",
+	"js/app/login.js",
+
+	"js/workers.js",
+
+	"js/vendor/fonts.js",
+	"js/vendor/moment-locale.js"
+]

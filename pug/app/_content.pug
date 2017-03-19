@@ -1,0 +1,43 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- content ////////////////////////////////////////////////////////////////////////////////////////
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+
+template#content-card
+	//- li.ui-card.card.card-l.post
+	li.content-card.ui-card.fill(data-fill="class: turma, data-post: id")
+		.content-body
+			.content-media
+				ul
+			.content-caption.fill(data-fill="legenda", data-fill-null="remove")
+			.content-label
+				.content-turma.fill(data-fill="class: turma")
+					.content-bullet.turma-background.turma-border
+					span.turma-text.fill(data-fill="turma-formatada")
+				.content-date.fill(data-fill="data-de-postagem-formatada")
+				.content-author
+					span postado por&nbsp;
+					span.fill(data-fill="autor")
+		.content-rating
+			i.material-icons &#xE5DA;
+			.content-points.fill(data-fill="class: avaliacao/class, html: avaliacao/status")
+			.content-review.fill(data-fill="avaliacao/mensagem")
+
+		//- .body
+		//- 	.result
+		//- 		.status-indicator.fill(data-fill="class: status-class")
+		//- 			.status-icon.turma-text.fill(data-fill="status-icon")
+		//- 			.status-text.turma-text.fill(data-fill="status")
+		//- 		.message.fill(data-fill="message")
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- post media
+template#media-photo
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			a.fill(href="#", target="_blank", data-fill="href: link-original")
+				img.fill(data-fill="src: default")
+
+template#media-video
+	li
+		.media-wrapper.fill(data-fill="style: padding-aspecto")
+			iframe.fill(href="#", target="_blank", data-fill="src: embed", frameborder="0", allowfullscreen)

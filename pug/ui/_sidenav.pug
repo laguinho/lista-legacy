@@ -1,0 +1,30 @@
+nav#sidenav.ui-sidenav.js-ui-sidenav
+
+	//- logo do laguinho
+	header
+		img.logo(src="https://assets.laguinho.org/laguinho.svg")
+
+	//- ordenação
+	section.sort-navigation
+		h1 Ordenar por
+		ul.level-1.js-lista-sort
+			li
+				a.active(href="#", data-sort-by="date")
+					i.material-icons &#xE5CA;
+					span Última postagem
+			li
+				a(href="#", data-sort-by="tarefa")
+					i.material-icons &#xE5CA;
+					span Número da tarefa
+
+	//- links
+	section.secondary-navigation
+		ul.level-1
+			li
+				a(href="https://twitter.com/listadetarefas", target="_blank")
+					i.fa.fa-twitter
+					| @listadetarefas
+			li
+				a.login-button.js-login-trigger(href="#") Login
+			li
+				a.logout-button.js-logout-trigger(href="#") Logout

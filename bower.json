@@ -1,0 +1,25 @@
+{
+  "name": "lista",
+  "description": "Página da Lista de Tarefas, uma competição entre calouros da Escola de Comunicação da UFRJ",
+  "main": "dist/lista.html",
+  "authors": [
+    "laguinho.org"
+  ],
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/laguinho/lista",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "isotope": "^3.0.1",
+    "moment": "^2.16.0",
+    "FileAPI.exif": "https://assets.laguinho.org/libs/file-api/2.0.19/plugins/FileAPI.exif.js",
+    "fileapi": "mailru/FileAPI#^2.0.20",
+    "webfontloader": "^1.6.26",
+    "slip": "^2.0.0"
+  }
+}

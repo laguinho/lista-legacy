@@ -1,0 +1,121 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// appbar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.ui-appbar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: $appbar-height;
+	background-color: #fff;
+	color: #666;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.13725);
+
+	z-index: 1;
+	-webkit-user-select: none;
+
+	.ui-pointer & {
+		-webkit-user-select: inherit;
+	}
+
+	.appbar-container {
+		height: 100%;
+		padding: 0;
+
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+
+		@media ($--widebody) {
+			padding: 0 8px;
+		}
+	}
+
+	h1 {
+		margin: auto;
+		font-size: 20px;
+		// line-height: 56px;
+		text-align: left;
+
+		flex-grow: 2;
+		order: 2;
+	}
+
+	@media ($--widebody) {
+		height: 64px;
+
+		h1 {
+			font-size: 24px;
+			// line-height: 64px
+		}
+	}
+
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// actions
+	.appbar-actions {
+		min-width: $appbar-height;
+		z-index: 1;
+
+		@media ($--widebody) {
+			min-width: $appbar-height-widebody;
+		}
+	}
+
+	.appbar-actions-left {
+		order: 1;
+	}
+
+	.appbar-actions-right {
+		order: 3;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// appbar button
+.appbar-button {
+	display: block;
+	// position: absolute;
+	// top: 0;
+	// bottom: 0;
+	width: $appbar-height;
+	height: $appbar-height;
+	padding-top: $appbar-height * 0.1;
+	text-align: center;
+
+	@media ($--widebody) {
+		width: $appbar-height-widebody;
+		height: $appbar-height-widebody;
+		padding-top: $appbar-height-widebody * 0.15;
+	}
+
+	i {
+		width: $appbar-height * 0.8;
+		height: $appbar-height * 0.8;
+		border-radius: 50%;
+		line-height: $appbar-height * 0.8;
+
+		@media ($--widebody) {
+			width: $appbar-height-widebody * 0.7;
+			height: $appbar-height-widebody * 0.7;
+			line-height: $appbar-height-widebody * 0.7;
+		}
+	}
+
+	&:active {
+		i {
+			background-color: rgba(#000, 0.1);
+		}
+	}
+
+	// &.appbar-left-button {
+	// 	left: 0;
+	// 	order: 1;
+	// }
+	//
+	// &.appbar-right-button {
+	// 	right: 0;
+	// 	order: 3;
+	// }
+}

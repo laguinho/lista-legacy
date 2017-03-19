@@ -1,0 +1,22 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- common
+
+template#card-tarefa
+	li.card-tarefa.ui-card
+		a.card-container.fill(href="#", data-fill="href: url")
+			.ui-tarefa
+				.tarefa-designacao
+					.tarefa-numero Tarefa&nbsp;
+						span.fill(data-fill="numero")
+					.tarefa-titulo.fill(data-fill="titulo")
+					time.last-modified.fill(data-fill="ultima-postagem")
+				.tarefa-midia.media-wrapper.fill(data-fill="style: imagem/aspecto", data-fill-null="remove")
+					img.fill(data-fill="src: imagem/url")
+				.tarefa-corpo
+					.tarefa-descricao.fill(data-fill="descricao")
+					.tarefa-pontuacao.fill(data-fill="pontuacao")
+				.tarefa-conteudo
+					ul.grid
+
+template#backdrop
+	.ui-backdrop

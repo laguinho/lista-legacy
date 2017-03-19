@@ -1,0 +1,30 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// buttons /////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.fab {
+	display: block;
+	width: 56px;
+	height: 56px;
+	border: 0;
+	border-radius: 50%;
+	background-color: $primary-color;
+	color: #fff;
+	text-align: center;
+	box-shadow: 0 1px 1.5px 0 rgba(#000, 0.12), 0 1px 1px 0 rgba(#000, 0.24);
+	cursor: pointer;
+	outline: 0;
+	transition: transform $transition-timing-function 0.2s;
+
+	i {
+		line-height: 56px;
+	}
+
+	@media ($--narrowbody) {
+		// No mobile, quando o toast está na tela,
+		// o botão deve subir pra não ficar escondido
+		.toast-active &.fab-bottom {
+			transform: translateY(-48px);
+		}
+	}
+}

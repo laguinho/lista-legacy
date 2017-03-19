@@ -1,0 +1,50 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// placar //////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.app-placar {
+	margin-bottom: $gutter;
+
+	@media ($--narrowbody) {
+		font-size: 0.9em;
+	}
+
+	@media ($--widebody) {
+		margin-bottom: $gutter * 2;
+	}
+
+	ul {
+		height: 40px;
+
+		@media ($--widebody) {
+			padding: 0 150px;
+		}
+
+		display: flex;
+		justify-content: space-between;
+	}
+
+	li {
+		width: 33.3%;
+		padding: 0 4px;
+
+		@media ($--widebody) {
+			padding: 0 8px;
+		}
+	}
+
+	.barra {
+		min-height: 25px;
+		border: 1px solid;
+		border-top: 0;
+
+		display: flex;
+		align-items: flex-end;
+		justify-content: space-between;;
+	}
+
+	.turma,
+	.pontuacao {
+		padding: 4px 6px;
+	}
+}

@@ -1,0 +1,109 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// helpers /////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// scaffolding
+@mixin scaffolding($color: #666) {
+	outline: 3px dashed rgba($color, .75);
+}
+
+// clearfix
+@mixin clearfix() {
+	clear: both;
+}
+
+@mixin pseudo-clearfix() {
+	@include clearfix;
+	display: block;
+	content: "";
+}
+
+.clearfix, .clear {
+	@include clearfix;
+}
+
+// no scroll
+.no-scroll {
+	overflow: hidden;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// transições
+.in {
+	display: block !important;
+}
+.animate-fade {
+	opacity: 0;
+	will-change: opacity;
+	transition: opacity cubic-bezier(.4,0,.2,1) .32s;
+}
+.fade-in {
+	opacity: 1;
+}
+
+.slide-x.in {
+	transform: translateX(0) !important;
+	opacity: 1 !important;
+}
+
+.slide-y.in, .slide.in {
+	transform: translateY(0) !important;
+	opacity: 1 !important;
+}
+
+::selection {
+	background-color: rgba(255, 170, 0, .32);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+.ui-view, .app-view {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding-top: 56px;
+	background-color: #fff;
+	opacity: 0;
+	display: none;
+	-webkit-overflow-scrolling: touch;
+	will-change: transform;
+	transform: translateY(250px);
+	transform-style: preserve-3d;
+	transition-property: transform, opacity;
+	transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+	transition-duration: .2s;
+
+	> .body, .view-body {
+		position: fixed;
+		top: 56px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		padding-top: 8px;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+
+		@media ($--widebody) {
+			top: 64px;
+		}
+	}
+
+	@media (min-width: $column-width * 4) {
+		padding-top: 0;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// o elemento não-padrão <template> é usado apenas pelo template engine em javascript
+template {
+	display: none;
+}
+
+%clear {
+	display: block;
+	clear: both;
+	content: "";
+}

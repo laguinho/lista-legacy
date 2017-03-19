@@ -1,0 +1,19 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- scripts ////////////////////////////////////////////////////////////////////////////////////////
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+
+//- Escreve o nome da edição
+//- No desenvolvimento, usa o valor definido no Gulpfile
+//- Em produção, usa o valor definido no PHP
+if env === "development"
+	script var edicao = "#{edicao}";
+else if env === "production"
+	script var edicao = "<?= $edicao; ?>";
+
+//- Inclusão dos scripts listados no assets.json
+each properties, script in assets["scripts"]
+	script(
+		src = properties[env]["src"],
+		integrity = properties[env]["integrity"],
+		crossorigin = properties[env]["crossorigin"]
+	)

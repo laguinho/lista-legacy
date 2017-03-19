@@ -1,9 +1,0 @@
-RewriteEngine on
-
-AddDefaultCharset utf-8
-SetEnv TZ America/Sao_Paulo
-
-RewriteRule ^tarefas$ app.php [NC,L]
-RewriteRule ^tarefas/([a-zA-Z0-9_-]+)$ app.php?tarefa=$1 [NC,L]
-RewriteRule ^tarefas/$ /tarefas [NC,L,R]
-RewriteRule ^tarefas/([a-zA-Z0-9_-]+)/$ /tarefas/$1 [NC,L,R]

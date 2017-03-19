@@ -1,0 +1,82 @@
+doctype html
+html
+	head
+		meta(charset="utf-8")
+		title Lista de Tarefas
+
+		meta(name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, minimal-ui")
+		meta(name="mobile-web-app-capable" content="yes")
+		meta(name="theme-color" content="#000")
+
+		//- Inclusão dos assets listados no assets.json
+		each properties, asset in assets["assets"]
+			link(rel = properties[env]["rel"], href = properties[env]["href"])
+
+	body
+
+		//- appbar
+		header.lista-appbar.ui-appbar.js-ui-appbar
+			.lista-container.appbar-container.container
+				h1
+					.marquee-face
+						span Lista de Tarefas
+					.marquee-face
+						img.laguinho(src="https://assets.laguinho.org/laguinho.svg", alt="Laguinho")
+				.appbar-actions.appbar-actions-left
+					a.appbar-button.sidenav-trigger.js-sidenav-trigger(href="#")
+						i.material-icons &#xE5D2;
+
+		//- sidenav
+		include ui/_sidenav.pug
+
+		//- livesite
+		.app-livesite.js-app-livesite
+			.lista-container.container
+				.marquee-transitory
+					span Lista de Tarefas
+
+				//- 24 AGOSTO: PLACAR SIMPLES, CINZA, À DIREITA NO APPBAR, 1 LINHA, SEM GRÁFICO. TURMA DA PESSOA LOGADA FICA DESTACADA
+					//- ul
+						//- // contagem de dias
+						//- // twitter
+			include app/_evolucao.pug
+
+		//- placar
+		.app-placar.js-app-placar
+			.lista-container.container
+				ul
+
+		//- lista
+		main.lista-capa
+			.lista-container.container
+				ul.app-lista.js-app-lista
+				.mensagem-final.js-mensagem-final
+
+		aside.app-post.ui-view.app-new-post
+
+
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+		//- screens ////////////////////////////////////////////////////////////////////////////////////
+		//- ////////////////////////////////////////////////////////////////////////////////////////////
+
+		//- lista
+		include app/_placar.pug
+		include app/_lista.pug
+
+		//- tarefa
+		include app/_tarefa.pug
+		include app/_content.pug
+		include app/_post.pug
+
+		//- helpers
+		include app/_login.pug
+		include _common.pug
+
+		//- ui
+		include ui/_loadbar.pug
+		include ui/_bottomsheet.pug
+		include ui/_toast.pug
+
+		//- scripts
+		include base/_tracking.pug
+		include base/_scripts.pug

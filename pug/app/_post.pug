@@ -1,0 +1,100 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- new post
+
+mixin new-post-header(title)
+	header.post-appbar.ui-appbar.user-background
+		.appbar-container.container
+			h1 Postar !{title}
+			.appbar-actions.appbar-actions-left
+				a.appbar-button.back-button(href="/tarefas")
+					i.material-icons &#xE5C4;
+			.appbar-actions.appbar-actions-right
+				a.submit-button.disabled(href="/tarefas") Enviar
+
+mixin new-post-common-fields(type)
+	input(type="hidden", name="action", value="post")
+	input.fill(type="hidden", name="edicao", value="", data-fill="value: edicao")
+	input.fill(type="hidden", name="tarefa", value="", data-fill="value: numero")
+	input.fill(type="hidden", name="user", value="", data-fill="value: user")
+	input.fill(type="hidden", name="turma", value="", data-fill="value: turma")
+	input.fill(type="hidden", name="token", value="", data-fill="value: token")
+	input(type="hidden", name="type", value=type)
+
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- Foto
+template#new-post-photo
+	+new-post-header("foto")
+	.body
+		.container.modal-container
+			form(method="post", action="/-/lista/novo", enctype="multipart/form-data")
+				+new-post-common-fields("imagem")
+				input#form-file(type="file", multiple, accept="image/gif, image/jpg, image/jpeg, image/png", style="display: none;")
+
+				#dropzone
+					ul#board
+					label.file-placeholder(for="form-file")
+						i.material-icons &#xE413;
+						| Selecionar imagens&hellip;
+				p.drag-tip
+					| (segure e arraste as imagens&nbsp;para&nbsp;reordená-las)
+
+				.form-field
+					label(for="form-caption") Legenda
+					textarea#form-caption.text-field.user-border-focus.js-caption-input(name="caption", placeholder="Coloque aqui os créditos das imagens (quem aparece, quem produziu, quem fotografou, que editou etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)")
+
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- Vídeo
+template#new-post-video
+	+new-post-header("vídeo")
+	.body
+		.container.modal-container
+			form(method="post", action="/-/lista/novo", enctype="multipart/form-data")
+				+new-post-common-fields("media")
+
+				.form-field
+					label(for="form-media-url") Faça upload no vídeo no YouTube ou no Vimeo <br>e cole o link aqui
+					label.media-preview.js-media-preview(for="form-media-url")
+					input#form-media-url.text-field.user-border-focus.js-media-url-input(type="text", name="url", value="", placeholder="https://", autocomplete="off")
+					input.js-media-provider(type="hidden", name="media-provider")
+					input.js-media-id(type="hidden", name="media-id")
+					input.js-media-thumbnail(type="hidden", name="media-thumbnail")
+
+				.form-field
+					label(for="form-caption") Legenda
+					textarea#form-caption.text-field.user-border-focus.js-caption-input(name="caption", placeholder="Coloque aqui os créditos do vídeo (elenco, edição, cinegrafia etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)")
+
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- Vine
+template#new-post-vine
+	+new-post-header("Vine")
+	.body
+		.container.modal-container
+			form(method="post", action="/-/lista/novo", enctype="multipart/form-data")
+				+new-post-common-fields("media")
+
+				.form-field
+					label(for="form-media-url") Cole o link do Vine aqui
+					label.media-preview.js-media-preview(for="form-media-url")
+					input#form-media-url.text-field.user-border-focus.js-media-url-input(type="text", name="url", value="", placeholder="https://vine.co/v/", autocomplete="off")
+					input.js-media-provider(type="hidden", name="media-provider")
+					input.js-media-id(type="hidden", name="media-id")
+					input.js-media-thumbnail(type="hidden", name="media-thumbnail")
+
+				.form-field
+					label(for="form-caption") Legenda
+					textarea#form-caption.text-field.user-border-focus.js-caption-input(name="caption", placeholder="Coloque aqui os créditos do Vine (elenco etc) e o que mais você achar relevante. Isso não conta ponto a mais, mas ajuda a gente a conhecer vocês :)")
+
+
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- Texto
+template#new-post-text
+	+new-post-header("texto")
+	.body
+		.container.modal-container
+			form(method="post", action="/-/lista/novo", enctype="multipart/form-data")
+				+new-post-common-fields("texto")
+
+				textarea#form-caption.text-field.user-border-focus.js-caption-input(name="caption", placeholder="Digite o texto aqui")

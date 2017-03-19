@@ -1,0 +1,22 @@
+//- ////////////////////////////////////////////////////////////////////////////////////////////////
+//- login
+
+aside.app-login.ui-view
+
+	//- appbar
+	header.login-appbar.ui-appbar
+		.appbar-container.container
+			h1 Login
+			.appbar-actions.appbar-actions-left
+				a.appbar-button.back-button(href="/")
+					i.material-icons &#xE5C4;
+			.appbar-actions.appbar-actions-right
+				a.appbar-button.back-button(href="/", title="Fechar")
+					i.material-icons &#xE5CD;
+
+	.container.modal-container
+		form(method="post", action="/tarefas/login")
+			.form-group
+				input(type="email", name="email", placeholder="E-mail")
+				input(type="password", name="password", placeholder="Senha")
+			button.btn.btn-primary.js-login-button Login

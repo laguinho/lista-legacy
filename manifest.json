@@ -1,6 +1,8 @@
 {
-	"short_name": "Lista",
 	"name": "Lista de Tarefas",
+	"short_name": "Lista",
+	"theme_color": "#313441",
+	"background_color": "#313441",
 	"icons": [
 		{
 			"src": "//assets.laguinho.org/lista/xc/img/app-icon.png",
@@ -8,6 +10,7 @@
 			"type": "image/png"
 		}
 	],
-	"start_url": "/",
-	"display": "standalone"
+	"display": "standalone",
+	"scope": "/",
+	"start_url": "/"
 }
