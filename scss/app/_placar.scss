@@ -5,6 +5,10 @@
 .app-placar {
 	margin-bottom: $gutter;
 
+	@media ($--narrowbody) {
+		font-size: 0.9em;
+	}
+
 	@media ($--widebody) {
 		margin-bottom: $gutter * 2;
 	}
@@ -13,7 +17,6 @@
 		height: 40px;
 
 		@media ($--widebody) {
-			height: 60px;
 			padding: 0 150px;
 		}
 
@@ -23,7 +26,11 @@
 
 	li {
 		width: 33.3%;
-		padding: 0 8px;
+		padding: 0 4px;
+
+		@media ($--widebody) {
+			padding: 0 8px;
+		}
 	}
 
 	.barra {

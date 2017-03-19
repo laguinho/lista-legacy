@@ -8,12 +8,20 @@
 app.Tarefa = (function() {
 	$(function() {
 		$app["tarefa"] = $(".app-tarefa");
+
+		// Botões de fechar a Tarefa e voltar à Lista
 		$app["tarefa"].on("click", ".js-tarefa-close", function(event) {
 			event.preventDefault();
 			app.Tarefa.close(true);
-		}).on("click", ".js-new-post-trigger", function() {
+		})
+
+		// Botão de novo post
+		.on("click", ".js-new-post-trigger", function() {
 			UI.bottomsheet.open($(".new-post-sheet", $app["tarefa"]).clone().show());
-		}).on("click", ".card-tarefa a", function(event) {
+		})
+
+		// Desabilita clique no card da Tarefa
+		.on("click", ".card-tarefa a", function(event) {
 			if (event.which === 1) {
 				event.preventDefault();
 			}
@@ -120,9 +128,11 @@ app.Tarefa = (function() {
 	}
 
 	return {
+		data: { },
 
 		////////////////////////////////////////////////////////////////////////////////////////////
-		// app.Tarefa.open()
+		// app.Tarefa.open() ///////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
 		open: function(numero, $card, pushState) {
 			// console.log($card[0].getBoundingClientRect());
 
@@ -229,26 +239,30 @@ app.Tarefa = (function() {
 			}
 
 			// placar da tarefa
-			var $placar_da_tarefa = $(".painel .placar ul", $tarefa);
+			// var $placar_da_tarefa = $(".painel .placar ul", $tarefa);
+			//
+			// $.each(Lista.Edicao["turmas"], function(index, turma) {
+			// 	var pontuacao_da_turma = [ ];
+			//
+			// 	// calcula % da turma em relação ao total de pontos
+			// 	var percentual_da_turma = (placar_da_tarefa["total"] > 0? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0);
+			// 	pontuacao_da_turma["turma"] = turma;
+			// 	pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
+			// 	pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
+			// 	pontuacao_da_turma["pontos"] = (placar_da_tarefa[turma] > 0? placar_da_tarefa[turma] : 0);
+			// 	pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+			//
+			// 	var $turma = __render("placar-turma", pontuacao_da_turma);
+			// 	$placar_da_tarefa.append($turma);
+			// });
 
-			$.each(Lista.Edicao["turmas"], function(index, turma) {
-				var pontuacao_da_turma = [ ];
-
-				// calcula % da turma em relação ao total de pontos
-				var percentual_da_turma = (placar_da_tarefa["total"] > 0? placar_da_tarefa[turma] / placar_da_tarefa["total"] : 0);
-				pontuacao_da_turma["turma"] = turma;
-				pontuacao_da_turma["altura-da-barra"] = "height: " + (percentual_da_turma * 100).toFixed(3) + "%";
-				pontuacao_da_turma["turma-formatada"] = turma.toUpperCase();
-				pontuacao_da_turma["pontos"] = (placar_da_tarefa[turma] > 0? placar_da_tarefa[turma] : 0);
-				pontuacao_da_turma["pontuacao-formatada"] = pontuacao_da_turma["pontos"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-
-				var $turma = __render("placar-turma", pontuacao_da_turma);
-				$placar_da_tarefa.append($turma);
-			});
+			$(".tarefa-wrapper", $app["tarefa"]).on("scroll", app.Tarefa.observer);
 		},
 
+
 		////////////////////////////////////////////////////////////////////////////////////////////
-		// app.Tarefa.close()
+		// app.Tarefa.close() //////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
 		close: function(pushState) {
 			tarefa_active = null;
 			$("head meta[name='theme-color']").attr("content", UI.data["theme-color"]["original"]);
@@ -266,6 +280,17 @@ app.Tarefa = (function() {
 			// router
 			router["view-manager"].replace("home");
 			if (pushState) { router.go("/tarefas", { "view": "home" }, "Lista de Tarefas"); }
+		},
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Tarefa.observer() ///////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////
+		observer: function() {
+			app.Tarefa.data["height"] = $(".tarefa-outer-container", $app["tarefa"]).outerHeight();
+			app.Tarefa.data["scrollYpos"] = $(".tarefa-wrapper", $app["tarefa"]).scrollTop();
+
+			console.log(app.Tarefa.data);
 		}
 	};
 })();

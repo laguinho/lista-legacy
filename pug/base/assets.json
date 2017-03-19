@@ -3,7 +3,7 @@
 		"lista": {
 			"development": {
 				"rel": "stylesheet",
-				"href": "./dist/lista.css"
+				"href": "./assets/lista.css"
 			},
 			"production": {
 				"rel": "stylesheet",
@@ -98,7 +98,7 @@
 		},
 		"lista": {
 			"development": {
-				"src": "./dist/lista.js"
+				"src": "./assets/lista.js"
 			},
 			"production": {
 				"src": ""

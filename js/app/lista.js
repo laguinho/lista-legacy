@@ -115,11 +115,11 @@ app.Lista = (function() {
 					"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
 				});
 
+				////////////////////////////////////////////////////////////////////////////////////
 				// posts
 				let $grid = $(".tarefa-conteudo .grid", $tarefa);
 
-				if (tarefa["posts"] && tarefa["posts"].length) {
-					var total_posts = tarefa["posts"].length;
+				if (tarefa["quantidade-de-posts"] && tarefa["posts"]) {
 					// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
 					// var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
 					var max_media_to_show = 8;
@@ -128,133 +128,11 @@ app.Lista = (function() {
 					var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
 					var post_types_with_text_preview = ["texto"];
 
-					for (var i = 0; i < total_posts; i++) {
-						var post = tarefa["posts"][i];
+					for (let i = 0; i < max_media_to_show; i++) {
+						if (tarefa["posts"][i]) {
+							let post = tarefa["posts"][i];
 
-						if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
-							shown_media_count++;
-
-							var tile_type;
-							var media = { };
-
-							// imagem
-							if (post_types_with_image_preview.indexOf(post["tipo"]) > -1) {
-								tile_type = "tile-image";
-
-								media["count"] = shown_media_count;
-
-								if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
-									media["preview"] = "background-image: url('" + post["midia"][0]["thumbnail"] + "');";
-									media["modifier"] = "video";
-								} else if (post["midia"] && post["midia"][0]) {
-									media["preview"] = "background-image: url('" + post["midia"][0]["caminho"] +
-										post["midia"][0]["arquivos"][0] + "');";
-								}
-							} else
-
-							// texto
-							if (post_types_with_text_preview.indexOf(post["tipo"]) > -1) {
-								tile_type = "tile-text";
-								media = {
-									"preview": post["legenda"].substring(0, 120),
-									"count": shown_media_count
-								};
-							}
-
-							if ((shown_media_count === max_media_to_show) && ((total_posts - shown_media_count) > 0)) {
-								media["modifier"] = "more";
-								media["more"] = "+&thinsp;" + (total_posts - shown_media_count + 1);
-							}
-
-							var $tile = __render(tile_type, media).appendTo($grid);
-						}
-					}
-
-				} else {
-					// se não tiver nenhum post, remove o grid
-					$(".tarefa-conteudo", $tarefa).remove();
-				}
-
-				// Se for preview
-				if (tarefa["preview"]) {
-					$tarefa.addClass("fantasma");
-					$("a", $tarefa).removeAttr("href");
-					$(".tarefa-corpo", $tarefa).remove();
-				}
-
-				$app["lista"].append($tarefa).isotope("appended", $tarefa);
-			}
-
-			app.Lista.layout();
-			app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
-		},
-
-		////////////////////////////////////////////////////////////////////////////////////////////
-		// app.Lista.load()
-		load: function() {
-			// mostra a tela de loading e limpa o stream
-			$stream.loading.addClass("fade-in in");
-
-			// carrega os dados da API
-			$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
-				// "DIRETOR"
-				// TODO O load deve ficar separado do Stream (ver issue #7)
-				Lista.Regulamento = data["edicao"];
-				Lista.Tarefas = data["tarefas"];
-
-				// Se a Edição estiver encerrada...
-
-
-				// FIM DO "DIRETOR"
-
-				// Limpa o stream para começar do zero
-				$stream.empty();
-
-				// Monta placar
-				app.Placar.update(data["placar"]);
-
-				// Insere os cards de tarefas
-				$.each(data["tarefas"], function(index, tarefa) {
-					tarefas[tarefa["numero"]] = tarefa;
-					tarefa["url"] = "/tarefas/" + tarefa["numero"];
-					tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
-
-					if (tarefa["imagem"]) {
-						tarefa["imagem-url"] = tarefa["imagem"]["url"];
-						tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
-					}
-
-					var $card = __render("card-tarefa", tarefa).data({
-							"tarefa": tarefa["numero"],
-							"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
-						});
-
-					if (tarefa["preview"]) {
-						$card.addClass("fantasma");
-						$("a", $card).removeAttr("href");
-						$(".body", $card).remove();
-					}
-
-					if (!tarefa["imagem"]) {
-						$(".media", $card).remove();
-					}
-
-					// posts
-					var $grid = $(".grid", $card);
-
-					if (tarefa["posts"] && tarefa["posts"].length) {
-						var total_posts = tarefa["posts"].length;
-						// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
-						var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
-						var shown_media_count = 0;
-
-						var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
-						var post_types_with_text_preview = ["texto"];
-
-						for (var i = 0; i < total_posts; i++) {
-							var post = tarefa["posts"][i];
-
-							if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
+							if (post["midia"] || post["tipo"] == "texto") {
 								shown_media_count++;
 
 								var tile_type;
@@ -284,48 +162,171 @@ app.Lista = (function() {
 									};
 								}
 
-								if ((shown_media_count === max_media_to_show) && ((total_posts - shown_media_count) > 0)) {
+								if ((shown_media_count === max_media_to_show) && ((tarefa["quantidade-de-posts"] - shown_media_count) > 0)) {
 									media["modifier"] = "more";
-									media["more"] = "+&thinsp;" + (total_posts - shown_media_count + 1);
+									media["more"] = "+&thinsp;" + (tarefa["quantidade-de-posts"] - shown_media_count + 1);
 								}
 
 								var $tile = __render(tile_type, media).appendTo($grid);
 							}
 						}
-
-					} else {
-						// se não tiver nenhum post, remove o grid
-						$grid.remove();
 					}
 
-					// atualiza o isotope
-					$stream.append($card).isotope("appended", $card);
-				});
-
-				// Se a Edição estiver encerrada, ordena por número da tarefa.
-				// Se não, ordena por ordem de atualização
-				app.Lista.layout();
-				app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
-
-				// se tiver tarefa especificada no load da página, carrega ela
-				if (router["path"][2]) {
-					app.Tarefa.open(router["path"][2]);
+				} else {
+					// se não tiver nenhum post, remove o grid
+					$(".tarefa-conteudo", $tarefa).remove();
 				}
 
-				// esconde a tela de loading
-				setTimeout(function() {
-					$stream.loading
-						.removeClass("fade-in")
-						.one("transitionend", function() { $stream.loading.removeClass("in");
-					});
-				}, 1200);
+				// Se for preview
+				if (tarefa["preview"]) {
+					$tarefa.addClass("fantasma");
+					$("a", $tarefa).removeAttr("href");
+					$(".tarefa-corpo", $tarefa).remove();
+				}
 
-				// guarda a data da última atualização e zera o contador de novidades
-				last_updated = moment(data["edicao"]["ultima-atualizacao"]);
-				updated["tarefas"] = 0;
-				updated["posts"] = 0;
-			});
+				$app["lista"].append($tarefa).isotope("appended", $tarefa);
+			}
+
+			app.Lista.layout();
+			app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// app.Lista.load()
+		// load: function() {
+		// 	// mostra a tela de loading e limpa o stream
+		// 	$stream.loading.addClass("fade-in in");
+		//
+		// 	// carrega os dados da API
+		// 	$.getJSON("https://api.laguinho.org/lista/" + edicao + "/tudo?key=" + api_key + "&callback=?").done(function(data) {
+		// 		// "DIRETOR"
+		// 		// TODO O load deve ficar separado do Stream (ver issue #7)
+		// 		Lista.Regulamento = data["edicao"];
+		// 		Lista.Tarefas = data["tarefas"];
+		//
+		// 		// Se a Edição estiver encerrada...
+		//
+		//
+		// 		// FIM DO "DIRETOR"
+		//
+		// 		// Limpa o stream para começar do zero
+		// 		$stream.empty();
+		//
+		// 		// Monta placar
+		// 		app.Placar.update(data["placar"]);
+		//
+		// 		// Insere os cards de tarefas
+		// 		$.each(data["tarefas"], function(index, tarefa) {
+		// 			tarefas[tarefa["numero"]] = tarefa;
+		// 			tarefa["url"] = "/tarefas/" + tarefa["numero"];
+		// 			tarefa["url"] = router["build-link"]("/tarefas/" + tarefa["numero"]);
+		//
+		// 			if (tarefa["imagem"]) {
+		// 				tarefa["imagem-url"] = tarefa["imagem"]["url"];
+		// 				tarefa["imagem-aspecto"] = "padding-top: " + (tarefa["imagem"]["aspecto"] * 100).toFixed(2) + "%";
+		// 			}
+		//
+		// 			var $card = __render("card-tarefa", tarefa).data({
+		// 					"tarefa": tarefa["numero"],
+		// 					"last-modified": (tarefa["ultima-postagem"]? moment(tarefa["ultima-postagem"]).format("X") : 0)
+		// 				});
+		//
+		// 			if (tarefa["preview"]) {
+		// 				$card.addClass("fantasma");
+		// 				$("a", $card).removeAttr("href");
+		// 				$(".body", $card).remove();
+		// 			}
+		//
+		// 			if (!tarefa["imagem"]) {
+		// 				$(".media", $card).remove();
+		// 			}
+		//
+		// 			// posts
+		// 			var $grid = $(".grid", $card);
+		//
+		// 			if (tarefa["quantidade-de-posts"] > 0 && tarefa["posts"]) {
+		// 				// var total_media = tarefa["posts"].reduce((total, post) => total + post["midia"].length, 0);
+		// 				var max_media_to_show = (UI.data["columns"] < 2? 9 : 8);
+		// 				var shown_media_count = 0;
+		//
+		// 				var post_types_with_image_preview = ["imagem", "youtube", "vimeo", "vine", "gif"];
+		// 				var post_types_with_text_preview = ["texto"];
+		//
+		// 				for (var i = 0; i < tarefa["quantidade-de-posts"]; i++) {
+		// 					var post = tarefa["posts"][i];
+		//
+		// 					if ((post["midia"] || post["tipo"] == "texto") && (shown_media_count < max_media_to_show)) {
+		// 						shown_media_count++;
+		//
+		// 						var tile_type;
+		// 						var media = { };
+		//
+		// 						// imagem
+		// 						if (post_types_with_image_preview.indexOf(post["tipo"]) > -1) {
+		// 							tile_type = "tile-image";
+		//
+		// 							media["count"] = shown_media_count;
+		//
+		// 							if (post["tipo"] == "youtube" || post["tipo"] == "vimeo" || post["tipo"] == "vine" || post["tipo"] == "gif") {
+		// 								media["preview"] = "background-image: url('" + post["midia"][0]["thumbnail"] + "');";
+		// 								media["modifier"] = "video";
+		// 							} else if (post["midia"] && post["midia"][0]) {
+		// 								media["preview"] = "background-image: url('" + post["midia"][0]["caminho"] +
+		// 									post["midia"][0]["arquivos"][0] + "');";
+		// 							}
+		// 						} else
+		//
+		// 						// texto
+		// 						if (post_types_with_text_preview.indexOf(post["tipo"]) > -1) {
+		// 							tile_type = "tile-text";
+		// 							media = {
+		// 								"preview": post["legenda"].substring(0, 120),
+		// 								"count": shown_media_count
+		// 							};
+		// 						}
+		//
+		// 						if ((shown_media_count === max_media_to_show) && ((tarefa["quantidade-de-posts"] - shown_media_count) > 0)) {
+		// 							media["modifier"] = "more";
+		// 							media["more"] = "+&thinsp;" + (tarefa["quantidade-de-posts"] - shown_media_count + 1);
+		// 						}
+		//
+		// 						var $tile = __render(tile_type, media).appendTo($grid);
+		// 					}
+		// 				}
+		//
+		// 			} else {
+		// 				// se não tiver nenhum post, remove o grid
+		// 				$grid.remove();
+		// 			}
+		//
+		// 			// atualiza o isotope
+		// 			$stream.append($card).isotope("appended", $card);
+		// 		});
+		//
+		// 		// Se a Edição estiver encerrada, ordena por número da tarefa.
+		// 		// Se não, ordena por ordem de atualização
+		// 		app.Lista.layout();
+		// 		app.Lista.sort((Lista.Edicao["encerrada"]? "tarefa": "date"));
+		//
+		// 		// se tiver tarefa especificada no load da página, carrega ela
+		// 		if (router["path"][2]) {
+		// 			app.Tarefa.open(router["path"][2]);
+		// 		}
+		//
+		// 		// esconde a tela de loading
+		// 		setTimeout(function() {
+		// 			$stream.loading
+		// 				.removeClass("fade-in")
+		// 				.one("transitionend", function() { $stream.loading.removeClass("in");
+		// 			});
+		// 		}, 1200);
+		//
+		// 		// guarda a data da última atualização e zera o contador de novidades
+		// 		last_updated = moment(data["edicao"]["ultima-atualizacao"]);
+		// 		updated["tarefas"] = 0;
+		// 		updated["posts"] = 0;
+		// 	});
+		// },
 
 		////////////////////////////////////////////////////////////////////////////////////////////
 		// app.Lista.layout()
