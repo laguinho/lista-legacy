@@ -16,7 +16,7 @@ worker.Start = (function() {
 				// Antes, testa se o valor é um número
 				// e dentro do número de tarefas dessa Edição
 				let numero = router["path"][2];
-				if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["numero-de-tarefas"]) {
+				if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["quantidade-de-tarefas"]) {
 					app.Tarefa.open(numero, false, false);
 				}
 			}

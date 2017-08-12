@@ -7,13 +7,12 @@ const rename = require("gulp-rename");
 const sourcemaps = require("gulp-sourcemaps");
 const rev = require("gulp-rev");
 const concat = require("gulp-concat");
-const fs = require("fs");
-const sftp = require("gulp-sftp");
+const fs = require("fs-extra");
+const ftp = require("vinyl-ftp");
 const livereload = require("gulp-livereload");
 const clone = require("gulp-clone");
 
-const edicao = "xciii";
-const url = "cinquenta";
+const edicao = "xciv";
 
 let CONFIG = { };
 
@@ -21,7 +20,16 @@ let CONFIG = { };
 // server //////////////////////////////////////////////////////////////////////////////////////////
 CONFIG.server = { };
 CONFIG.server.host = "ftp.laguinho.org";
-CONFIG.server.remotePath = "/";
+
+const credentials = JSON.parse(fs.readFileSync(".ftppass"));
+
+let connection = ftp.create({
+	host: CONFIG.server.host,
+	user: credentials["username"],
+	password: credentials["password"],
+	parallel: 10,
+	log: util.log
+});
 
 
 // paths ///////////////////////////////////////////////////////////////////////////////////////////
@@ -33,8 +41,8 @@ CONFIG.paths.development.dist = "./dist";
 CONFIG.paths.development.staging = "./";
 
 CONFIG.paths.production = { };
-CONFIG.paths.production.assets = "/home/laguinho/assets.laguinho.org/lista/" + edicao + "/";
-CONFIG.paths.production.app = "/home/laguinho/assets/lista/";
+CONFIG.paths.production.assets = "/assets.laguinho.org/lista/" + edicao + "/";
+CONFIG.paths.production.app = "/assets/lista/";
 
 // urls
 CONFIG.urls = { };
@@ -89,18 +97,26 @@ function stageHTML() {
 }
 
 function deployHTML() {
-	CONFIG.server.remotePath = CONFIG.paths.production.app;
-
+	// Pega o nome final (com hash) dos arquivos CSS e JS no rev-manifest
+	// e coloca eles na lista de assets.
 	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
 	let assets = JSON.parse(fs.readFileSync("./pug/base/assets.json"));
 	assets["assets"]["lista"]["production"]["href"] = CONFIG.urls.assets + manifest["lista.min.css"];
 	assets["scripts"]["lista"]["production"]["src"] = CONFIG.urls.assets + manifest["lista.min.js"];
 
+	// Extrai o hash do nome do arquivo JS para usar como nome de versão no Sentry
 	let release = manifest["lista.min.js"].replace("lista-", "").replace(".min.js", "");
 
+	// Determina qual o ambiente para o deploy (development ou production).
+	// Por segurança, só vai ter production se for passado o parâmetro "--prod".
+	// Em todos os outros casos é development.
+	let env = (process.argv.includes("--prod")? "production" : "development");
+
+	// Começa o procedimento de deploy!
 	gulp.src(CONFIG.html.source)
 		.pipe(plumber())
 
+		// Processa o Pug para gerar o HTML final, minificado
 		.pipe(pug({
 			"pretty": false,
 			"locals": {
@@ -111,12 +127,14 @@ function deployHTML() {
 			}
 		}))
 
-		.pipe(rename({ basename: "app", extname: ".php" }))
-		.pipe(sftp({
-			host: CONFIG.server.host,
-			remotePath: CONFIG.paths.production.app,
-			auth: "laguinho"
-		}));
+		// Renomeia o HTML conforme o ambiente e muda a extensão para PHP
+		.pipe(rename({
+			basename: (env === "production"? "app" : "app-preview"),
+			extname: ".php"
+		}))
+
+		// Finalmente, envia o arquivo para o servidor
+		.pipe(connection.dest(CONFIG.paths.production.app))
 
 	util.log(util.colors.magenta("HTML !!"));
 }
@@ -174,13 +192,11 @@ function stageCSS() {
 }
 
 function deployCSS() {
-	CONFIG.server.remotePath = CONFIG.paths.production.assets;
-
 	let css = buildCSS();
 
 	let production = buildProductionCSS(css)
 		.pipe(rev())
-		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
+		.pipe(connection.dest(CONFIG.paths.production.assets))
 		.pipe(rev.manifest({ merge: true }))
 		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
 
@@ -196,14 +212,18 @@ gulp.task("deploy-css", deployCSS);
 // js //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const babel = require("gulp-babel");
-// const uglify = require("gulp-uglify");
-const closure = require("gulp-closure-compiler-service");
+const uglify = require("gulp-uglify");
+const sentry = require("gulp-sentry-release")({
+	API_URL: "https://sentry.io/api/0/projects/laguinho/lista/",
+	API_KEY: "d3bddc4f334b4d66a8151ed592fa90a4093c6b402cfa40cbb66351820b12a39a"
+});
 
 CONFIG.js = { };
 CONFIG.js.source = JSON.parse(fs.readFileSync("./js/modules.json"));
 CONFIG.js.watch = ["**/**.js"];
 
-function buildJS() {
+// Junta todos os arquivos JS num só
+function bundleJS() {
 	let js = gulp.src(CONFIG.js.source)
 		.pipe(plumber())
 		.pipe(sourcemaps.init())
@@ -212,43 +232,66 @@ function buildJS() {
 	return js;
 }
 
-function buildProductionJS(js) {
+function compileJS(js) {
+	let compiled = js.pipe(clone())
+		.pipe(babel({ presets: ["es2015"] }));
+
+	return compiled;
+}
+
+function buildJS(js) {
 	let production = js.pipe(clone())
-		.pipe(babel())
-		// .pipe(uglify())
-		.pipe(rename({ suffix: ".min" }))
-		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
+		.pipe(uglify())
+		.pipe(rename({ suffix: ".min" }));
 
 	return production;
 }
 
 function stageJS() {
-	let js = buildJS();
+	let js = bundleJS();
+	let compiled = compileJS(js);
 
+	// Arquivo de referência
+	// Só concatenado, sem nenhum processamento
 	let reference = js.pipe(clone())
 		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
 
-	let development = js.pipe(clone())
-		.pipe(babel())
+	// Arquivo de desenvolvimento
+	// Processado pelo Babel e com sourcemap
+	let development = compiled.pipe(clone())
 		.pipe(sourcemaps.write())
 		.pipe(gulp.dest(CONFIG.paths.development.staging + "/assets", { mode: "0644" }));
 
-	let production = buildProductionJS(js);
+	// Arquivo de produção
+	// Processado pelo Babel e minificado
+	let production = buildJS(compiled)
+		.pipe(gulp.dest(CONFIG.paths.development.dist, { mode: "0644" }));
 
 	util.log(util.colors.yellow("JS !!"));
 }
 
 function deployJS() {
-	CONFIG.server.remotePath = CONFIG.paths.production.assets;
+	let js = bundleJS();
+	let compiled = compileJS(js);
+	let production = buildJS(compiled);
 
-	let js = buildJS();
-
-	let production = buildProductionJS(js)
-		.pipe(closure())
+	// Envia para o servidor
+	production.pipe(clone())
 		.pipe(rev())
-		.pipe(sftp({ host: CONFIG.server.host, remotePath: CONFIG.server.remotePath, auth: "laguinho" }))
+		.pipe(connection.dest(CONFIG.paths.production.assets))
 		.pipe(rev.manifest({ merge: true }))
 		.pipe(gulp.dest(CONFIG.paths.development.repo, { mode: "0644" }));
+
+	// Envia para o Sentry
+	let manifest = JSON.parse(fs.readFileSync("./rev-manifest.json", "utf8"));
+	let release = manifest["lista.min.js"].replace("lista-", "").replace(".min.js", "");
+
+	production.pipe(clone())
+		.pipe(sourcemaps.write())
+		.pipe(sentry.release(release));
+
+	gulp.src(CONFIG.js.source)
+		.pipe(sentry.release(release));
 
 	util.log(util.colors.yellow("JS !!"));
 }

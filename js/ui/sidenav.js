@@ -13,11 +13,16 @@ UI.sidenav = (function() {
 	});
 
 	return {
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// UI.sidenav.open()
 		open: function() {
 			UI.body.lock();
 			UI.backdrop.show($ui["sidenav"], { "hide": UI.sidenav.close });
 			$ui["sidenav"].addClass("in");
 		},
+
+		////////////////////////////////////////////////////////////////////////////////////////////
+		// UI.sidenav.close()
 		close: function() {
 			$ui["sidenav"].removeClass("in");
 			UI.backdrop.hide($ui["sidenav"]);
