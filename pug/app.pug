@@ -10,7 +10,8 @@ html
 
 		//- Inclusão dos assets listados no assets.json
 		each properties, asset in assets["assets"]
-			link(rel = properties[env]["rel"], href = properties[env]["href"])
+			if !properties["skip"]
+				link(rel = properties[env]["rel"], href = properties[env]["href"])
 
 	body
 
@@ -78,5 +79,5 @@ html
 		include ui/_toast.pug
 
 		//- scripts
-		include base/_tracking.pug
 		include base/_scripts.pug
+		include base/_tracking.pug

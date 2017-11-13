@@ -12,8 +12,9 @@ else if env === "production"
 
 //- Inclusão dos scripts listados no assets.json
 each properties, script in assets["scripts"]
-	script(
-		src = properties[env]["src"],
-		integrity = properties[env]["integrity"],
-		crossorigin = properties[env]["crossorigin"]
-	)
+	if !properties["skip"]
+		script(
+			src = properties[env]["src"],
+			integrity = properties[env]["integrity"],
+			crossorigin = properties[env]["crossorigin"]
+		)

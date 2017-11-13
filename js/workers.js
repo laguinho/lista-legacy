@@ -1,36 +1,43 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // workers /////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// • worker.Start()
+// • worker.Load()
+// • worker.Update()
 
-// start
+// worker.Start()
+// É rodado uma única vez, quando a página é carregada.
+// Dispara os outros dois workers, Load() e Update().
 worker.Start = (function() {
 	timing["delay-start"] = setTimeout(function() {
 		log("worker.Start", "info");
 
 		cue["load-edicao"] = $.Deferred();
-		cue["first-load"] = true;
 
+		let started = false;
 		cue["load-edicao"].done(function() {
-			// Se tiver número de tarefa especificado na URL, abre ela
-			if (router["path"] && router["path"][2]) {
-				// Antes, testa se o valor é um número
-				// e dentro do número de tarefas dessa Edição
-				let numero = router["path"][2];
-				if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["quantidade-de-tarefas"]) {
-					app.Tarefa.open(numero, false, false);
-				}
-			}
-
 			// Se for o primeiro load
-			if (cue["first-load"]) {
+			if (!started) {
+				// Se tiver número de tarefa especificado na URL, abre ela
+				if (router["path"] && router["path"][2]) {
+					// Antes, testa se o valor é um número
+					// e dentro do número de tarefas dessa Edição
+					let numero = router["path"][2];
+					if (!isNaN(numero) && numero >= 1 && numero <= Lista.Edicao["quantidade-de-tarefas"]) {
+						app.Tarefa.open(numero, false, false);
+					}
+				}
+
 				// Inicia a barra de evolução
 				timing["delay-evolucao"] = setTimeout(app.Evolucao.start, 100);
 
-				// Inicia a checagem de atividade
-				worker.Update();
+				// Inicia a checagem de atividade, exceto se Edição estiver encerrada
+				if (!Lista.Edicao["encerrada"]) {
+					worker.Update();
+				}
 
 				// Desativa nos loads seguintes
-				cue["first-load"] = false;
+				started = true;
 			}
 
 			// app.Placar.start();
@@ -38,14 +45,14 @@ worker.Start = (function() {
 
 		timing["delay-load"] = setTimeout(function() {
 			worker.Load();
-		}, 300);
+		}, 10);
 
 		analytics("Lista", "Acesso");
 	}, 0);
 })();
 
 
-// load
+// worker.Load()
 worker.Load = (function() {
 	log("worker.Load", "info");
 
@@ -64,13 +71,20 @@ worker.Load = (function() {
 			log("cue[\"load-edicao\"] triggered");
 		}, 1);
 
+		// Para de atualizar se Edição foi encerrada
+		if (Lista.Edicao["encerrada"]) {
+			clearInterval(timing["atividade"]);
+		}
+
 		// timing["delay-placar"] = setTimeout(app.Placar.start, 400);
 	});
 });
 
 
-// update
+// worker.Update()
 worker.Update = (function() {
+	let update_interval_in_seconds = 30;
+
 	let updates = {
 		"tarefas": 0,
 		"posts": 0,
@@ -141,5 +155,5 @@ worker.Update = (function() {
 
 			// console.log(response, updates);
 		});
-	}, 30000);
+	}, update_interval_in_seconds * 1000);
 });
